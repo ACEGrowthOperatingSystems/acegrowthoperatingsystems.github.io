@@ -105,6 +105,10 @@
   .echo{font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--ace-live);
     border-left:2px solid var(--ace-live);padding-left:.9rem;margin:0 0 1.2rem;letter-spacing:.02em}
   .formnote{font-size:.85rem;color:var(--ace-live);margin:.7rem 0 0;min-height:1.2em}
+  .consent{display:flex;align-items:flex-start;gap:.55rem;margin:.7rem 0 0;color:var(--steel);
+    font-size:.75rem;line-height:1.45;text-align:left}
+  .consent input{flex:0 0 auto;margin:.22rem 0 0;accent-color:var(--ace-live)}
+  .consent a{color:var(--silver)}
 
   section{padding:clamp(3.4rem,7vw,5.5rem) 0;border-top:1px solid var(--edge)}
 
@@ -670,6 +674,7 @@
             <input id="em" type="email" placeholder="Work email" autocomplete="email" aria-label="Work email">
             <button id="go" type="button">Get the brief</button>
           </div>
+          <label class="consent"><input id="consent" type="checkbox"> <span>I agree to receive the ACE Weekly Brief by email. I can unsubscribe at any time. See the <a href="privacy.html">Privacy Policy</a>.</span></label>
           <p class="formnote" id="note" role="status" aria-live="polite" style="text-align:center"></p>
           <p class="microcopy" style="text-align:center">Weekly. No noise. Leave whenever you like.</p>
         </div>
@@ -770,6 +775,7 @@
             <input id="em3" type="email" placeholder="Work email" autocomplete="email" aria-label="Work email">
             <button id="go3" type="button">Send it</button>
           </div>
+          <label class="consent"><input id="consent3" type="checkbox"> <span>I agree to receive the ACE Weekly Brief by email. I can unsubscribe at any time. See the <a href="privacy.html">Privacy Policy</a>.</span></label>
           <p class="formnote" id="note3" role="status" aria-live="polite"></p>
           <button class="back" type="button">&larr; Change my answers</button>
         </div>
@@ -988,6 +994,7 @@
           <input id="em2" type="email" placeholder="Work email" autocomplete="email" aria-label="Work email">
           <button id="go2" type="button">Send it</button>
         </div>
+        <label class="consent"><input id="consent2" type="checkbox"> <span>I agree to receive the ACE Weekly Brief by email. I can unsubscribe at any time. See the <a href="privacy.html">Privacy Policy</a>.</span></label>
         <p class="formnote" id="note2" role="status" aria-live="polite"></p>
       </div>
     </div>
@@ -1034,29 +1041,65 @@
   /* Lead capture. Set LEAD_ENDPOINT to the n8n webhook once the flow is wired.
      Until then the form validates but never claims a success it did not get. */
   const LEAD_ENDPOINT = "https://withyoudaily.app.n8n.cloud/webhook/ace-lead";
+  const CONSENT_TEXT = "I agree to receive the ACE Weekly Brief by email. I can unsubscribe at any time.";
+  const CONSENT_VERSION = "ace-weekly-brief-consent-v1";
   let chosenProblem = "";
 
-  function wire(fnId, emId, btnId, noteId){
+  function trackingContext(){
+    const query=new URLSearchParams(window.location.search);
+    return {
+      landing_url:window.location.href,
+      referrer:document.referrer || "",
+      utm_source:query.get('utm_source') || "",
+      utm_medium:query.get('utm_medium') || "",
+      utm_campaign:query.get('utm_campaign') || "",
+      utm_term:query.get('utm_term') || "",
+      utm_content:query.get('utm_content') || ""
+    };
+  }
+
+  function emitLeadEvent(event_name, form){
+    const event={event_name,event_version:"1.0",occurred_at:new Date().toISOString(),
+      source:"ace-splash",form,page_path:window.location.pathname};
+    window.dataLayer=window.dataLayer || [];
+    window.dataLayer.push(event);
+    window.dispatchEvent(new CustomEvent('ace:analytics',{detail:event}));
+  }
+
+  function wire(fnId, emId, btnId, noteId, consentId, formType, briefOptIn){
     const fn=document.getElementById(fnId), em=document.getElementById(emId),
-          btn=document.getElementById(btnId), note=document.getElementById(noteId);
-    if(!btn||!em||!note) return;
+          btn=document.getElementById(btnId), note=document.getElementById(noteId),
+          consent=document.getElementById(consentId);
+    if(!btn||!em||!note||!consent) return;
     btn.addEventListener('click', async ()=>{
       const name=fn ? fn.value.trim() : "", mail=em.value.trim();
       if(fn && !name){ note.textContent="Add your first name so the brief isn't addressed to nobody."; fn.focus(); return; }
       if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)){ note.textContent="That email address looks incomplete."; em.focus(); return; }
+      if(!consent.checked){ note.textContent="Please confirm that you want to receive the Weekly Brief."; consent.focus(); return; }
       btn.disabled=true; note.textContent="Sending\u2026";
       if(!LEAD_ENDPOINT){ note.textContent="Capture endpoint not connected yet \u2014 nothing was sent."; btn.disabled=false; return; }
+      emitLeadEvent('ace_lead_submit_attempt',formType);
       try{
+        const submittedAt=new Date().toISOString();
+        const submissionKey=btn.dataset.submissionKey || (window.crypto&&window.crypto.randomUUID ? window.crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`);
+        btn.dataset.submissionKey=submissionKey;
         const r=await fetch(LEAD_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({first_name:name,email:mail,problem:chosenProblem,urgency:dx.urgency,ai_maturity:dx.maturity,constraint:dx.constraint,form:(btnId==='go'?'brief':'readiness'),brief_optin:(btnId==='go'),source:'ace-splash',ts:new Date().toISOString()})});
+          body:JSON.stringify({first_name:name,email:mail,problem:chosenProblem,urgency:dx.urgency,
+            ai_maturity:dx.maturity,constraint:dx.constraint,form:formType,brief_optin:briefOptIn,
+            source:'ace-splash',ts:submittedAt,idempotency_key:submissionKey,consent_granted:true,consent_text:CONSENT_TEXT,
+            consent_version:CONSENT_VERSION,consent_timestamp:submittedAt,consent_channel:'website',
+            ...trackingContext()})});
         if(!r.ok) throw new Error(r.status);
+        emitLeadEvent('ace_lead_submit_success',formType);
         note.textContent="You're on the list. First issue arrives this week.";
-        fn.value=''; em.value='';
-      }catch(e){ note.textContent="That didn't go through. Try again in a moment."; }
+        if(fn) fn.value=''; em.value=''; consent.checked=false; delete btn.dataset.submissionKey;
+      }catch(e){ emitLeadEvent('ace_lead_submit_failure',formType); note.textContent="That didn't go through. Try again in a moment."; }
       btn.disabled=false;
     });
   }
-  wire('fn','em','go','note'); wire('fn2','em2','go2','note2'); wire('fn3','em3','go3','note3');
+  wire('fn','em','go','note','consent','brief',true);
+  wire('fn2','em2','go2','note2','consent2','brief',true);
+  wire('fn3','em3','go3','note3','consent3','readiness',true);
 
   /* Problem selector doubles as the first segmentation signal. */
   document.querySelectorAll('.prob').forEach(el=>{
