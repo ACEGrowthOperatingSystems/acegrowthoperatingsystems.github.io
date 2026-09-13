@@ -1,0 +1,44 @@
+{
+  "version": "2026-09-13",
+  "release_state": "APPROVAL_HELD",
+  "live_submission_enabled": false,
+  "endpoint_contract": "https://withyoudaily.app.n8n.cloud/webhook/ace-lead",
+  "routes": [
+    {
+      "path": "/p12/",
+      "product_key": "ACE-PRO",
+      "offer_code": "P12",
+      "form": "p12-interest",
+      "source": "ace-p12",
+      "consent_required": true
+    },
+    {
+      "path": "/marketing/",
+      "product_key": "ACE-MKT",
+      "offer_code": "SYS-MKT",
+      "form": "ace-mkt-interest",
+      "source": "ace-mkt",
+      "consent_required": true
+    }
+  ],
+  "approval_boundaries": [
+    "merge",
+    "publish",
+    "live form submission",
+    "pricing",
+    "customer promises",
+    "activation"
+  ],
+  "verification": {
+    "static_contract_checks": "21/21 PASS",
+    "external_actions": 0,
+    "secrets_in_client": 0,
+    "remaining_before_gate_pass": [
+      "authorized merge and deployment",
+      "deployed route readback",
+      "synthetic form submission",
+      "backend receipt readback",
+      "independent verification"
+    ]
+  }
+}
