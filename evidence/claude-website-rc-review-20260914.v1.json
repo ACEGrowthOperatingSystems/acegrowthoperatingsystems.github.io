@@ -1,0 +1,124 @@
+{
+  "schema_version": "1",
+  "review_id": "claude-website-rc-review-20260914",
+  "reviewer": "Claude Sonnet 5 (independent review)",
+  "date": "2026-09-14",
+  "repository": "ACEGrowthOperatingSystems/acegrowthoperatingsystems.github.io",
+  "branch_reviewed": "codex/product-launch-pages-20260913",
+  "review_branch": "claude/website-rc-independent-review-20260914",
+  "local_path": "C:\\Users\\Jim Lanier\\ACE-Website-RC",
+  "rebuild_performed": false,
+  "commits": {
+    "expected_starting_head": "80ab48d4fd4c09f9dd453d6da1f6befb5b144a1c",
+    "actual_starting_head": "80ab48d4fd4c09f9dd453d6da1f6befb5b144a1c",
+    "starting_head_match": true,
+    "local_evidence_commit": "see: git log -1 --format=%H on branch claude/website-rc-independent-review-20260914 (commit message: 'Independently verify ACE website release candidate'); not recorded as a literal hash here to avoid a self-referential value"
+  },
+  "scope": [
+    "marketing/index.html",
+    "p12/index.html",
+    "assets/product-launch.css",
+    "assets/product-launch.js",
+    "launch-readiness/product-pages-20260913.json",
+    "index.html (nav/link check only)",
+    "tests/stage9a_lead_capture.test.mjs",
+    "tests/stage9a_n8n_mapper.test.mjs",
+    "n8n/validate_map.js (referenced by tests)"
+  ],
+  "files_changed": [
+    {
+      "path": "p12/index.html",
+      "type": "correction",
+      "lines_changed": 2,
+      "reason": "canonical product ownership defect"
+    },
+    {
+      "path": "scripts/verify_launch_pages.mjs",
+      "type": "new",
+      "reason": "fail-closed local verifier, required deliverable"
+    },
+    {
+      "path": "tests/verify_launch_pages.test.mjs",
+      "type": "new",
+      "reason": "tests for the fail-closed verifier"
+    },
+    {
+      "path": "evidence/claude-website-rc-review-20260914.md",
+      "type": "new",
+      "reason": "human-readable review report"
+    },
+    {
+      "path": "evidence/claude-website-rc-review-20260914.v1.json",
+      "type": "new",
+      "reason": "machine-readable review report"
+    }
+  ],
+  "defects": [
+    {
+      "id": "DEFECT-1",
+      "severity": "content-accuracy",
+      "file": "p12/index.html",
+      "summary": "Incorrect canonical product ownership: page attributed P12 to 'ACE Professional Services' and never stated the canonical identity 'P12 — ACE Account Intelligence Engine and ICP Builder' or its parent 'ACE Prospecting Operating System'; the commercial offer name 'ACE Account Intelligence Sprint' stood alone in the <title> and hero eyebrow in place of canonical identity.",
+      "status": "corrected",
+      "correction": "Updated <title> and hero eyebrow to state the canonical identity and correct parent system, while preserving the commercial offer name alongside it (not removing it).",
+      "lines_changed": 2
+    }
+  ],
+  "verification_checklist": {
+    "routes_exist_and_render": "PASS",
+    "canonical_product_ownership_accurate": "PASS_AFTER_CORRECTION",
+    "navigation_and_ctas_work": "PASS",
+    "forms_require_consent": "PASS",
+    "consent_unchecked_by_default": "PASS",
+    "duplicate_submission_idempotency_protected": "PASS",
+    "release_authorized_false": "PASS",
+    "no_live_submission_occurs": "PASS",
+    "no_secrets_or_credentials": "PASS",
+    "no_unsupported_pricing_tier_integration_readiness_claims": "PASS",
+    "mobile_and_keyboard_usable": "PASS",
+    "manifest_matches_physical_implementation": "PASS",
+    "withyou_not_represented_as_ace_product": "PASS"
+  },
+  "manifest_note": {
+    "field": "verification.static_contract_checks",
+    "claimed_value": "21/21 PASS",
+    "finding": "No test file in this repository snapshot exercises /marketing/ or /p12/; the figure is not reproducible locally.",
+    "action_taken": "flagged_as_blocker_not_corrected",
+    "rationale": "Cannot independently disprove the figure (may reflect external/manual review); correcting an unfalsifiable number would exceed 'smallest necessary correction of a proven defect'."
+  },
+  "commands_executed": [
+    { "command": "git rev-parse HEAD", "exit_code": 0 },
+    { "command": "git fetch origin main", "exit_code": 0 },
+    { "command": "git diff --stat origin/main...HEAD", "exit_code": 0 },
+    { "command": "node tests/stage9a_lead_capture.test.mjs", "exit_code": 0 },
+    { "command": "node tests/stage9a_n8n_mapper.test.mjs", "exit_code": 0 },
+    { "command": "git checkout -b claude/website-rc-independent-review-20260914", "exit_code": 0 },
+    { "command": "node scripts/verify_launch_pages.mjs", "exit_code": 0 },
+    { "command": "node tests/verify_launch_pages.test.mjs", "exit_code": 0 }
+  ],
+  "test_totals": {
+    "pre_existing_repo_tests": { "total": 2, "passed": 2, "failed": 0 },
+    "new_verifier_self_tests": { "total": 1, "passed": 1, "failed": 0 },
+    "new_verifier_checks": { "total": 16, "passed": 16, "failed": 0 },
+    "total_invocations_exit_0": 4
+  },
+  "remaining_blockers": [
+    "authorized merge and deployment",
+    "deployed route readback",
+    "synthetic form submission",
+    "backend receipt readback",
+    "manifest static_contract_checks figure (21/21) not reproducible from repository test files"
+  ],
+  "completion_score_changed": false,
+  "new_launch_gates_added": 0,
+  "remote_push_performed": false,
+  "deployment_performed": false,
+  "external_systems_modified": {
+    "supabase": false,
+    "notion": false,
+    "n8n": false,
+    "dns": false,
+    "github_settings": false
+  },
+  "next_approval_required": "Jim to review and decide whether to merge claude/website-rc-independent-review-20260914 into codex/product-launch-pages-20260913 (or main), and separately confirm/correct the manifest's unreproducible '21/21 PASS' static_contract_checks figure."
+}
