@@ -30,7 +30,8 @@
     "activation"
   ],
   "verification": {
-    "static_contract_checks": "21/21 PASS",
+    "static_contract_checks": "UNVERIFIED LEGACY CLAIM: 21/21 PASS — not reproducible from any test file in this repository as of 2026-09-14; do not treat as a verified result",
+    "independent_verifier_result": "17/17 PASS (scripts/verify_launch_pages.mjs, run 2026-09-14, see evidence/claude-website-rc-review-20260914.md)",
     "external_actions": 0,
     "secrets_in_client": 0,
     "remaining_before_gate_pass": [

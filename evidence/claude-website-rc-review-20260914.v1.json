@@ -12,7 +12,10 @@
     "expected_starting_head": "80ab48d4fd4c09f9dd453d6da1f6befb5b144a1c",
     "actual_starting_head": "80ab48d4fd4c09f9dd453d6da1f6befb5b144a1c",
     "starting_head_match": true,
-    "local_evidence_commit": "see: git log -1 --format=%H on branch claude/website-rc-independent-review-20260914 (commit message: 'Independently verify ACE website release candidate'); not recorded as a literal hash here to avoid a self-referential value"
+    "local_evidence_commit_1": "fd67a2f17354e518531e58dad2f5de90be669fd0",
+    "local_evidence_commit_1_message": "Independently verify ACE website release candidate",
+    "local_evidence_commit_2": "see final chat report for this branch's HEAD after this commit; not recorded as a literal hash here to avoid a self-referential value",
+    "local_evidence_commit_2_message": "Correct website release evidence claim"
   },
   "scope": [
     "marketing/index.html",
@@ -51,6 +54,25 @@
       "path": "evidence/claude-website-rc-review-20260914.v1.json",
       "type": "new",
       "reason": "machine-readable review report"
+    },
+    {
+      "path": "launch-readiness/product-pages-20260913.json",
+      "type": "correction",
+      "lines_changed": 2,
+      "reason": "evidence-integrity correction: relabel unreproducible '21/21 PASS' claim, record independent verifier's actual total",
+      "pass": "second"
+    },
+    {
+      "path": "scripts/verify_launch_pages.mjs",
+      "type": "addition",
+      "reason": "added checkVerificationClaimsLabeled (17th check) to keep pass-count claims honestly labeled going forward",
+      "pass": "second"
+    },
+    {
+      "path": "tests/verify_launch_pages.test.mjs",
+      "type": "addition",
+      "reason": "3 new assertions covering checkVerificationClaimsLabeled, positive and negative",
+      "pass": "second"
     }
   ],
   "defects": [
@@ -61,7 +83,18 @@
       "summary": "Incorrect canonical product ownership: page attributed P12 to 'ACE Professional Services' and never stated the canonical identity 'P12 — ACE Account Intelligence Engine and ICP Builder' or its parent 'ACE Prospecting Operating System'; the commercial offer name 'ACE Account Intelligence Sprint' stood alone in the <title> and hero eyebrow in place of canonical identity.",
       "status": "corrected",
       "correction": "Updated <title> and hero eyebrow to state the canonical identity and correct parent system, while preserving the commercial offer name alongside it (not removing it).",
-      "lines_changed": 2
+      "lines_changed": 2,
+      "pass": "first"
+    },
+    {
+      "id": "DEFECT-2",
+      "severity": "evidence-integrity",
+      "file": "launch-readiness/product-pages-20260913.json",
+      "summary": "verification.static_contract_checks asserted '21/21 PASS' as an unqualified verified result with no corresponding test file anywhere in the repository for /marketing/ or /p12/, making it an unreproducible, unlabeled pass-count claim.",
+      "status": "corrected",
+      "correction": "Relabeled the historical claim as 'UNVERIFIED LEGACY CLAIM: 21/21 PASS ...' (preserved, not deleted, per instruction) and added a separate independent_verifier_result field recording the new fail-closed verifier's actual, reproducible total (17/17 PASS). Added a 17th verifier check (checkVerificationClaimsLabeled) so an unlabeled pass-count claim reappearing here will fail the verifier going forward.",
+      "lines_changed": 2,
+      "pass": "second"
     }
   ],
   "verification_checklist": {
@@ -81,10 +114,13 @@
   },
   "manifest_note": {
     "field": "verification.static_contract_checks",
-    "claimed_value": "21/21 PASS",
-    "finding": "No test file in this repository snapshot exercises /marketing/ or /p12/; the figure is not reproducible locally.",
-    "action_taken": "flagged_as_blocker_not_corrected",
-    "rationale": "Cannot independently disprove the figure (may reflect external/manual review); correcting an unfalsifiable number would exceed 'smallest necessary correction of a proven defect'."
+    "original_value": "21/21 PASS",
+    "corrected_value": "UNVERIFIED LEGACY CLAIM: 21/21 PASS — not reproducible from any test file in this repository as of 2026-09-14; do not treat as a verified result",
+    "new_field_added": "verification.independent_verifier_result",
+    "new_field_value": "17/17 PASS (scripts/verify_launch_pages.mjs, run 2026-09-14, see evidence/claude-website-rc-review-20260914.md)",
+    "finding": "No test file in this repository exercises /marketing/ or /p12/; the '21/21' figure is not reproducible locally.",
+    "action_taken": "corrected_on_explicit_instruction",
+    "rationale": "First pass flagged this as a blocker without editing the manifest, to avoid overreach on an unfalsifiable number. On explicit follow-up instruction, corrected using the manifest's existing schema: the historical claim is preserved but now explicitly labeled UNVERIFIED LEGACY CLAIM per instruction, and the verifier's own reproducible total is recorded separately rather than conflated with the legacy claim."
   },
   "commands_executed": [
     { "command": "git rev-parse HEAD", "exit_code": 0 },
@@ -93,21 +129,31 @@
     { "command": "node tests/stage9a_lead_capture.test.mjs", "exit_code": 0 },
     { "command": "node tests/stage9a_n8n_mapper.test.mjs", "exit_code": 0 },
     { "command": "git checkout -b claude/website-rc-independent-review-20260914", "exit_code": 0 },
-    { "command": "node scripts/verify_launch_pages.mjs", "exit_code": 0 },
-    { "command": "node tests/verify_launch_pages.test.mjs", "exit_code": 0 }
+    { "command": "node scripts/verify_launch_pages.mjs", "exit_code": 0, "note": "16/16 checks, first pass" },
+    { "command": "node tests/verify_launch_pages.test.mjs", "exit_code": 0, "note": "first pass" },
+    { "command": "git commit (Independently verify ACE website release candidate)", "exit_code": 0 },
+    { "command": "node scripts/verify_launch_pages.mjs", "exit_code": 0, "note": "17/17 checks, second pass, after adding checkVerificationClaimsLabeled" },
+    { "command": "node tests/stage9a_lead_capture.test.mjs", "exit_code": 0, "note": "second pass re-run" },
+    { "command": "node tests/stage9a_n8n_mapper.test.mjs", "exit_code": 0, "note": "second pass re-run" },
+    { "command": "node tests/verify_launch_pages.test.mjs", "exit_code": 0, "note": "second pass, 15 assertions" },
+    { "command": "git diff --check", "exit_code": 0 },
+    { "command": "git diff --cached --check", "exit_code": 0 },
+    { "command": "grep -RInE <secret-pattern-set> over tracked text files", "exit_code": 0, "note": "matches were only pattern definitions / synthetic test fixtures, no real secrets" },
+    { "command": "git commit (Correct website release evidence claim)", "exit_code": 0 }
   ],
   "test_totals": {
     "pre_existing_repo_tests": { "total": 2, "passed": 2, "failed": 0 },
-    "new_verifier_self_tests": { "total": 1, "passed": 1, "failed": 0 },
-    "new_verifier_checks": { "total": 16, "passed": 16, "failed": 0 },
-    "total_invocations_exit_0": 4
+    "verifier_self_tests": { "total": 1, "passed": 1, "failed": 0, "assertions": 15 },
+    "verifier_checks": { "total": 17, "passed": 17, "failed": 0 },
+    "total_invocations_exit_0_second_pass": 4,
+    "additional_hygiene_checks_exit_0": ["git diff --check", "git diff --cached --check", "secret scan"]
   },
   "remaining_blockers": [
     "authorized merge and deployment",
     "deployed route readback",
     "synthetic form submission",
     "backend receipt readback",
-    "manifest static_contract_checks figure (21/21) not reproducible from repository test files"
+    "the underlying '21/21' figure itself remains unconfirmed (now honestly labeled UNVERIFIED LEGACY CLAIM rather than presented as verified); confirming or retiring it upstream is a matter for the author"
   ],
   "completion_score_changed": false,
   "new_launch_gates_added": 0,
@@ -120,5 +166,5 @@
     "dns": false,
     "github_settings": false
   },
-  "next_approval_required": "Jim to review and decide whether to merge claude/website-rc-independent-review-20260914 into codex/product-launch-pages-20260913 (or main), and separately confirm/correct the manifest's unreproducible '21/21 PASS' static_contract_checks figure."
+  "next_approval_required": "Jim to review and decide whether to merge claude/website-rc-independent-review-20260914 into codex/product-launch-pages-20260913 (or main); and separately, at his discretion, confirm or retire the underlying '21/21' figure upstream (it is now honestly labeled UNVERIFIED LEGACY CLAIM rather than presented as verified, so this is no longer a correctness blocker, just an open historical question)."
 }

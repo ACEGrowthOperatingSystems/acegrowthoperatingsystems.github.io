@@ -9,6 +9,7 @@ import {
   checkNoSecrets,
   checkNoUnsupportedClaims,
   checkManifestMatchesImplementation,
+  checkVerificationClaimsLabeled,
 } from '../scripts/verify_launch_pages.mjs';
 
 // --- Fixtures: minimal but structurally valid stand-ins for the real routes. ---
@@ -51,6 +52,10 @@ input:focus,select:focus,textarea:focus{outline:3px solid blue}`;
       { path: '/p12/', product_key: 'ACE-PRO', offer_code: 'P12', form: 'p12-interest', source: 'ace-p12', consent_required: true },
       { path: '/marketing/', product_key: 'ACE-MKT', offer_code: 'SYS-MKT', form: 'ace-mkt-interest', source: 'ace-mkt', consent_required: true },
     ],
+    verification: {
+      static_contract_checks: 'UNVERIFIED LEGACY CLAIM: 21/21 PASS — not reproducible from this repository',
+      independent_verifier_result: '17/17 PASS (scripts/verify_launch_pages.mjs)',
+    },
   });
 
   return { marketing: marketingHtml, p12: p12Html, js, css, manifest };
@@ -162,6 +167,36 @@ if(!RELEASE_AUTHORIZED){return}
   const results = runAllChecks(loadRealSources());
   const failed = results.filter(r => !r.pass);
   assert.equal(failed.length, 0, `expected the real repo to pass, failed: ${JSON.stringify(failed)}`);
+}
+
+// 13. An unlabeled pass-count claim (e.g. a bare "21/21 PASS" with no
+//     UNVERIFIED/LEGACY qualifier) must fail closed — this is the exact
+//     shape of the defect being corrected.
+{
+  const sources = goodSources();
+  const manifest = JSON.parse(sources.manifest);
+  manifest.verification.static_contract_checks = '21/21 PASS';
+  sources.manifest = JSON.stringify(manifest);
+  const result = checkVerificationClaimsLabeled(sources);
+  assert.equal(result.pass, false, 'an unlabeled pass-count claim must be caught');
+}
+
+// 14. A missing independent_verifier_result must fail closed.
+{
+  const sources = goodSources();
+  const manifest = JSON.parse(sources.manifest);
+  delete manifest.verification.independent_verifier_result;
+  sources.manifest = JSON.stringify(manifest);
+  const result = checkVerificationClaimsLabeled(sources);
+  assert.equal(result.pass, false, 'a missing independent_verifier_result must be caught');
+}
+
+// 15. A properly labeled legacy claim alongside a real independent result
+//     must pass (proves the check isn't just failing everything).
+{
+  const sources = goodSources();
+  const result = checkVerificationClaimsLabeled(sources);
+  assert.equal(result.pass, true, 'a properly labeled legacy claim with an independent result must pass');
 }
 
 console.log('PASS: verify_launch_pages fail-closed contract');

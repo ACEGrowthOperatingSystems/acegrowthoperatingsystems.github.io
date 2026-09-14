@@ -215,6 +215,41 @@ export function checkManifestMatchesImplementation(sources) {
   return ok(name);
 }
 
+const PASS_COUNT_PATTERN = /\b\d+\s*\/\s*\d+\s*PASS\b/i;
+const UNVERIFIED_LABEL_PATTERN = /\b(UNVERIFIED|LEGACY)\b/i;
+
+export function checkVerificationClaimsLabeled(sources) {
+  const name = 'manifest verification claims are honestly labeled';
+  if (sources.manifest == null) return fail(name, 'manifest file missing');
+  let manifest;
+  try {
+    manifest = JSON.parse(sources.manifest);
+  } catch (e) {
+    return fail(name, `manifest is not valid JSON: ${e.message}`);
+  }
+  const verification = manifest.verification;
+  if (verification == null || typeof verification !== 'object') {
+    return fail(name, 'manifest has no verification object');
+  }
+  const staticClaim = verification.static_contract_checks;
+  if (typeof staticClaim !== 'string') {
+    return fail(name, 'verification.static_contract_checks is missing or not a string');
+  }
+  // Any pass/fail-count style claim (e.g. "21/21 PASS") must be explicitly
+  // labeled UNVERIFIED or LEGACY unless it is backed by a reproducible test
+  // in this repository — this repository has none for /marketing/ or /p12/,
+  // so any such claim here must carry the label. This is intentionally
+  // fail-closed: an unlabeled count claim is treated as a false claim.
+  if (PASS_COUNT_PATTERN.test(staticClaim) && !UNVERIFIED_LABEL_PATTERN.test(staticClaim)) {
+    return fail(name, `static_contract_checks makes an unlabeled pass-count claim: "${staticClaim}"`);
+  }
+  const independentResult = verification.independent_verifier_result;
+  if (typeof independentResult !== 'string' || !PASS_COUNT_PATTERN.test(independentResult)) {
+    return fail(name, 'verification.independent_verifier_result is missing or not a recognizable "N/N PASS" result');
+  }
+  return ok(name);
+}
+
 export function runAllChecks(sources) {
   return [
     checkRouteRenders(sources, 'marketing', 'marketing'),
@@ -233,6 +268,7 @@ export function runAllChecks(sources) {
     checkNoUnsupportedClaims(sources, 'p12', 'p12'),
     checkMobileKeyboardUsable(sources),
     checkManifestMatchesImplementation(sources),
+    checkVerificationClaimsLabeled(sources),
   ];
 }
 

@@ -17,7 +17,8 @@ manifest, and directly related tests.
 |---|---|
 | Expected starting HEAD | `80ab48d4fd4c09f9dd453d6da1f6befb5b144a1c` |
 | Actual starting HEAD (confirmed match) | `80ab48d4fd4c09f9dd453d6da1f6befb5b144a1c` |
-| Local evidence commit (this review) | see `LOCAL_COMMIT_HASH.txt` / final report |
+| Local evidence commit 1 (independent review + defect fix) | `fd67a2f17354e518531e58dad2f5de90be669fd0` |
+| Local evidence commit 2 (evidence-integrity correction) | see final chat report for this branch's `HEAD` after commit "Correct website release evidence claim" |
 
 Starting HEAD matched exactly — review proceeded.
 
@@ -43,9 +44,12 @@ Starting HEAD matched exactly — review proceeded.
 | `tests/verify_launch_pages.test.mjs` | new file | Tests proving the verifier actually fails closed, not just passes |
 | `evidence/claude-website-rc-review-20260914.md` | new file | This report |
 | `evidence/claude-website-rc-review-20260914.v1.json` | new file | Machine-readable version of this report |
+| `launch-readiness/product-pages-20260913.json` | follow-up correction (evidence-integrity) | Relabeled the unreproducible `21/21 PASS` claim and recorded the independent verifier's actual total — see "Evidence-integrity correction" below |
+| `scripts/verify_launch_pages.mjs` | follow-up addition (1 new check, 17th) | `checkVerificationClaimsLabeled` — fails closed if a pass-count claim isn't labeled `UNVERIFIED`/`LEGACY`, or if no independent result is recorded |
+| `tests/verify_launch_pages.test.mjs` | follow-up addition (3 new assertions) | Tests for the new labeling check, both positive and negative |
 
 No files outside `/marketing/`, `/p12/`, shared assets, the form controller,
-the release manifest, or the new evidence/test artifacts were modified.
+the release manifest, or the evidence/test/verifier artifacts were modified.
 `RELEASE_AUTHORIZED`, the release manifest's `release_state`, and
 `live_submission_enabled` were **not** changed — they remain `false` /
 `APPROVAL_HELD` exactly as found.
@@ -116,20 +120,47 @@ Full diff:
 | Manifest matches physical implementation | PASS | `launch-readiness/product-pages-20260913.json` route fields (`product_key`, `offer_code`, `form`, `source`, `release_state`, `consent_required`) all match the hidden form fields and `data-release-state` in both HTML files |
 | WithYou not represented as an ACE product | PASS | No "WithYou" string found in `marketing/index.html` or `p12/index.html` |
 
-### Note on the manifest's "21/21 PASS" verification claim
+### Evidence-integrity correction: the manifest's "21/21 PASS" claim
 
-`launch-readiness/product-pages-20260913.json` states
-`"static_contract_checks": "21/21 PASS"`. No test file in this repository (at
-the reviewed commit) executes any check against `/marketing/` or `/p12/` —
-`tests/stage9a_*.test.mjs` verify the unrelated top-level `index.html` splash
-page only. This reviewer cannot reproduce or falsify the "21/21" figure from
-the repository as checked out; it may reflect a manual/external review not
-captured in this snapshot. **This is reported as a remaining blocker, not
-corrected**, because correcting a manifest number that cannot be independently
-disproven (only shown to be non-reproducible locally) would risk overreach
-beyond "smallest necessary correction of a proven defect." The new
-`scripts/verify_launch_pages.mjs` (16 checks) is offered as an independent,
-reproducible, fail-closed alternative covering the same scope going forward.
+**Update (second pass, same review):** the original report below reported the
+"21/21 PASS" figure as a flagged-but-uncorrected blocker. On explicit
+instruction, this has since been corrected in the manifest itself, because an
+unreproducible pass-count claim left unlabeled in a release manifest is an
+evidence-integrity defect in its own right, not merely a note.
+
+`launch-readiness/product-pages-20260913.json` originally stated
+`"static_contract_checks": "21/21 PASS"` as an unqualified verified result. No
+test file in this repository (at the reviewed commit, or since) executes any
+check against `/marketing/` or `/p12/` — `tests/stage9a_*.test.mjs` verify the
+unrelated top-level `index.html` splash page only. This reviewer cannot
+reproduce or falsify the "21/21" figure from the repository as checked out;
+it may reflect a manual/external review not captured in this snapshot.
+
+**Correction applied**, using the manifest's existing `verification` object
+(no schema restructuring):
+
+```diff
+   "verification": {
+-    "static_contract_checks": "21/21 PASS",
++    "static_contract_checks": "UNVERIFIED LEGACY CLAIM: 21/21 PASS — not reproducible from any test file in this repository as of 2026-09-14; do not treat as a verified result",
++    "independent_verifier_result": "17/17 PASS (scripts/verify_launch_pages.mjs, run 2026-09-14, see evidence/claude-website-rc-review-20260914.md)",
+     "external_actions": 0,
+     "secrets_in_client": 0,
+```
+
+- The historical "21/21 PASS" statement is **preserved**, but now explicitly
+  labeled `UNVERIFIED LEGACY CLAIM` per instruction — it is no longer
+  presented as a verified result.
+- The new `scripts/verify_launch_pages.mjs` verifier's **actual, reproducible**
+  passing total is recorded separately as `independent_verifier_result`
+  (`17/17 PASS`, up from 16/16 in the first pass — a 17th check,
+  `checkVerificationClaimsLabeled`, was added specifically to keep this
+  labeling requirement enforced going forward, so an unlabeled pass-count
+  claim reappearing in this manifest will fail the verifier).
+- `release_state`, `live_submission_enabled`, `endpoint_contract`, `routes`,
+  and `approval_boundaries` were **not** touched. No completion score changed.
+  No launch gate was added or removed — `remaining_before_gate_pass` is
+  unchanged.
 
 ## Commands executed and exit codes
 
@@ -144,31 +175,56 @@ $ node tests/stage9a_n8n_mapper.test.mjs                                    exit
 $ git checkout -b claude/website-rc-independent-review-20260914             exit 0
 $ node scripts/verify_launch_pages.mjs                                      exit 0  (16/16 checks, after correction)
 $ node tests/verify_launch_pages.test.mjs                                   exit 0
+$ git commit ("Independently verify ACE website release candidate")        exit 0
+
+--- second pass: evidence-integrity correction ---
+$ node scripts/verify_launch_pages.mjs                                      exit 0  (17/17 checks, after adding checkVerificationClaimsLabeled)
+$ node tests/stage9a_lead_capture.test.mjs                                  exit 0
+$ node tests/stage9a_n8n_mapper.test.mjs                                    exit 0
+$ node tests/verify_launch_pages.test.mjs                                   exit 0
+$ git diff --check                                                          exit 0
+$ git diff --cached --check                                                 exit 0
+$ grep -RInE '<secret-pattern-set>' -- tracked text files                   exit 0  (matches were only the pattern definitions/synthetic fixtures)
+$ git commit ("Correct website release evidence claim")                     exit 0
 ```
 
 ## Test totals
 
-- Pre-existing repository tests: 2/2 PASS (`stage9a_lead_capture`, `stage9a_n8n_mapper`) — unaffected by this review's change (they do not exercise `/marketing/` or `/p12/`).
-- New verifier self-tests: 1/1 PASS (`tests/verify_launch_pages.test.mjs`, 12 internal assertions covering both the "good" path and fail-closed negative paths).
-- New fail-closed verifier run: 16/16 checks PASS (`scripts/verify_launch_pages.mjs`).
-- **Total: 4/4 test invocations exit 0.**
+**First pass (defect fix):**
+- Pre-existing repository tests: 2/2 PASS (`stage9a_lead_capture`, `stage9a_n8n_mapper`).
+- New verifier self-tests: 1/1 PASS (`tests/verify_launch_pages.test.mjs`, 12 internal assertions).
+- New fail-closed verifier run: 16/16 checks PASS.
+- Total: 4/4 test invocations exit 0.
 
-## Remaining blockers (per manifest, unchanged by this review)
+**Second pass (evidence-integrity correction), final state:**
+- Pre-existing repository tests: 2/2 PASS (`stage9a_lead_capture`, `stage9a_n8n_mapper`) — still unaffected; they do not exercise `/marketing/` or `/p12/`.
+- Verifier self-tests: 1/1 PASS (`tests/verify_launch_pages.test.mjs`, now 15 internal assertions — 3 added for the new labeling check).
+- Fail-closed verifier run: **17/17 checks PASS** (`scripts/verify_launch_pages.mjs`, up from 16/16 — 1 check added).
+- `git diff --check`: exit 0 (no whitespace/conflict-marker errors).
+- Secret scan across tracked text files: exit 0, no real secrets found.
+- **Total: 4/4 test invocations exit 0, plus 2 additional hygiene checks (`git diff --check`, secret scan), both exit 0.**
+
+## Remaining blockers (per manifest)
 
 - Authorized merge and deployment
 - Deployed route readback
 - Synthetic form submission
 - Backend receipt readback
-- The "21/21 PASS" static-contract-check figure in the manifest is not
-  reproducible from any test file present in this repository snapshot (see
-  note above) — flagged for the author to confirm or correct upstream.
+- The manifest's `static_contract_checks` field is now explicitly labeled
+  `UNVERIFIED LEGACY CLAIM` rather than presented as a verified result (see
+  "Evidence-integrity correction" above) — this is no longer an
+  evidence-integrity defect, but the underlying "21/21" figure itself remains
+  unconfirmed and is a matter for the author to verify or retire upstream.
 
-This review does not resolve, waive, or add to any of the above. No launch
-gates were added or removed.
+This review does not resolve, waive, or add to any of the above beyond the
+relabeling itself. No launch gates were added or removed.
 
 ## Working-tree state at end of review
 
 - Branch: `claude/website-rc-independent-review-20260914`
-- One local commit made: "Independently verify ACE website release candidate"
+- Two local commits made, in order:
+  1. `fd67a2f17354e518531e58dad2f5de90be669fd0` — "Independently verify ACE website release candidate"
+  2. "Correct website release evidence claim" — hash reported in the final chat summary for this branch
+- Working tree clean after each commit.
 - Nothing pushed to any remote.
 - No Supabase, Notion, n8n, DNS, or GitHub settings were touched.
