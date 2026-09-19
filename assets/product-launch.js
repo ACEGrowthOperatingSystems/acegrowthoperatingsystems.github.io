@@ -7,6 +7,17 @@ const PREVIEW_MESSAGE="Preview verified. Submission is held until launch authori
 const HELD_SUCCESS_MESSAGE="Thank you. Your request was received for internal review. It remains unqualified and untagged. No outreach or other external action has been authorized.";
 const FAILURE_MESSAGE="We could not safely confirm that your request was held for review. Please try again later.";
 
+const bytesToHex=bytes=>Array.from(bytes,b=>b.toString(16).padStart(2,"0")).join("");
+const sha256=async value=>bytesToHex(new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(value))));
+const solveProof=async payload=>{
+  const challenge=`${payload.idempotency_key}:${payload.submitted_at}:${payload.interaction_started_at}:`;
+  for(let nonce=0;nonce<=2000000;nonce++){
+    const digest=await sha256(challenge+nonce);
+    if(digest.startsWith("000"))return{pow_nonce:nonce,pow_digest:digest};
+  }
+  throw new Error("BOT_PROOF_UNAVAILABLE");
+};
+
 const isStrictHeldReceipt=(receipt,payload)=>Boolean(
   receipt&&
   receipt.ok===true&&
@@ -21,15 +32,20 @@ const isStrictHeldReceipt=(receipt,payload)=>Boolean(
   receipt.consent_recorded===true&&
   receipt.release_state==="APPROVAL_HELD"&&
   receipt.external_action_authorized===false&&
-  // The response contract does not expose notion_tags. UNRESOLVED is the
-  // returned proof field for the held product-interest tag state; the active
-  // backend graph separately maps this route to notion_tags:[] and blocks the
-  // tag/contact branch while external_action_authorized is false.
   receipt.tag_mapping_status==="UNRESOLVED"
 );
 
 document.querySelectorAll("[data-launch-form]").forEach(form=>{
   const status=form.querySelector("[role=status]");
+  const startedAt=new Date().toISOString();
+  const botField=document.createElement("input");
+  botField.type="text";
+  botField.name="bot_field";
+  botField.tabIndex=-1;
+  botField.autocomplete="off";
+  botField.setAttribute("aria-hidden","true");
+  botField.style.cssText="position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden";
+  form.appendChild(botField);
 
   form.addEventListener("submit",async event=>{
     event.preventDefault();
@@ -39,10 +55,13 @@ document.querySelectorAll("[data-launch-form]").forEach(form=>{
     const payload={
       ...fields,
       consent:fields.consent==="on",
+      bot_field:String(fields.bot_field||""),
+      interaction_started_at:startedAt,
       idempotency_key:crypto.randomUUID(),
       submitted_at:new Date().toISOString(),
       release_state:"APPROVAL_HELD"
     };
+    Object.assign(payload,await solveProof(payload));
 
     if(!SUBMISSION_AUTHORIZED){
       status.textContent=PREVIEW_MESSAGE;
