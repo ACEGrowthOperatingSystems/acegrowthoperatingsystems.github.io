@@ -86,12 +86,25 @@ export function checkConsentRequiredUnchecked(sources, routeKey, routeLabel) {
 }
 
 export function checkReleaseAuthorizedFalse(sources) {
+  const name = 'form controller: RELEASE_AUTHORIZED=false';
   const js = sources.js;
-  if (js == null) return fail('form controller: RELEASE_AUTHORIZED=false', 'file missing');
+  if (js == null) return fail(name, 'file missing');
   if (!/RELEASE_AUTHORIZED\s*=\s*false\s*;/.test(js)) {
-    return fail('form controller: RELEASE_AUTHORIZED=false', 'RELEASE_AUTHORIZED is not literally false');
+    return fail(name, 'RELEASE_AUTHORIZED is not literally false');
   }
-  return ok('form controller: RELEASE_AUTHORIZED=false');
+  // Regression guard for the fd14c07 defect: the release gate was renamed
+  // (RELEASE_AUTHORIZED -> SUBMISSION_AUTHORIZED) and flipped to true, which
+  // enabled live submission while the manifest still declared
+  // live_submission_enabled: false. Requiring the canonical constant to be
+  // false is not sufficient on its own — ANY *_AUTHORIZED constant set to
+  // true in the form controller re-enables submission and must fail closed,
+  // even if a literal RELEASE_AUTHORIZED=false line is still present.
+  const enabled = [...js.matchAll(/\b([A-Z][A-Z0-9_]*_AUTHORIZED)\s*=\s*true\b/g)].map(m => m[1]);
+  if (enabled.length > 0) {
+    const unique = [...new Set(enabled)].join(', ');
+    return fail(name, `authorization constant(s) set to true re-enable submission: ${unique}`);
+  }
+  return ok(name);
 }
 
 export function checkNoLiveSubmission(sources) {
@@ -250,6 +263,124 @@ export function checkVerificationClaimsLabeled(sources) {
   return ok(name);
 }
 
+// The n8n mapper keeps its own hardcoded copy of each route's
+// product_key/offer_code/source. That makes three copies of one contract
+// (manifest, page HTML, mapper) while only manifest<->HTML was enforced above.
+// This check binds the third copy by EXECUTING the mapper against a payload
+// derived from the manifest, so drift in either direction fails closed here
+// rather than at a live submission. No network or filesystem I/O occurs: the
+// mapper is repository source and is run purely in-memory.
+const MAPPER_CONTRACT_FIELDS = ['product_key', 'offer_code', 'source', 'form'];
+
+function buildMapperRunner(code) {
+  const fn = new Function('$', '$execution', code);
+  return (body) => fn(
+    () => ({ first: () => ({ json: { body } }) }),
+    { id: 'verify-launch-pages' }
+  );
+}
+
+export function checkMapperMatchesManifest(sources) {
+  const name = 'n8n mapper contract matches manifest routes';
+  if (sources.manifest == null) return fail(name, 'manifest file missing');
+  if (sources.mapper == null) return fail(name, 'mapper file missing');
+
+  let manifest;
+  try {
+    manifest = JSON.parse(sources.manifest);
+  } catch (e) {
+    return fail(name, `manifest is not valid JSON: ${e.message}`);
+  }
+
+  const routes = Array.isArray(manifest.routes) ? manifest.routes : [];
+  if (routes.length === 0) return fail(name, 'manifest declares no routes');
+
+  let run;
+  try {
+    run = buildMapperRunner(sources.mapper);
+  } catch (e) {
+    return fail(name, `mapper failed to compile: ${e.message}`);
+  }
+
+  // The mapper's contract table must cover exactly the manifest's forms —
+  // no extra form the manifest does not declare, none missing.
+  const block = sources.mapper.match(/CONTRACTS\s*=\s*\{([\s\S]*?)\}\s*;/);
+  if (!block) return fail(name, 'mapper has no recognizable CONTRACTS table');
+  const mapperForms = new Set([...block[1].matchAll(/'([^']+)'\s*:\s*\{/g)].map(m => m[1]));
+  const manifestForms = new Set(routes.map(r => r.form));
+  for (const form of mapperForms) {
+    if (!manifestForms.has(form)) return fail(name, `mapper declares form "${form}" that the manifest does not`);
+  }
+  for (const form of manifestForms) {
+    if (!mapperForms.has(form)) return fail(name, `manifest declares form "${form}" that the mapper does not`);
+  }
+
+  const payloadFor = (route, overrides = {}) => ({
+    email: 'synthetic@example.test',
+    name: 'Synthetic Person',
+    need: 'Synthetic need',
+    form: route.form,
+    product_key: route.product_key,
+    offer_code: route.offer_code,
+    source: route.source,
+    consent: true,
+    idempotency_key: 'verify-launch-pages-0001',
+    submitted_at: '2026-01-01T00:00:00.000Z',
+    release_state: manifest.release_state,
+    ...overrides,
+  });
+
+  for (const route of routes) {
+    let out;
+    try {
+      out = run(payloadFor(route))[0].json;
+    } catch (e) {
+      return fail(name, `${route.path}: mapper rejected a manifest-conformant payload (${e.message})`);
+    }
+
+    for (const field of MAPPER_CONTRACT_FIELDS) {
+      if (out[field] !== route[field]) {
+        return fail(name, `${route.path}: mapper returned ${field}="${out[field]}" but manifest declares "${route[field]}"`);
+      }
+    }
+    if (out.release_state !== 'APPROVAL_HELD') {
+      return fail(name, `${route.path}: mapper output release_state is "${out.release_state}", not APPROVAL_HELD`);
+    }
+    if (out.external_action_authorized !== false) {
+      return fail(name, `${route.path}: mapper output external_action_authorized is not false`);
+    }
+    if (out.qualified !== false) {
+      return fail(name, `${route.path}: mapper marks a form completion as qualified`);
+    }
+
+    // Binding one route's form to another route's product_key must be rejected.
+    const other = routes.find(r => r.product_key !== route.product_key);
+    if (other) {
+      let crossRejected = false;
+      try {
+        run(payloadFor(route, { product_key: other.product_key }));
+      } catch {
+        crossRejected = true;
+      }
+      if (!crossRejected) {
+        return fail(name, `${route.path}: mapper accepted cross-bound product_key "${other.product_key}"`);
+      }
+    }
+
+    // Consent must be mandatory at the mapper, not only in the browser.
+    let consentRejected = false;
+    try {
+      run(payloadFor(route, { consent: false }));
+    } catch {
+      consentRejected = true;
+    }
+    if (!consentRejected) {
+      return fail(name, `${route.path}: mapper accepted a payload without consent`);
+    }
+  }
+  return ok(name);
+}
+
 export function runAllChecks(sources) {
   return [
     checkRouteRenders(sources, 'marketing', 'marketing'),
@@ -269,6 +400,7 @@ export function runAllChecks(sources) {
     checkMobileKeyboardUsable(sources),
     checkManifestMatchesImplementation(sources),
     checkVerificationClaimsLabeled(sources),
+    checkMapperMatchesManifest(sources),
   ];
 }
 
@@ -279,6 +411,7 @@ export function loadRealSources() {
     js: readFileSafe('assets/product-launch.js'),
     css: readFileSafe('assets/product-launch.css'),
     manifest: readFileSafe('launch-readiness/product-pages-20260913.json'),
+    mapper: readFileSafe('n8n/validate_product_interest_map.js'),
   };
 }
 

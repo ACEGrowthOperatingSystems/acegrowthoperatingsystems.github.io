@@ -1,6 +1,6 @@
 (()=>{"use strict";
 
-const SUBMISSION_AUTHORIZED=true;
+const RELEASE_AUTHORIZED=false;
 const ENDPOINT="https://withyoudaily.app.n8n.cloud/webhook/ace-lead";
 
 const PREVIEW_MESSAGE="Preview verified. Submission is held until launch authorization; nothing was sent.";
@@ -63,7 +63,7 @@ document.querySelectorAll("[data-launch-form]").forEach(form=>{
     };
     Object.assign(payload,await solveProof(payload));
 
-    if(!SUBMISSION_AUTHORIZED){
+    if(!RELEASE_AUTHORIZED){
       status.textContent=PREVIEW_MESSAGE;
       form.dataset.lastPayload=JSON.stringify(payload);
       return;

@@ -10,6 +10,7 @@ import {
   checkNoUnsupportedClaims,
   checkManifestMatchesImplementation,
   checkVerificationClaimsLabeled,
+  checkMapperMatchesManifest,
 } from '../scripts/verify_launch_pages.mjs';
 
 // --- Fixtures: minimal but structurally valid stand-ins for the real routes. ---
@@ -58,7 +59,27 @@ input:focus,select:focus,textarea:focus{outline:3px solid blue}`;
     },
   });
 
-  return { marketing: marketingHtml, p12: p12Html, js, css, manifest };
+  // Minimal stand-in for n8n/validate_product_interest_map.js: same CONTRACTS
+  // shape and same hold/authorization outputs, without the full field set.
+  const mapper = `const src=$('Website Form').first().json;
+const body=src.body||src||{};
+const clean=(v,m)=>String(v||'').trim().slice(0,m);
+const CONTRACTS={
+  'ace-mkt-interest':{product_key:'ACE-MKT',offer_code:'SYS-MKT',source:'ace-mkt'},
+  'p12-interest':{product_key:'ACE-PRO',offer_code:'P12',source:'ace-p12'}
+};
+const form=clean(body.form,50);
+const contract=CONTRACTS[form];
+if(!contract) throw new Error('INVALID_FORM');
+if(clean(body.product_key,50)!==contract.product_key) throw new Error('INVALID_PRODUCT_KEY');
+if(clean(body.offer_code,50)!==contract.offer_code) throw new Error('INVALID_OFFER_CODE');
+if(clean(body.source,100)!==contract.source) throw new Error('INVALID_SOURCE');
+if(body.consent!==true) throw new Error('CONSENT_REQUIRED');
+return [{json:{form,product_key:contract.product_key,offer_code:contract.offer_code,
+source:contract.source,qualified:false,release_state:'APPROVAL_HELD',
+external_action_authorized:false}}];`;
+
+  return { marketing: marketingHtml, p12: p12Html, js, css, manifest, mapper };
 }
 
 // 1. The good fixture set must pass every check (proves the verifier isn't
@@ -197,6 +218,124 @@ if(!RELEASE_AUTHORIZED){return}
   const sources = goodSources();
   const result = checkVerificationClaimsLabeled(sources);
   assert.equal(result.pass, true, 'a properly labeled legacy claim with an independent result must pass');
+}
+
+// 16. A mapper that agrees with the manifest must pass (positive control —
+//     proves the new check can say PASS and isn't failing everything).
+{
+  const result = checkMapperMatchesManifest(goodSources());
+  assert.equal(result.pass, true, `agreeing mapper must pass, got: ${result.detail}`);
+}
+
+// 17. A missing mapper file must fail closed, not be silently skipped.
+{
+  const sources = { ...goodSources(), mapper: null };
+  const result = checkMapperMatchesManifest(sources);
+  assert.equal(result.pass, false, 'a missing mapper must be caught');
+}
+
+// 18. Mapper/manifest drift on offer_code must fail closed. This is the exact
+//     defect the check exists for: the manifest still says SYS-MKT, the mapper
+//     no longer does, and manifest<->HTML checks would not notice.
+{
+  const sources = goodSources();
+  sources.mapper = sources.mapper.replace("offer_code:'SYS-MKT'", "offer_code:'SYS-WRONG'");
+  const result = checkMapperMatchesManifest(sources);
+  assert.equal(result.pass, false, 'mapper/manifest offer_code drift must be caught');
+}
+
+// 19. A mapper that authorizes external action must fail closed — this is the
+//     single field every downstream external-action branch keys off.
+{
+  const sources = goodSources();
+  sources.mapper = sources.mapper.replace('external_action_authorized:false', 'external_action_authorized:true');
+  const result = checkMapperMatchesManifest(sources);
+  assert.equal(result.pass, false, 'a mapper authorizing external action must be caught');
+}
+
+// 20. A mapper that accepts a cross-bound product_key (p12 payload posted to
+//     the ACE-MKT form) must fail closed.
+{
+  const sources = goodSources();
+  sources.mapper = sources.mapper.replace(
+    "if(clean(body.product_key,50)!==contract.product_key) throw new Error('INVALID_PRODUCT_KEY');",
+    ''
+  );
+  const result = checkMapperMatchesManifest(sources);
+  assert.equal(result.pass, false, 'a mapper accepting cross-bound product_key must be caught');
+}
+
+// 21. A mapper declaring a route the manifest does not must fail closed —
+//     an undeclared form is an ungoverned intake path.
+{
+  const sources = goodSources();
+  sources.mapper = sources.mapper.replace(
+    "'p12-interest':{product_key:'ACE-PRO',offer_code:'P12',source:'ace-p12'}",
+    "'p12-interest':{product_key:'ACE-PRO',offer_code:'P12',source:'ace-p12'},\n  'ghost-interest':{product_key:'ACE-GHOST',offer_code:'GHOST',source:'ace-ghost'}"
+  );
+  const result = checkMapperMatchesManifest(sources);
+  assert.equal(result.pass, false, 'a mapper form absent from the manifest must be caught');
+}
+
+// 22. A mapper that drops the consent requirement must fail closed.
+{
+  const sources = goodSources();
+  sources.mapper = sources.mapper.replace(
+    "if(body.consent!==true) throw new Error('CONSENT_REQUIRED');",
+    ''
+  );
+  const result = checkMapperMatchesManifest(sources);
+  assert.equal(result.pass, false, 'a mapper without a consent gate must be caught');
+}
+
+// 23. REGRESSION (upstream fd14c07): renaming the release gate and flipping it
+//     to true must fail closed even when a literal RELEASE_AUTHORIZED=false
+//     line is still present elsewhere in the file. This is the exact shape of
+//     the defect that enabled live submission while the manifest still
+//     declared live_submission_enabled: false.
+{
+  const sources = goodSources();
+  sources.js = `(()=>{"use strict";const RELEASE_AUTHORIZED=false;
+const SUBMISSION_AUTHORIZED=true;
+if(!SUBMISSION_AUTHORIZED){return}
+fetch("https://example.test");
+const payload={idempotency_key:crypto.randomUUID()};
+})();`;
+  const result = checkReleaseAuthorizedFalse(sources);
+  assert.equal(result.pass, false, 'a renamed gate set to true must be caught');
+  assert.match(result.detail, /SUBMISSION_AUTHORIZED/, 'the failure must name the offending constant');
+}
+
+// 24. Any other *_AUTHORIZED constant set to true must also fail closed —
+//     the guard is not hardcoded to the one name that happened to regress.
+{
+  const sources = goodSources();
+  sources.js = sources.js.replace(
+    'const RELEASE_AUTHORIZED=false;',
+    'const RELEASE_AUTHORIZED=false;const LIVE_SEND_AUTHORIZED=true;'
+  );
+  const result = checkReleaseAuthorizedFalse(sources);
+  assert.equal(result.pass, false, 'any *_AUTHORIZED=true constant must be caught');
+  assert.match(result.detail, /LIVE_SEND_AUTHORIZED/, 'the failure must name the offending constant');
+}
+
+// 25. The guard must not false-positive on the strict held-receipt validator,
+//     which legitimately compares lowercase external_action_authorized===false.
+{
+  const sources = goodSources();
+  sources.js = sources.js.replace(
+    'const RELEASE_AUTHORIZED=false;',
+    'const RELEASE_AUTHORIZED=false;const held=r=>r.external_action_authorized===false;'
+  );
+  const result = checkReleaseAuthorizedFalse(sources);
+  assert.equal(result.pass, true, 'lowercase receipt fields must not false-positive as a release gate');
+}
+
+// 26. The real, current form controller must satisfy the strengthened guard —
+//     proves the remediation actually landed in the shipped file.
+{
+  const result = checkReleaseAuthorizedFalse(loadRealSources());
+  assert.equal(result.pass, true, `real form controller must hold submission, got: ${result.detail}`);
 }
 
 console.log('PASS: verify_launch_pages fail-closed contract');
