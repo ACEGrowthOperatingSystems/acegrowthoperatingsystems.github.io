@@ -86,12 +86,25 @@ export function checkConsentRequiredUnchecked(sources, routeKey, routeLabel) {
 }
 
 export function checkReleaseAuthorizedFalse(sources) {
+  const name = 'form controller: RELEASE_AUTHORIZED=false';
   const js = sources.js;
-  if (js == null) return fail('form controller: RELEASE_AUTHORIZED=false', 'file missing');
+  if (js == null) return fail(name, 'file missing');
   if (!/RELEASE_AUTHORIZED\s*=\s*false\s*;/.test(js)) {
-    return fail('form controller: RELEASE_AUTHORIZED=false', 'RELEASE_AUTHORIZED is not literally false');
+    return fail(name, 'RELEASE_AUTHORIZED is not literally false');
   }
-  return ok('form controller: RELEASE_AUTHORIZED=false');
+  // Regression guard for the fd14c07 defect: the release gate was renamed
+  // (RELEASE_AUTHORIZED -> SUBMISSION_AUTHORIZED) and flipped to true, which
+  // enabled live submission while the manifest still declared
+  // live_submission_enabled: false. Requiring the canonical constant to be
+  // false is not sufficient on its own — ANY *_AUTHORIZED constant set to
+  // true in the form controller re-enables submission and must fail closed,
+  // even if a literal RELEASE_AUTHORIZED=false line is still present.
+  const enabled = [...js.matchAll(/\b([A-Z][A-Z0-9_]*_AUTHORIZED)\s*=\s*true\b/g)].map(m => m[1]);
+  if (enabled.length > 0) {
+    const unique = [...new Set(enabled)].join(', ');
+    return fail(name, `authorization constant(s) set to true re-enable submission: ${unique}`);
+  }
+  return ok(name);
 }
 
 export function checkNoLiveSubmission(sources) {

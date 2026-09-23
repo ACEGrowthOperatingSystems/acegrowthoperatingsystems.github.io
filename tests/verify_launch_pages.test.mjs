@@ -288,4 +288,54 @@ if(!RELEASE_AUTHORIZED){return}
   assert.equal(result.pass, false, 'a mapper without a consent gate must be caught');
 }
 
+// 23. REGRESSION (upstream fd14c07): renaming the release gate and flipping it
+//     to true must fail closed even when a literal RELEASE_AUTHORIZED=false
+//     line is still present elsewhere in the file. This is the exact shape of
+//     the defect that enabled live submission while the manifest still
+//     declared live_submission_enabled: false.
+{
+  const sources = goodSources();
+  sources.js = `(()=>{"use strict";const RELEASE_AUTHORIZED=false;
+const SUBMISSION_AUTHORIZED=true;
+if(!SUBMISSION_AUTHORIZED){return}
+fetch("https://example.test");
+const payload={idempotency_key:crypto.randomUUID()};
+})();`;
+  const result = checkReleaseAuthorizedFalse(sources);
+  assert.equal(result.pass, false, 'a renamed gate set to true must be caught');
+  assert.match(result.detail, /SUBMISSION_AUTHORIZED/, 'the failure must name the offending constant');
+}
+
+// 24. Any other *_AUTHORIZED constant set to true must also fail closed —
+//     the guard is not hardcoded to the one name that happened to regress.
+{
+  const sources = goodSources();
+  sources.js = sources.js.replace(
+    'const RELEASE_AUTHORIZED=false;',
+    'const RELEASE_AUTHORIZED=false;const LIVE_SEND_AUTHORIZED=true;'
+  );
+  const result = checkReleaseAuthorizedFalse(sources);
+  assert.equal(result.pass, false, 'any *_AUTHORIZED=true constant must be caught');
+  assert.match(result.detail, /LIVE_SEND_AUTHORIZED/, 'the failure must name the offending constant');
+}
+
+// 25. The guard must not false-positive on the strict held-receipt validator,
+//     which legitimately compares lowercase external_action_authorized===false.
+{
+  const sources = goodSources();
+  sources.js = sources.js.replace(
+    'const RELEASE_AUTHORIZED=false;',
+    'const RELEASE_AUTHORIZED=false;const held=r=>r.external_action_authorized===false;'
+  );
+  const result = checkReleaseAuthorizedFalse(sources);
+  assert.equal(result.pass, true, 'lowercase receipt fields must not false-positive as a release gate');
+}
+
+// 26. The real, current form controller must satisfy the strengthened guard —
+//     proves the remediation actually landed in the shipped file.
+{
+  const result = checkReleaseAuthorizedFalse(loadRealSources());
+  assert.equal(result.pass, true, `real form controller must hold submission, got: ${result.detail}`);
+}
+
 console.log('PASS: verify_launch_pages fail-closed contract');
