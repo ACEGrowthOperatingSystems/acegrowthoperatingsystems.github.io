@@ -1,6 +1,6 @@
 (()=>{"use strict";
 
-const RELEASE_AUTHORIZED=false;
+const RELEASE_AUTHORIZED=document.body.dataset.releaseState==="RELEASED";
 const ENDPOINT="https://withyoudaily.app.n8n.cloud/webhook/ace-lead";
 
 const PREVIEW_MESSAGE="Preview verified. Submission is held until launch authorization; nothing was sent.";

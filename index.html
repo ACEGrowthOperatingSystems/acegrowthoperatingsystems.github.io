@@ -631,6 +631,9 @@
     .heromark{width:min(72%,17rem);order:-1}
     .fields{grid-template-columns:1fr}
     .ghost{display:none}
+    /* The header .ghost stays hidden on small screens, but an in-page product
+       link must remain reachable on mobile. Scoped to .mkt-cta only. */
+    .ghost.mkt-cta{display:inline-block}
   }
 </style>
 </head>
@@ -793,6 +796,7 @@
       <h2 class="rise" style="max-width:20ch">Start where you are.</h2>
       <p class="lede rise" style="margin-top:1rem">You should not need to understand AI before you understand ACE. Pick the sentence that sounds like you.</p>
       <div class="picks"><a class="pick rise" href="#commanders"><h3>I own a business</h3><p>Help me grow, automate, market, prospect, sell and operate with more leverage.</p><span>Explore business growth &rarr;</span></a><a class="pick rise" href="#commanders"><h3>I am building something new</h3><p>Help me move from idea to validated offer, launch and revenue faster.</p><span>Explore build &amp; launch &rarr;</span></a><a class="pick rise" href="#commanders"><h3>I want a new income opportunity</h3><p>Show me where a licensed or ACE-powered opportunity could fit.</p><span>Explore opportunities &rarr;</span></a><a class="pick rise" href="#commanders"><h3>I want to understand ACE</h3><p>Show me what a coordinated system does that disconnected AI tools cannot.</p><span>See how ACE works &rarr;</span></a></div>
+      <p class="rise" style="margin:1.6rem 0 0"><a class="ghost mkt-cta" href="/marketing/">See ACE Marketing</a></p>
     </div>
   </section>
 
@@ -1023,7 +1027,7 @@
 
 <footer>
   <div class="wrap foot">
-    <div><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="mailto:AceGrowth.os@gmail.com">Contact</a></div>
+    <div><a href="privacy.html">Privacy</a><a href="terms.html">Terms of Use</a><a href="terms/">Terms of Service</a><a href="refund/">Refund</a><a href="mailto:AceGrowth.os@gmail.com">Contact</a></div>
     <div>&copy; 2026 LifeGuide LLC &middot; ACE Growth Operating Systems</div>
   </div>
 </footer>

@@ -53,6 +53,25 @@
 </form>
 </div></section>
 </main>
-<footer><div class="wrap">ACE Growth Operating Systems · ACE-MKT controlled preview · No pricing or customer promise is represented.</div></footer>
+<!-- 10-second value offer. The form is STATIC so assets/product-launch.js binds it
+     exactly like the main form: same payload build, same proof-of-work, same
+     honeypot, same RELEASE_AUTHORIZED gate. marketing-offer.js only shows/hides
+     this panel; it never submits and never bypasses the release gate. -->
+<aside class="offer" id="offerPanel" hidden role="dialog" aria-modal="false" aria-labelledby="offerTitle">
+<div class="offer-head">
+<h2 id="offerTitle">Get the free ACE Marketing growth checklist</h2>
+<button class="offer-close" type="button" id="offerClose" aria-label="Close this offer">&times;</button>
+</div>
+<p class="small">The same operating checks ACE-MKT applies, as a short list you can run against your own marketing this week.</p>
+<form data-launch-form novalidate>
+<input type="hidden" name="source" value="ace-mkt"><input type="hidden" name="product_key" value="ACE-MKT"><input type="hidden" name="offer_code" value="SYS-MKT"><input type="hidden" name="form" value="ace-mkt-lead-magnet">
+<label>Work email<input type="email" name="email" autocomplete="email" required></label>
+<label class="consent"><input type="checkbox" name="consent" required><span>I agree that ACE may contact me about this request. I can withdraw consent at any time.</span></label>
+<button class="button" type="submit">Send me the checklist</button><p class="status" role="status" aria-live="polite"></p>
+</form>
+</aside>
+<footer><div class="wrap">ACE Growth Operating Systems · ACE-MKT controlled preview · No pricing or customer promise is represented.
+<nav class="legal" aria-label="Legal"><a href="../privacy.html">Privacy</a><a href="../terms.html">Terms of Use</a><a href="../terms/">Terms of Service</a><a href="../refund/">Refund</a></nav></div></footer>
 <script src="../assets/product-launch.js" defer></script>
+<script src="../assets/marketing-offer.js" defer></script>
 </body></html>
