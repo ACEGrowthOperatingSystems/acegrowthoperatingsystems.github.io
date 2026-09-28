@@ -1,6 +1,8 @@
 (()=>{"use strict";
 
-const RELEASE_AUTHORIZED=false;
+// Per-page flag from assets/release-flag.js, which must be loaded first.
+// If that script is missing the expression is false, so the page stays HELD.
+const RELEASE_AUTHORIZED=Boolean(window.ACE_RELEASE&&window.ACE_RELEASE.isReleased());
 const ENDPOINT="https://withyoudaily.app.n8n.cloud/webhook/ace-lead";
 
 const PREVIEW_MESSAGE="Preview verified. Submission is held until launch authorization; nothing was sent.";
