@@ -57,7 +57,9 @@
 <!-- 10-second value offer. The form is STATIC so assets/product-launch.js binds it
      exactly like the main form: same payload build, same proof-of-work, same
      honeypot, same RELEASE_AUTHORIZED gate. marketing-offer.js only shows/hides
-     this panel; it never submits and never bypasses the release gate. -->
+     this panel; it never submits and never bypasses the release gate.
+     It posts as form=ace-mkt-interest (the only ACE-MKT route production intake
+     accepts) and is identified in intake by need="Growth checklist (10-second offer)". -->
 <aside class="offer" id="offerPanel" hidden role="dialog" aria-modal="false" aria-labelledby="offerTitle">
 <div class="offer-head">
 <h2 id="offerTitle">Get the free ACE Marketing growth checklist</h2>
@@ -65,8 +67,9 @@
 </div>
 <p class="small">The same operating checks ACE-MKT applies, as a short list you can run against your own marketing this week.</p>
 <form data-launch-form novalidate>
-<input type="hidden" name="source" value="ace-mkt"><input type="hidden" name="product_key" value="ACE-MKT"><input type="hidden" name="offer_code" value="SYS-MKT"><input type="hidden" name="form" value="ace-mkt-lead-magnet">
+<input type="hidden" name="source" value="ace-mkt"><input type="hidden" name="product_key" value="ACE-MKT"><input type="hidden" name="offer_code" value="SYS-MKT"><input type="hidden" name="form" value="ace-mkt-interest"><input type="hidden" name="need" value="Growth checklist (10-second offer)">
 <label>Work email<input type="email" name="email" autocomplete="email" required></label>
+<label>Name<input type="text" name="name" autocomplete="name" required></label>
 <label class="consent"><input type="checkbox" name="consent" required><span>I agree that ACE may contact me about this request. I can withdraw consent at any time.</span></label>
 <button class="button" type="submit">Send me the checklist</button><p class="status" role="status" aria-live="polite"></p>
 </form>
