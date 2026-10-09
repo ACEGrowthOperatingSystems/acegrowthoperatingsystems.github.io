@@ -41,6 +41,14 @@ document.querySelectorAll("[data-price-for]").forEach(node=>{
   node.textContent=price||"[PRICE]";
 });
 
+[["data-standard-for","standard"],["data-credit-for","credit"]].forEach(pair=>{
+  document.querySelectorAll("["+pair[0]+"]").forEach(node=>{
+    const map=config&&config[pair[1]];
+    const v=map?map[node.getAttribute(pair[0])]:null;
+    if(v)node.textContent=v;
+  });
+});
+
 if(status&&!released)status.textContent=HELD_NOTICE;
 
 })();

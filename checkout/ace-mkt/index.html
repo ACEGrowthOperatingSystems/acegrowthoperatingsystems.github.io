@@ -6,6 +6,7 @@
 <title>ACE Marketing Operating System &mdash; Checkout</title>
 <meta name="description" content="Checkout path for the ACE-MKT offer. Held pending release authorization.">
 <link rel="stylesheet" href="../../assets/product-launch.css">
+<style>.offers{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,20rem),1fr));gap:1rem;margin:1.2rem 0}.offers .checkout{max-width:none}.offers h2{margin:.1rem 0 .3rem;font-size:1.25rem}</style>
 </head>
 <!-- This page's release flag. It governs THIS page only, independently of
      /marketing/ and /p12/. Default is held. -->
@@ -14,27 +15,81 @@
 <header><div class="wrap nav"><a class="brand" href="../../">ACE GROWTH OS</a><span class="tag">ACE-MKT &middot; APPROVAL-HELD PREVIEW</span></div></header>
 <main id="main">
 <section><div class="wrap">
-<div class="section-head"><p class="eyebrow">Checkout path</p><h1>ACE Marketing Operating System</h1></div>
+<div class="section-head"><p class="eyebrow">Checkout</p><h1>ACE Marketing Operating System</h1></div>
 
-<div class="checkout">
-  <p class="eyebrow">ACE-MKT</p>
-  <p class="price"><span data-price-for="ACE-MKT">[PRICE]</span></p>
-  <p class="small">[COPY PENDING: ChatGPT drafts, Jim approves]</p>
-
-  <p class="release-note">This checkout path is held. No payment is taken, no
-  payment link is configured, and the button below does not lead anywhere while
-  this page's release flag is held.</p>
-
-  <div class="buy-row">
-    <button class="button" type="button" data-buy="ACE-MKT">Buy ACE-MKT</button>
-    <span class="buy-legal"><a href="../../terms/">Terms</a><a href="../../refund/">Refund Policy</a></span>
+<p class="release-note">This checkout path is held. No payment is taken and
+  no buy button leads anywhere while this page's release flag is held or an
+  offer has no live payment link.</p>
+<div class="offers">
+  <div class="checkout" data-offer="ENTRY-CONTENT-STARTER">
+    <h2>Content Starter</h2>
+    <p class="price"><span data-price-for="ENTRY-CONTENT-STARTER">[PRICE]</span></p>
+    <p class="small">Launch price. Standard price <s data-standard-for="ENTRY-CONTENT-STARTER"></s>. Includes a <span data-credit-for="ENTRY-CONTENT-STARTER"></span> monthly usage credit; usage pauses at 100% of the credit.</p>
+    <div class="buy-row">
+      <button class="button" type="button" data-buy="ENTRY-CONTENT-STARTER">Buy Content Starter</button>
+    </div>
   </div>
-  <p class="status" id="checkoutStatus" role="status" aria-live="polite"></p>
+  <div class="checkout" data-offer="SA-CONTENT-DISTRIBUTION">
+    <h2>Content Distribution Machine</h2>
+    <p class="price"><span data-price-for="SA-CONTENT-DISTRIBUTION">[PRICE]</span></p>
+    <p class="small">Launch price. Standard price <s data-standard-for="SA-CONTENT-DISTRIBUTION"></s>. Includes a <span data-credit-for="SA-CONTENT-DISTRIBUTION"></span> monthly usage credit; usage pauses at 100% of the credit.</p>
+    <div class="buy-row">
+      <button class="button" type="button" data-buy="SA-CONTENT-DISTRIBUTION">Buy Content Distribution Machine</button>
+    </div>
+  </div>
+  <div class="checkout" data-offer="SA-CONTENT-CREATION">
+    <h2>Content Creation Machine</h2>
+    <p class="price"><span data-price-for="SA-CONTENT-CREATION">[PRICE]</span></p>
+    <p class="small">Launch price. Standard price <s data-standard-for="SA-CONTENT-CREATION"></s>. Includes a <span data-credit-for="SA-CONTENT-CREATION"></span> monthly usage credit; usage pauses at 100% of the credit.</p>
+    <div class="buy-row">
+      <button class="button" type="button" data-buy="SA-CONTENT-CREATION">Buy Content Creation Machine</button>
+    </div>
+  </div>
+  <div class="checkout" data-offer="SA-CREATION-DISTRIBUTION">
+    <h2>Creation + Distribution</h2>
+    <p class="price"><span data-price-for="SA-CREATION-DISTRIBUTION">[PRICE]</span></p>
+    <p class="small">Launch price. Standard price <s data-standard-for="SA-CREATION-DISTRIBUTION"></s>. Includes a <span data-credit-for="SA-CREATION-DISTRIBUTION"></span> monthly usage credit; usage pauses at 100% of the credit.</p>
+    <div class="buy-row">
+      <button class="button" type="button" data-buy="SA-CREATION-DISTRIBUTION">Buy Creation + Distribution</button>
+    </div>
+  </div>
+  <div class="checkout" data-offer="TIER-ESSENTIAL">
+    <h2>Essential</h2>
+    <p class="price"><span data-price-for="TIER-ESSENTIAL">[PRICE]</span></p>
+    <p class="small">Launch price. Standard price <s data-standard-for="TIER-ESSENTIAL"></s>. Includes a <span data-credit-for="TIER-ESSENTIAL"></span> monthly usage credit; usage pauses at 100% of the credit.</p>
+    <div class="buy-row">
+      <button class="button" type="button" data-buy="TIER-ESSENTIAL">Buy Essential</button>
+    </div>
+  </div>
+  <div class="checkout" data-offer="TIER-PROFESSIONAL">
+    <h2>Professional</h2>
+    <p class="price"><span data-price-for="TIER-PROFESSIONAL">[PRICE]</span></p>
+    <p class="small">Launch price. Standard price <s data-standard-for="TIER-PROFESSIONAL"></s>. Includes a <span data-credit-for="TIER-PROFESSIONAL"></span> monthly usage credit; usage pauses at 100% of the credit.</p>
+    <div class="buy-row">
+      <button class="button" type="button" data-buy="TIER-PROFESSIONAL">Buy Professional</button>
+    </div>
+  </div>
+  <div class="checkout" data-offer="TIER-GROWTH">
+    <h2>Growth</h2>
+    <p class="price"><span data-price-for="TIER-GROWTH">[PRICE]</span></p>
+    <p class="small">Launch price. Standard price <s data-standard-for="TIER-GROWTH"></s>. Includes a <span data-credit-for="TIER-GROWTH"></span> monthly usage credit; usage pauses at 100% of the credit.</p>
+    <div class="buy-row">
+      <button class="button" type="button" data-buy="TIER-GROWTH">Buy Growth</button>
+    </div>
+  </div>
+  <div class="checkout" data-offer="TIER-ENTERPRISE">
+    <h2>Enterprise</h2>
+    <p class="price">From $15,000 onboarding + $7,650/month</p>
+    <p class="small">Scoped to your organization. Contact AceGrowth.os@gmail.com.</p>
+  </div>
 </div>
+<p class="buy-legal"><a href="../../terms/">Terms</a><a href="../../refund/">Refund Policy</a><a href="../../privacy/">Privacy</a></p>
+<p class="small">No refunds after onboarding starts; full refund before. Your monthly price is locked while you stay subscribed.</p>
+<p class="status" id="checkoutStatus" role="status" aria-live="polite"></p>
 
 </div></section>
 </main>
-<footer><div class="wrap">ACE Growth Operating Systems &middot; ACE-MKT controlled preview &middot; No pricing or customer promise is represented.
+<footer><div class="wrap">ACE Growth Operating Systems &middot; ACE-MKT checkout &middot; Approved launch prices
 <nav class="legal" aria-label="Legal"><a href="../../terms/">Terms</a><a href="../../refund/">Refund</a><a href="../../privacy/">Privacy</a></nav></div></footer>
 <script src="../../assets/release-flag.js" defer></script>
 <script src="../../assets/checkout-config.js" defer></script>
