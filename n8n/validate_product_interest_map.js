@@ -48,7 +48,8 @@ if(!need) throw new Error('INVALID_NEED');
 
 const CONTRACTS={
   'ace-mkt-interest':{product_key:'ACE-MKT',offer_code:'SYS-MKT',source:'ace-mkt',notion_source:'Website - ACE-MKT product interest'},
-  'p12-interest':{product_key:'ACE-PRO',offer_code:'P12',source:'ace-p12',notion_source:'Website - P12 product interest'}
+  'p12-interest':{product_key:'ACE-PRO',offer_code:'P12',source:'ace-p12',notion_source:'Website - P12 product interest'},
+  'grow-interest':{product_key:'ACE-GROW',offer_code:'SYS-GROW',source:'ace-grow',notion_source:'Website - ACE-GROW product interest'}
 };
 const form=clean(body.form,50);
 const contract=CONTRACTS[form];
