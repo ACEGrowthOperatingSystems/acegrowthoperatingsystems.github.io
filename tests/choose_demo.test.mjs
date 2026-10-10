@@ -42,7 +42,7 @@ const DEMOS = [
 ];
 
 // ---------------- config ----------------
-test('demo-config: held, five demos with placeholders, Founding Member deadline', () => {
+test('demo-config: held, five real demo videos, Founding Member deadline', () => {
   const c = loadConfig();
   assert.equal(c.SECTION_RELEASE_STATE, 'APPROVAL_HELD');
   assert.equal(c.sectionReleased, false);
@@ -60,11 +60,22 @@ test('demo-config: held, five demos with placeholders, Founding Member deadline'
   const nul = loadConfig(configSrc.replace(DEADLINE_LINE, 'const LAUNCH_PRICING_ENDS=null;'));
   assert.equal(nul.daysLeft(), null); assert.equal(nul.deadlineLabel(), ''); assert.equal(nul.foundingOfferOpen(), true);
   deq(c.DEMOS.map(d => [d.key, d.title, d.outcome]), DEMOS);
+  // Every demo points at a real 9:16 MP4 + poster committed under assets/demos/.
+  const DURATIONS = { followup: '0:35', pipeline: '0:34', content: '0:32', proposal: '0:31', growth: '0:35' };
   for (const d of c.DEMOS) {
-    assert.equal(d.file, 'REPLACE_WITH_VIDEO_URL', d.key);
-    assert.equal(c.isVideoConfigured(d.file), false, d.key);
-    assert.ok('poster' in d && 'duration' in d, d.key);
+    assert.equal(d.file, `assets/demos/${d.key}.mp4`, d.key);
+    assert.equal(d.poster, `assets/demos/${d.key}-poster.jpg`, d.key);
+    assert.equal(d.duration, DURATIONS[d.key], d.key);
+    assert.equal(c.isVideoConfigured(d.file), true, d.key);
+    const mp4 = fs.readFileSync(new URL(`../${d.file}`, import.meta.url));
+    assert.ok(mp4.length > 100000, `${d.file} is a real video`);
+    assert.equal(mp4.subarray(4, 8).toString('latin1'), 'ftyp', `${d.file} is an MP4`);
+    const jpg = fs.readFileSync(new URL(`../${d.poster}`, import.meta.url));
+    assert.ok(jpg[0] === 0xff && jpg[1] === 0xd8, `${d.poster} is a JPEG`);
   }
+  // Placeholder gating still holds if a file is ever reset.
+  assert.equal(c.isVideoConfigured('REPLACE_WITH_VIDEO_URL'), false);
+  assert.equal(c.isVideoConfigured(c.VIDEO_PLACEHOLDER), false);
   assert.equal(c.isVideoConfigured('https://cdn.example.test/a.mp4'), true);
   assert.equal(c.isVideoConfigured('/assets/demos/followup.mp4'), true);
   assert.equal(c.isVideoConfigured('http://insecure.example/a.mp4'), false);

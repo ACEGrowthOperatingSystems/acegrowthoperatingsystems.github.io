@@ -15,8 +15,10 @@
 //    Releasing also makes the question form post live to the ACE intake, so
 //    the n8n "demo-question" route must be accepting first.
 //
-// 2. DEMOS[].file: replace each "REPLACE_WITH_VIDEO_URL" with that demo's
-//    vertical 9:16 MP4 (an https:// URL, or a site path ending in .mp4).
+// 2. DEMOS[].file: each demo's vertical 9:16 MP4 (an https:// URL, or a site
+//    path ending in .mp4). Files live in assets/demos/ (H.264, no audio,
+//    faststart, 10 Oct 2026); paths are relative to the homepage root.
+//    Setting a file back to "REPLACE_WITH_VIDEO_URL" restores the card below.
 //    While a file is still the placeholder, the player shows a
 //    "Demo video coming soon" card instead of a broken player.
 //    poster (optional) and duration (optional, e.g. "1:30") follow the same
@@ -43,11 +45,11 @@ const QUESTION_FORM_KEY="demo-question";
 // Playlist order is this array's order. growth is last on purpose: it is the
 // "whole system" demo, so it closes a playlist unless it is the only pick.
 const DEMOS=[
-  {key:"followup",title:"The Follow-Up Machine",outcome:"Answer every lead fast and book more calls",file:VIDEO_PLACEHOLDER,poster:"",duration:""},
-  {key:"pipeline",title:"Pipeline Builder",outcome:"Find new clients every week",file:VIDEO_PLACEHOLDER,poster:"",duration:""},
-  {key:"content",title:"Content Autopilot",outcome:"Post every day without the work",file:VIDEO_PLACEHOLDER,poster:"",duration:""},
-  {key:"proposal",title:"Proposal Engine",outcome:"Send proposals the same day and close more",file:VIDEO_PLACEHOLDER,poster:"",duration:""},
-  {key:"growth",title:"The Growth Engine",outcome:"See the whole ACE system working together",file:VIDEO_PLACEHOLDER,poster:"",duration:""}
+  {key:"followup",title:"The Follow-Up Machine",outcome:"Answer every lead fast and book more calls",file:"assets/demos/followup.mp4",poster:"assets/demos/followup-poster.jpg",duration:"0:35"},
+  {key:"pipeline",title:"Pipeline Builder",outcome:"Find new clients every week",file:"assets/demos/pipeline.mp4",poster:"assets/demos/pipeline-poster.jpg",duration:"0:34"},
+  {key:"content",title:"Content Autopilot",outcome:"Post every day without the work",file:"assets/demos/content.mp4",poster:"assets/demos/content-poster.jpg",duration:"0:32"},
+  {key:"proposal",title:"Proposal Engine",outcome:"Send proposals the same day and close more",file:"assets/demos/proposal.mp4",poster:"assets/demos/proposal-poster.jpg",duration:"0:31"},
+  {key:"growth",title:"The Growth Engine",outcome:"See the whole ACE system working together",file:"assets/demos/growth.mp4",poster:"assets/demos/growth-poster.jpg",duration:"0:35"}
 ];
 
 // /start/ questionnaire interest (exact option text) -> demo keys.

@@ -109,6 +109,8 @@ const play=i=>{
   next.textContent=index===playlist.length-1?"Finish":"Next demo";
   if(CONFIG.isVideoConfigured(demo.file)){
     soon.hidden=true;video.hidden=false;
+    // Demos have no audio track; muted also lets iOS auto-advance to the next demo.
+    video.muted=true;video.setAttribute("muted","");
     if(demo.poster)video.poster=demo.poster;else video.removeAttribute("poster");
     video.src=demo.file;
     video.setAttribute("aria-label",`${demo.title} demo video`);
