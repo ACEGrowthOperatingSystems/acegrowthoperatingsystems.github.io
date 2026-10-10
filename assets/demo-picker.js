@@ -130,11 +130,15 @@ const showEnd=(openForm=false)=>{
   $("cydAgain").hidden=playlist.length===0;
   $("cydPricing").href=linkWithInterests(playlist);
   const deadline=$("cydDeadline");
-  const ends=CONFIG.launchPricingEnds();
-  if(ends){
-    deadline.textContent="Launch pricing ends "+ends.toLocaleDateString("en-US",{month:"long",day:"numeric",timeZone:"America/New_York"});
+  const until=CONFIG.deadlineLabel(),days=CONFIG.daysLeft();
+  if(until&&days!==null){
+    deadline.textContent=`Available until ${until} \u00b7 ${days===1?"1 day":`${days} days`} left`;
     deadline.hidden=false;
   }else{deadline.hidden=true;deadline.textContent=""}
+  const rate=$("cydRateLine");
+  if(rate)rate.textContent=CONFIG.foundingOfferOpen()
+    ?"Founding Member Rate on every plan, locked in for as long as you stay. Pick yours and check out."
+    :"Pick the plan that fits and check out.";
   if(openForm)toggleForm(true);
   const h=$("cydEndTitle");if(h)h.focus({preventScroll:true});
 };

@@ -22,17 +22,22 @@
 //    poster (optional) and duration (optional, e.g. "1:30") follow the same
 //    rule: empty means "not shown".
 //
-// 3. LAUNCH_PRICING_ENDS: null, or an ISO date string such as
-//    "2026-10-31T23:59:00-04:00". While it is null (or invalid, or already
-//    past) NO countdown and NO deadline text renders anywhere. Never fake
-//    urgency: set it only when the launch-pricing end date is real.
+// 3. LAUNCH_PRICING_ENDS: when the Founding Member Rate stops being offered,
+//    as an ISO date string, or null. Set by Jim 10 Oct 2026: offer available
+//    until March 1, 2027 (end of day Feb 28, America/New_York).
+//    - set and in the future: "Available until <date>" + a calm days-left
+//      countdown (no seconds) on the checkout banner and demo end panel;
+//    - null: the Founding Member banner shows with no date and no countdown;
+//    - past (or invalid): the countdown AND the Founding Member banner are
+//      hidden. Never fake urgency: only a real date goes here.
+//    Visitor-facing name is "Founding Member Rate"; the key keeps its name.
 //
 // No prices live here. Prices come only from assets/checkout-config.js.
 // ============================================================================
 
 const SECTION_RELEASE_STATE="APPROVAL_HELD";
 const VIDEO_PLACEHOLDER="REPLACE_WITH_VIDEO_URL";
-const LAUNCH_PRICING_ENDS=null;
+const LAUNCH_PRICING_ENDS="2027-03-01T00:00:00-05:00";
 const QUESTION_FORM_KEY="demo-question";
 
 // Playlist order is this array's order. growth is last on purpose: it is the
@@ -85,13 +90,38 @@ const mapStartInterests=interests=>{
   return normalizeKeys(keys);
 };
 
+// Injectable clock (tests/review only set window.ACE_CLOCK); defaults to Date.now.
+const now=()=>{
+  const c=typeof window!=="undefined"&&window.ACE_CLOCK;
+  const t=typeof c==="function"?Number(c()):NaN;
+  return Number.isFinite(t)?t:Date.now();
+};
+
+// Was a deadline configured at all (valid date), regardless of whether it passed?
+const launchPricingConfigured=()=>typeof LAUNCH_PRICING_ENDS==="string"&&!Number.isNaN(Date.parse(LAUNCH_PRICING_ENDS));
+
 // A real, future deadline or null. Invalid or past dates render nothing.
-const launchPricingEnds=(now=Date.now())=>{
+const launchPricingEnds=(at=now())=>{
   if(typeof LAUNCH_PRICING_ENDS!=="string"||!LAUNCH_PRICING_ENDS.trim())return null;
   const t=Date.parse(LAUNCH_PRICING_ENDS);
-  if(Number.isNaN(t)||t<=now)return null;
+  if(Number.isNaN(t)||t<=at)return null;
   return new Date(t);
 };
+
+// Whole days remaining (rounded up), or null when there is no live deadline.
+const daysLeft=(at=now())=>{
+  const ends=launchPricingEnds(at);
+  return ends?Math.ceil((ends.getTime()-at)/864e5):null;
+};
+
+// "March 1, 2027" in Eastern time, or "" when there is no live deadline.
+const deadlineLabel=(at=now())=>{
+  const ends=launchPricingEnds(at);
+  return ends?ends.toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric",timeZone:"America/New_York"}):"";
+};
+
+// Founding Member offer still showable: no deadline set, or deadline not yet passed.
+const foundingOfferOpen=(at=now())=>!launchPricingConfigured()||launchPricingEnds(at)!==null;
 
 window.ACE_DEMO_CONFIG=Object.freeze({
   SECTION_RELEASE_STATE,
@@ -106,7 +136,12 @@ window.ACE_DEMO_CONFIG=Object.freeze({
   isVideoConfigured,
   normalizeKeys,
   mapStartInterests,
-  launchPricingEnds
+  launchPricingEnds,
+  launchPricingConfigured,
+  foundingOfferOpen,
+  daysLeft,
+  deadlineLabel,
+  now
 });
 
 })();

@@ -31,6 +31,8 @@ function loadConfig(src = configSrc) {
 const runMapper = (body) => new Function('$', '$execution', mapperSrc)(
   () => ({ first: () => ({ json: { body } }) }), { id: 'choose-demo-test' })[0].json;
 
+const DEADLINE_LINE = 'const LAUNCH_PRICING_ENDS="2027-03-01T00:00:00-05:00";';
+const FIXED_NOW = Date.parse('2026-10-10T12:00:00-04:00'); // injectable clock for deterministic tests
 const DEMOS = [
   ['followup', 'The Follow-Up Machine', 'Answer every lead fast and book more calls'],
   ['pipeline', 'Pipeline Builder', 'Find new clients every week'],
@@ -40,12 +42,23 @@ const DEMOS = [
 ];
 
 // ---------------- config ----------------
-test('demo-config: held, five demos with placeholders, no deadline', () => {
+test('demo-config: held, five demos with placeholders, Founding Member deadline', () => {
   const c = loadConfig();
   assert.equal(c.SECTION_RELEASE_STATE, 'APPROVAL_HELD');
   assert.equal(c.sectionReleased, false);
   assert.equal(c.QUESTION_FORM_KEY, 'demo-question');
-  assert.equal(c.LAUNCH_PRICING_ENDS, null);
+  assert.equal(c.LAUNCH_PRICING_ENDS, '2027-03-01T00:00:00-05:00');
+  // Injectable clock: deadline live before, gone at/after midnight Mar 1 2027 Eastern.
+  const at = (iso) => Date.parse(iso);
+  assert.equal(c.daysLeft(at('2027-02-28T00:00:00-05:00')), 1);
+  assert.equal(c.daysLeft(at('2026-10-10T12:00:00-04:00')), 142);
+  assert.equal(c.deadlineLabel(at('2026-10-10T12:00:00-04:00')), 'March 1, 2027');
+  assert.equal(c.launchPricingEnds(at('2027-03-01T00:00:00-05:00')), null);
+  assert.equal(c.daysLeft(at('2027-03-02T00:00:00Z')), null);
+  assert.equal(c.foundingOfferOpen(at('2027-02-28T23:59:00-05:00')), true);
+  assert.equal(c.foundingOfferOpen(at('2027-03-01T00:00:01-05:00')), false);
+  const nul = loadConfig(configSrc.replace(DEADLINE_LINE, 'const LAUNCH_PRICING_ENDS=null;'));
+  assert.equal(nul.daysLeft(), null); assert.equal(nul.deadlineLabel(), ''); assert.equal(nul.foundingOfferOpen(), true);
   deq(c.DEMOS.map(d => [d.key, d.title, d.outcome]), DEMOS);
   for (const d of c.DEMOS) {
     assert.equal(d.file, 'REPLACE_WITH_VIDEO_URL', d.key);
@@ -238,8 +251,8 @@ class N {
   querySelectorAll(sel) { return sel === '[data-offer]' ? this.children.filter(c => c.dataset.offer) : []; }
 }
 
-function runWaterfall({ search, demoSrc = configSrc, checkoutSrc = checkoutConfigSrc } = {}) {
-  const window = {};
+function runWaterfall({ search, demoSrc = configSrc, checkoutSrc = checkoutConfigSrc, now = FIXED_NOW } = {}) {
+  const window = { ACE_CLOCK: () => now };
   vm.runInNewContext(checkoutSrc, { window });
   vm.runInNewContext(demoSrc, { window, Date });
   const grid = new N('div');
@@ -263,7 +276,7 @@ test('waterfall renders nothing without ?from=demo', () => {
   assert.equal(r.top.children.length + r.bottom.children.length, 0);
 });
 
-test('waterfall: computed %, recommendations, bundle saving, downsell; no countdown while LAUNCH_PRICING_ENDS is null', () => {
+test('waterfall: computed %, Founding Member banner + calm countdown, recommendations, bundle saving, downsell', () => {
   const r = runWaterfall({ search: '?from=demo&interests=content' });
   assert.equal(r.top.hidden, false);
   // Every shown offer's exact saving (monthly and onboarding) is > 33.34%.
@@ -276,10 +289,16 @@ test('waterfall: computed %, recommendations, bundle saving, downsell; no countd
     assert.ok((1 - l.m / s.m) * 100 > 33.34, `${o.key} monthly saving`);
     if (s.o) assert.ok((1 - l.o / s.o) * 100 > 33.34, `${o.key} onboarding saving`);
   }
-  assert.ok(r.text.includes('Launch pricing: more than a third off standard'), r.text);
-  assert.doesNotMatch(r.text, /save \d+%|35%/);
-  assert.doesNotMatch(r.text, /ends|left|hurry|today only|expires/i, 'no deadline text while LAUNCH_PRICING_ENDS is null');
-  assert.equal(r.intervals.length, 0, 'no countdown timer while LAUNCH_PRICING_ENDS is null');
+  assert.ok(r.text.includes('Founding Member Rate: more than a third off standard'), r.text);
+  assert.ok(r.text.includes('Locked in for as long as you stay. Available until March 1, 2027.'), r.text);
+  assert.ok(r.text.includes('142 days left'), r.text);
+  assert.doesNotMatch(r.text, /save \d+%|35%|[Ll]aunch pric|\d+h \d+m|\d+s\b|hurry|today only/);
+  assert.equal(r.intervals.length, 1, 'one calm (hourly) countdown refresh');
+  // No deadline configured: banner stays, but no date and no countdown.
+  const n = runWaterfall({ search: '?from=demo&interests=content', demoSrc: configSrc.replace(DEADLINE_LINE, 'const LAUNCH_PRICING_ENDS=null;') });
+  assert.ok(n.text.includes('Founding Member Rate: more than a third off standard'));
+  assert.doesNotMatch(n.text, /Available until|days? left/);
+  assert.equal(n.intervals.length, 0, 'no countdown while LAUNCH_PRICING_ENDS is null');
   // content -> Content Creation Machine + Creation + Distribution, moved first and badged.
   deq(r.grid.children.slice(0, 2).map(c => c.dataset.offer), ['SA-CONTENT-CREATION', 'SA-CREATION-DISTRIBUTION']);
   assert.ok(r.grid.children[0].className.includes('wf-rec'));
@@ -310,20 +329,33 @@ test('waterfall: non-uniform discount falls back to "save vs standard"; real dea
   const third = checkoutConfigSrc.replace('launch:"$405/month",standard:"$620/month"', 'launch:"$400/month",standard:"$600/month"');
   assert.notEqual(third, checkoutConfigSrc);
   const res = runWaterfall({ search: '?from=demo', checkoutSrc: third });
-  assert.ok(res.text.includes('Launch pricing \u2014 save vs standard'), res.text);
+  assert.ok(res.text.includes('Founding Member Rate \u2014 save vs standard'), res.text);
   assert.doesNotMatch(res.text, /a third|save \d+%/);
   const onb = checkoutConfigSrc.replace('launch:"$1,500 onboarding + $810/month",standard:"$2,300 onboarding', 'launch:"$1,600 onboarding + $810/month",standard:"$2,300 onboarding');
   assert.notEqual(onb, checkoutConfigSrc);
-  assert.ok(runWaterfall({ search: '?from=demo', checkoutSrc: onb }).text.includes('Launch pricing \u2014 save vs standard'), 'onboarding saving also gates the claim');
-  const future = new Date(Date.now() + 5 * 864e5).toISOString();
-  const withDate = configSrc.replace('const LAUNCH_PRICING_ENDS=null;', `const LAUNCH_PRICING_ENDS="${future}";`);
-  const d = runWaterfall({ search: '?from=demo', demoSrc: withDate });
-  assert.match(d.text, /Launch pricing ends .+ \u00b7 \d+d \d+h \d+m left/);
+  assert.ok(runWaterfall({ search: '?from=demo', checkoutSrc: onb }).text.includes('Founding Member Rate \u2014 save vs standard'), 'onboarding saving also gates the claim');
+  // Injectable clock: the day before the deadline shows "1 day left"...
+  const d = runWaterfall({ search: '?from=demo', now: Date.parse('2027-02-28T09:00:00-05:00') });
+  assert.ok(d.text.includes('1 day left'), d.text);
   assert.equal(d.intervals.length, 1);
-  const past = configSrc.replace('const LAUNCH_PRICING_ENDS=null;', 'const LAUNCH_PRICING_ENDS="2020-01-01T00:00:00Z";');
-  const p = runWaterfall({ search: '?from=demo', demoSrc: past });
-  assert.doesNotMatch(p.text, /ends|left/);
+  // ...and once it passes, the countdown AND the Founding Member banner are gone.
+  const p = runWaterfall({ search: '?from=demo', now: Date.parse('2027-03-01T00:00:01-05:00') });
+  assert.doesNotMatch(p.text, /Founding Member|Available until|left/);
   assert.equal(p.intervals.length, 0);
+  assert.equal(p.top.hidden, false, 'recommendations area still renders');
+});
+
+test('visitor-facing copy says Founding Member Rate, never launch price', () => {
+  assert.equal((checkoutHtml.match(/Founding Member Rate\. Standard price <s data-standard-for=/g) || []).length, 6);
+  assert.doesNotMatch(checkoutHtml, /[Ll]aunch pric/);
+  assert.doesNotMatch(section, /[Ll]aunch pric/);
+  assert.doesNotMatch(pickerSrc, /[Ll]aunch pric/);
+  assert.doesNotMatch(waterfallSrc.replace(/^\s*\/\/.*$/gm, ''), /[Ll]aunch pric/);
+  assert.doesNotMatch(startHtml, /[Ll]aunch pric/);
+  assert.match(section, /id="cydRateLine">Founding Member Rate on every plan, locked in for as long as you stay\./);
+  assert.match(pickerSrc, /`Available until \$\{until\} \\u00b7 /);
+  // Credit wording kept on every card.
+  assert.equal((checkoutHtml.match(/monthly usage credit; usage pauses at 100% of the credit\./g) || []).length, 6);
 });
 
 test('checkout page stays held; waterfall never touches buy buttons or links', () => {

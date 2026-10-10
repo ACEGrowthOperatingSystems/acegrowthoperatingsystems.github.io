@@ -53,26 +53,30 @@ const moreThanAThird=savings.length>0&&savings.every(p=>p>THIRD_OFF_MIN);
 
 const el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!=null)n.textContent=text;return n};
 
-// ---- 1. Banner ----
-const banner=el("div","wf-banner");
-banner.setAttribute("role","note");
-banner.appendChild(el("p","wf-banner-k","From your demo"));
-banner.appendChild(el("p","wf-banner-h",moreThanAThird?"Launch pricing: more than a third off standard":"Launch pricing — save vs standard"));
-banner.appendChild(el("p","wf-banner-d","Every plan below shows its launch price with the standard price struck through. Your monthly price is locked while you stay subscribed."));
-const ends=DEMO&&DEMO.launchPricingEnds?DEMO.launchPricingEnds():null;
-if(ends){
-  const clock=el("p","wf-clock");
-  const date=ends.toLocaleDateString("en-US",{month:"long",day:"numeric",timeZone:"America/New_York"});
-  const tick=()=>{
-    const ms=ends.getTime()-Date.now();
-    if(ms<=0){clock.remove();return}
-    const d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),m=Math.floor(ms%36e5/6e4);
-    clock.textContent=`Launch pricing ends ${date} · ${d}d ${h}h ${m}m left`;
-  };
-  tick();setInterval(tick,30000);
-  banner.appendChild(clock);
+// ---- 1. Founding Member banner ----
+// Shown while the offer is open (no deadline set, or deadline in the future).
+// After a configured deadline passes, banner and countdown are both hidden.
+const offerOpen=!DEMO||!DEMO.foundingOfferOpen||DEMO.foundingOfferOpen();
+const until=DEMO&&DEMO.deadlineLabel?DEMO.deadlineLabel():"";
+if(offerOpen){
+  const banner=el("div","wf-banner");
+  banner.setAttribute("role","note");
+  banner.appendChild(el("p","wf-banner-k","From your demo"));
+  banner.appendChild(el("p","wf-banner-h",moreThanAThird?"Founding Member Rate: more than a third off standard":"Founding Member Rate \u2014 save vs standard"));
+  banner.appendChild(el("p","wf-banner-d",`Locked in for as long as you stay.${until?` Available until ${until}.`:""} Every plan below shows its Founding Member Rate with the standard price struck through.`));
+  if(until){
+    // Calm countdown: whole days only, refreshed hourly. No seconds.
+    const clock=el("p","wf-clock");
+    const tick=()=>{
+      const d=DEMO.daysLeft();
+      if(d===null){banner.remove();return}
+      clock.textContent=d===1?"1 day left":`${d} days left`;
+    };
+    tick();setInterval(tick,36e5);
+    banner.appendChild(clock);
+  }
+  top.appendChild(banner);
 }
-top.appendChild(banner);
 top.hidden=false;
 
 // ---- 2. Recommended for you ----
