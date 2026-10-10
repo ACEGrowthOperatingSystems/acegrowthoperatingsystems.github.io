@@ -1,0 +1,32 @@
+/* Choose Your Demo waterfall on /checkout/ace-mkt/ (only rendered with ?from=demo). ACE palette. */
+.wf-banner{position:relative;overflow:hidden;border:1px solid rgba(255,186,92,.5);border-radius:1.1rem;padding:1.3rem 1.4rem 1.25rem;margin:0 0 1.2rem;
+  background:radial-gradient(ellipse 80% 120% at 0 0,rgba(227,36,43,.22),transparent 60%),
+    radial-gradient(ellipse 70% 120% at 100% 0,rgba(255,186,92,.14),transparent 60%),#0E0C0C;
+  box-shadow:0 0 0 1px rgba(255,186,92,.15),0 0 60px rgba(255,186,92,.10),0 20px 50px rgba(0,0,0,.4)}
+.wf-banner p{margin:0}
+.wf-banner-k,.wf-k{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:#E9C68A;font-weight:800}
+.wf-banner-h{font-size:clamp(1.35rem,3.4vw,2rem);font-weight:900;color:#fff;line-height:1.1;margin:.35rem 0 .45rem!important;letter-spacing:-.01em}
+.wf-banner-d{color:#C2C7CD;font-size:.92rem;max-width:62ch}
+.wf-clock{margin-top:.75rem!important;display:inline-block;font-weight:800;color:#FFD08A;border:1px solid rgba(255,186,92,.45);border-radius:999px;padding:.3rem .8rem;font-size:.86rem}
+.wf-recnote{margin:0 0 .4rem;color:#C2C7CD;font-size:.92rem}
+
+.offers .wf-rec{border-color:rgba(255,186,92,.6);background:radial-gradient(ellipse 110% 70% at 50% 0,rgba(255,186,92,.10),transparent 60%),#121010;
+  box-shadow:0 0 0 1px rgba(255,186,92,.2),0 0 46px rgba(255,186,92,.12)}
+.wf-badge{display:inline-block;margin:0 0 .5rem;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;font-weight:800;
+  color:#fff;background:#e3242b;border-radius:999px;padding:.25rem .7rem;box-shadow:0 0 18px rgba(227,36,43,.45)}
+
+.wf-upsell{border:1px solid rgba(227,36,43,.55);border-radius:1.1rem;padding:1.4rem 1.4rem 1.3rem;margin:1.2rem 0;
+  background:radial-gradient(ellipse 90% 120% at 100% 0,rgba(227,36,43,.18),transparent 60%),#0F0D0D}
+.wf-h{font-size:clamp(1.3rem,3vw,1.75rem);margin:.3rem 0 .45rem;color:#fff;line-height:1.15}
+.wf-d{color:#C2C7CD;margin:0 0 .9rem;max-width:64ch}
+.wf-link{display:inline-flex;align-items:center;min-height:44px;padding:.6rem 1.05rem;border-radius:.65rem;border:1px solid #e3242b;
+  background:#e3242b;color:#fff;font-weight:800;text-decoration:none}
+.wf-link:hover{background:#F0353C;box-shadow:0 0 26px rgba(227,36,43,.4)}
+.wf-link--quiet{background:transparent;border-color:#3A3D44;color:#E6E8EB}
+.wf-link--quiet:hover{background:transparent;border-color:#C9CDD2;box-shadow:none}
+
+.wf-down{border-top:1px solid rgba(255,255,255,.1);margin:1.4rem 0 .6rem;padding-top:1.2rem}
+.wf-down-h{margin:0 0 .6rem;font-weight:800;color:#fff}
+.wf-down-links{display:flex;flex-wrap:wrap;gap:.6rem}
+.wf-down-d{margin:.6rem 0 0;color:#A9AFB6;font-size:.88rem}
+:target.checkout{outline:2px solid rgba(255,186,92,.7);outline-offset:4px}

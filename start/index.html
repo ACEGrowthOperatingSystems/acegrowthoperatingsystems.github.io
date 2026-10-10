@@ -123,6 +123,7 @@
   .inbox p.big{font-family:'Archivo',sans-serif;font-weight:700;color:#fff;font-size:1.22rem;line-height:1.25;margin:0 0 .45rem;text-wrap:balance}
   .inbox p{margin:0;color:#B9BEC5;font-size:.95rem}
   .book{width:100%;margin-top:1.1rem}
+  .choosehint{margin:.6rem 0 0;color:var(--steel);font-size:.86rem}
   .heldnote{font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.06em;color:var(--steel);
     margin:1rem 0 0;line-height:1.5}
 
@@ -255,6 +256,8 @@
         <p class="big">Your demo video is on its way to your inbox.</p>
         <p>Keep an eye out for an email from ACE.</p>
       </div>
+      <a class="btn btn-primary book" id="chooseDemo" href="/#choose-demo">Choose your demo</a>
+      <p class="choosehint">Pick the demos that matter most to your business. We've ticked the ones you chose.</p>
       <a class="btn btn-primary book" id="bookDemo" hidden target="_blank" rel="noopener">Book your free demo</a>
       <p class="heldnote" id="heldNote" hidden></p>
     </section>
@@ -280,6 +283,7 @@
 </footer>
 <script src="../assets/release-flag.js" defer></script>
 <script src="../assets/start-config.js" defer></script>
+<script src="../assets/demo-config.js" defer></script>
 <script src="../assets/start-funnel.js" defer></script>
 </body>
 </html>

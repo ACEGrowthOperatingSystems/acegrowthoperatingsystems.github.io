@@ -5,8 +5,14 @@
 <meta name="robots" content="noindex,nofollow">
 <title>ACE Marketing Operating System &mdash; Checkout</title>
 <meta name="description" content="Choose your ACE Marketing Operating System plan.">
-<link rel="stylesheet" href="../../assets/product-launch.css">
-<style>.offers{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,20rem),1fr));gap:1rem;margin:1.2rem 0}.offers .checkout{max-width:none}.offers h2{margin:.1rem 0 .3rem;font-size:1.25rem}</style>
+<meta name="theme-color" content="#000000">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- ACE brand skin for this page only. Not the shared launch-page stylesheet,
+     so /marketing/, /p12/ and /growth/ are unaffected. -->
+<link rel="stylesheet" href="../../assets/checkout-ace.css">
+<link rel="stylesheet" href="../../assets/checkout-waterfall.css">
 <link rel="icon" type="image/png" sizes="64x64" href="/assets/favicon.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
 <meta property="og:title" content="ACE Marketing Operating System &mdash; Checkout">
@@ -21,16 +27,19 @@
      /marketing/ and /p12/. Default is held. -->
 <body data-page-key="checkout-ace-mkt" data-product-key="ACE-MKT" data-offer-code="SYS-MKT" data-release-state="APPROVAL_HELD">
 <a class="skip" href="#main">Skip to content</a>
-<header><div class="wrap nav"><a class="brand" href="../../">ACE GROWTH OS</a></div></header>
+<header><a class="logo" href="../../" aria-label="ACE Growth Operating Systems home"><img src="../../assets/ace-logo.jpg" alt="ACE Growth Operating Systems" width="96" height="96"></a></header>
 <main id="main">
 <section><div class="wrap">
 <div class="section-head"><p class="eyebrow">Checkout</p><h1>ACE Marketing Operating System</h1></div>
+
+<!-- Choose Your Demo waterfall: filled by checkout-waterfall.js only when ?from=demo. -->
+<div id="wfTop" hidden></div>
 
 <div class="offers">
   <div class="checkout" data-offer="SA-CONTENT-DISTRIBUTION">
     <h2>Content Distribution Machine</h2>
     <p class="price"><span data-price-for="SA-CONTENT-DISTRIBUTION">[PRICE]</span></p>
-    <p class="small">Launch price. Standard price <s data-standard-for="SA-CONTENT-DISTRIBUTION"></s>. Includes a <span data-credit-for="SA-CONTENT-DISTRIBUTION"></span> monthly usage credit; usage pauses at 100% of the credit.</p>
+    <p class="small">Founding Member Rate. Standard price <s data-standard-for="SA-CONTENT-DISTRIBUTION"></s>. Includes a <span data-credit-for="SA-CONTENT-DISTRIBUTION"></span> monthly usage credit; usage pauses at 100% of the credit.</p>
     <div class="buy-row">
       <button class="button" type="button" data-buy="SA-CONTENT-DISTRIBUTION">Buy Content Distribution Machine</button>
     </div>
@@ -38,7 +47,7 @@
   <div class="checkout" data-offer="SA-CONTENT-CREATION">
     <h2>Content Creation Machine</h2>
     <p class="price"><span data-price-for="SA-CONTENT-CREATION">[PRICE]</span></p>
-    <p class="small">Launch price. Standard price <s data-standard-for="SA-CONTENT-CREATION"></s>. Includes a <span data-credit-for="SA-CONTENT-CREATION"></span> monthly usage credit; usage pauses at 100% of the credit.</p>
+    <p class="small">Founding Member Rate. Standard price <s data-standard-for="SA-CONTENT-CREATION"></s>. Includes a <span data-credit-for="SA-CONTENT-CREATION"></span> monthly usage credit; usage pauses at 100% of the credit.</p>
     <div class="buy-row">
       <button class="button" type="button" data-buy="SA-CONTENT-CREATION">Buy Content Creation Machine</button>
     </div>
@@ -46,7 +55,7 @@
   <div class="checkout" data-offer="SA-CREATION-DISTRIBUTION">
     <h2>Creation + Distribution</h2>
     <p class="price"><span data-price-for="SA-CREATION-DISTRIBUTION">[PRICE]</span></p>
-    <p class="small">Launch price. Standard price <s data-standard-for="SA-CREATION-DISTRIBUTION"></s>. Includes a <span data-credit-for="SA-CREATION-DISTRIBUTION"></span> monthly usage credit; usage pauses at 100% of the credit.</p>
+    <p class="small">Founding Member Rate. Standard price <s data-standard-for="SA-CREATION-DISTRIBUTION"></s>. Includes a <span data-credit-for="SA-CREATION-DISTRIBUTION"></span> monthly usage credit; usage pauses at 100% of the credit.</p>
     <div class="buy-row">
       <button class="button" type="button" data-buy="SA-CREATION-DISTRIBUTION">Buy Creation + Distribution</button>
     </div>
@@ -54,7 +63,7 @@
   <div class="checkout" data-offer="TIER-ESSENTIAL">
     <h2>Essential</h2>
     <p class="price"><span data-price-for="TIER-ESSENTIAL">[PRICE]</span></p>
-    <p class="small">Launch price. Standard price <s data-standard-for="TIER-ESSENTIAL"></s>. Includes a <span data-credit-for="TIER-ESSENTIAL"></span> monthly usage credit; usage pauses at 100% of the credit.</p>
+    <p class="small">Founding Member Rate. Standard price <s data-standard-for="TIER-ESSENTIAL"></s>. Includes a <span data-credit-for="TIER-ESSENTIAL"></span> monthly usage credit; usage pauses at 100% of the credit.</p>
     <div class="buy-row">
       <button class="button" type="button" data-buy="TIER-ESSENTIAL">Buy Essential</button>
     </div>
@@ -62,7 +71,7 @@
   <div class="checkout" data-offer="TIER-PROFESSIONAL">
     <h2>Professional</h2>
     <p class="price"><span data-price-for="TIER-PROFESSIONAL">[PRICE]</span></p>
-    <p class="small">Launch price. Standard price <s data-standard-for="TIER-PROFESSIONAL"></s>. Includes a <span data-credit-for="TIER-PROFESSIONAL"></span> monthly usage credit; usage pauses at 100% of the credit.</p>
+    <p class="small">Founding Member Rate. Standard price <s data-standard-for="TIER-PROFESSIONAL"></s>. Includes a <span data-credit-for="TIER-PROFESSIONAL"></span> monthly usage credit; usage pauses at 100% of the credit.</p>
     <div class="buy-row">
       <button class="button" type="button" data-buy="TIER-PROFESSIONAL">Buy Professional</button>
     </div>
@@ -70,7 +79,7 @@
   <div class="checkout" data-offer="TIER-GROWTH">
     <h2>Growth</h2>
     <p class="price"><span data-price-for="TIER-GROWTH">[PRICE]</span></p>
-    <p class="small">Launch price. Standard price <s data-standard-for="TIER-GROWTH"></s>. Includes a <span data-credit-for="TIER-GROWTH"></span> monthly usage credit; usage pauses at 100% of the credit.</p>
+    <p class="small">Founding Member Rate. Standard price <s data-standard-for="TIER-GROWTH"></s>. Includes a <span data-credit-for="TIER-GROWTH"></span> monthly usage credit; usage pauses at 100% of the credit.</p>
     <div class="buy-row">
       <button class="button" type="button" data-buy="TIER-GROWTH">Buy Growth</button>
     </div>
@@ -81,15 +90,18 @@
     <p class="small">Scoped to your organization. Contact AceGrowth.os@gmail.com.</p>
   </div>
 </div>
+<div id="wfBottom" hidden></div>
 <p class="buy-legal"><a href="../../terms/">Terms</a><a href="../../refund/">Refund Policy</a><a href="../../privacy/">Privacy</a></p>
 <p class="small">No refunds after onboarding starts; full refund before. Your monthly price is locked while you stay subscribed.</p>
 <p class="status" id="checkoutStatus" role="status" aria-live="polite"></p>
 
 </div></section>
 </main>
-<footer><div class="wrap">ACE Growth Operating Systems &middot; Launch prices
+<footer><div class="wrap">ACE Growth Operating Systems &middot; Founding Member Rates
 <nav class="legal" aria-label="Legal"><a href="../../terms/">Terms</a><a href="../../refund/">Refund</a><a href="../../privacy/">Privacy</a></nav></div></footer>
 <script src="../../assets/release-flag.js" defer></script>
 <script src="../../assets/checkout-config.js" defer></script>
 <script src="../../assets/checkout.js" defer></script>
+<script src="../../assets/demo-config.js" defer></script>
+<script src="../../assets/checkout-waterfall.js" defer></script>
 </body></html>

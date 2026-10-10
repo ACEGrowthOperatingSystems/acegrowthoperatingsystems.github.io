@@ -200,7 +200,7 @@ export function checkManifestMatchesImplementation(sources) {
   if (manifest.release_state !== 'APPROVAL_HELD') return fail(name, 'manifest release_state is not APPROVAL_HELD');
   if (manifest.live_submission_enabled !== false) return fail(name, 'manifest live_submission_enabled is not false');
 
-  const routeMap = { '/marketing/': 'marketing', '/p12/': 'p12', '/growth/': 'growth', '/start/': 'start' };
+  const routeMap = { '/marketing/': 'marketing', '/p12/': 'p12', '/growth/': 'growth', '/start/': 'start', '/#choose-demo': 'home' };
   for (const route of manifest.routes || []) {
     const key = routeMap[route.path];
     if (!key) return fail(name, `manifest references unknown route path ${route.path}`);
@@ -217,9 +217,25 @@ export function checkManifestMatchesImplementation(sources) {
         return fail(name, `${route.path}: hidden field ${field} does not equal manifest value "${expected}"`);
       }
     }
-    const bodyTag = html.match(/<body[^>]*data-release-state="([^"]+)"/);
-    if (!bodyTag || bodyTag[1] !== manifest.release_state) {
-      return fail(name, `${route.path}: data-release-state does not match manifest release_state`);
+    if (route.release_gate) {
+      // A homepage SECTION (no page-level flag): its gate is a constant in a
+      // config file, and the section must ship hidden so no-JS stays held.
+      const gate = String(route.release_gate).match(/^(\S+)\s+([A-Z_]+)$/);
+      if (!gate) return fail(name, `${route.path}: unrecognised release_gate "${route.release_gate}"`);
+      const cfg = sources[gate[1]];
+      if (cfg == null) return fail(name, `${route.path}: release_gate file ${gate[1]} missing`);
+      const state = cfg.match(new RegExp(`const ${gate[2]}="([^"]*)"`));
+      if (!state || state[1] !== manifest.release_state) {
+        return fail(name, `${route.path}: ${gate[2]} does not match manifest release_state`);
+      }
+      if (!/^<section[^>]*\shidden[\s>]/.test(html)) {
+        return fail(name, `${route.path}: section does not ship with the hidden attribute`);
+      }
+    } else {
+      const bodyTag = html.match(/<body[^>]*data-release-state="([^"]+)"/);
+      if (!bodyTag || bodyTag[1] !== manifest.release_state) {
+        return fail(name, `${route.path}: data-release-state does not match manifest release_state`);
+      }
     }
     if (route.consent_required !== true) {
       return fail(name, `${route.path}: manifest does not mark consent_required true`);
@@ -404,8 +420,21 @@ export function runAllChecks(sources) {
   ];
 }
 
+// The homepage is ~1 MB of inline base64 imagery; only the held
+// #choose-demo section is a launch route, so only that section is loaded.
+export function extractSection(html, id) {
+  if (html == null) return null;
+  const start = html.indexOf(`<section id="${id}"`);
+  if (start === -1) return null;
+  const end = html.indexOf('</section>', start);
+  if (end === -1) return null;
+  return html.slice(start, end + '</section>'.length);
+}
+
 export function loadRealSources() {
   return {
+    home: extractSection(readFileSafe('index.html'), 'choose-demo'),
+    'assets/demo-config.js': readFileSafe('assets/demo-config.js'),
     marketing: readFileSafe('marketing/index.html'),
     p12: readFileSafe('p12/index.html'),
     growth: readFileSafe('growth/index.html'),

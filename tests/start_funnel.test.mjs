@@ -65,6 +65,9 @@ test('headline, 4 questions and all 7 interest options are present', () => {
   assert.deepEqual(boxes, INTERESTS);
   assert.ok(html.includes('>Unlock my demo<'));
   assert.ok(html.includes('>Book your free demo<'));
+  // Success state hands off to the homepage CHOOSE YOUR DEMO picker (mapped interests).
+  assert.match(html, /id="chooseDemo" href="\/#choose-demo">Choose your demo</);
+  assert.match(controller, /choose\.href=chooseDemoHref\(interests\)/);
 });
 
 test('email is required; consent is a required, unchecked checkbox with a Privacy link', () => {

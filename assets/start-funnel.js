@@ -139,7 +139,15 @@ const buildPayload=()=>{
   };
 };
 
-const unlock=held=>{
+// "Choose your demo": /?interests=<demo keys>#choose-demo, mapped from the
+// questionnaire's interests by assets/demo-config.js (START_INTEREST_MAP).
+const chooseDemoHref=interests=>{
+  const demo=window.ACE_DEMO_CONFIG;
+  const keys=demo&&demo.mapStartInterests?demo.mapStartInterests(interests):[];
+  return keys.length?`/?interests=${keys.join(",")}#choose-demo`:"/#choose-demo";
+};
+
+const unlock=(held,interests=[])=>{
   const slot=document.getElementById("videoSlot");
   const inbox=document.getElementById("videoInbox");
   if(CONFIG.videoConfigured){
@@ -166,6 +174,8 @@ const unlock=held=>{
     book.hidden=true;
     book.removeAttribute("href");
   }
+  const choose=document.getElementById("chooseDemo");
+  if(choose)choose.href=chooseDemoHref(interests);
   const heldNote=document.getElementById("heldNote");
   if(heldNote){heldNote.textContent=held?HELD_NOTE:"";heldNote.hidden=!held}
   form.hidden=true;
@@ -198,7 +208,7 @@ form.addEventListener("submit",async event=>{
     if(!RELEASE_AUTHORIZED){
       form.dataset.lastPayload=JSON.stringify(payload);
       status.textContent="";
-      unlock(true);
+      unlock(true,payload.interests);
       return;
     }
 
@@ -213,7 +223,7 @@ form.addEventListener("submit",async event=>{
     if(!isStrictHeldReceipt(receipt,payload))throw new Error("INVALID_HELD_RECEIPT");
 
     status.textContent="";
-    unlock(false);
+    unlock(false,payload.interests);
   }catch(error){
     status.textContent=FAILURE_MESSAGE;
   }finally{

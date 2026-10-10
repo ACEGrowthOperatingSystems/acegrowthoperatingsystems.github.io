@@ -1,0 +1,61 @@
+/* ACE brand skin for /checkout/ace-mkt/ ONLY (self-contained; replaces the
+   shared product-launch.css on this page so other pages are unaffected).
+   Black/charcoal, ACE red #e3242b, silver/white text, warm golden glow. */
+:root{--ink:#000;--raise:#0F0F11;--raise2:#16171A;--edge:#26282D;--edge2:#34373D;
+  --red:#e3242b;--red-hi:#F0353C;--silver:#C9CDD2;--steel:#949AA2;--white:#fff;--gold:255,186,92;--max:1120px}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{background:var(--ink);scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;color:var(--silver);font-family:'IBM Plex Sans',system-ui,-apple-system,sans-serif;font-size:16px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+  background:radial-gradient(ellipse 120% 460px at 50% 0,rgba(227,36,43,.16) 0%,rgba(158,21,27,.05) 50%,transparent 76%) no-repeat,var(--ink)}
+a{color:inherit}
+.skip{position:absolute;left:-10000px;top:.5rem;background:#fff;color:#000;padding:.5rem .8rem;z-index:10}
+.skip:focus{left:1rem}
+.wrap{width:min(var(--max),calc(100% - 2rem));margin:auto}
+h1,h2{font-family:'Archivo',sans-serif;color:var(--white);letter-spacing:-.02em}
+
+header{padding:1.2rem 0 0;text-align:center}
+.logo{display:inline-block;line-height:0}
+.logo img{width:96px;height:96px;display:block;mix-blend-mode:lighten}
+
+main{overflow:hidden}
+section{padding:1.2rem 0 3.5rem}
+.section-head{text-align:center;max-width:44rem;margin:0 auto 1.6rem}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--red);margin:0 0 .6rem}
+.section-head h1{font-size:clamp(1.8rem,5vw,2.8rem);line-height:1.05;font-weight:800;margin:0;text-wrap:balance}
+
+.offers{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,20rem),1fr));gap:1rem;margin:1.2rem 0}
+.checkout{position:relative;border:1px solid var(--edge);border-radius:16px;padding:1.5rem 1.4rem 1.4rem;
+  background:linear-gradient(180deg,rgba(22,23,26,.95),rgba(13,13,15,.98));
+  box-shadow:0 22px 60px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.04)}
+.checkout h2{margin:.1rem 0 .35rem;font-size:1.22rem;font-weight:800}
+.checkout .price{font-family:'Archivo',sans-serif;font-size:clamp(1.55rem,3.4vw,2rem);font-weight:900;color:var(--white);
+  line-height:1.15;margin:.2rem 0 .6rem;letter-spacing:-.01em}
+.small{color:#A9AFB6;font-size:.88rem;margin:.45rem 0 .8rem}
+.small s{color:var(--steel)}
+.buy-row{display:flex;flex-wrap:wrap;align-items:center;gap:.9rem 1.2rem;margin-top:1.1rem}
+.button{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:.75rem 1.2rem;border-radius:10px;
+  border:1px solid var(--red);background:var(--red);color:#fff;text-decoration:none;cursor:pointer;
+  font-family:'Archivo',sans-serif;font-weight:800;font-size:.86rem;letter-spacing:.05em;text-transform:uppercase;
+  transition:background .15s,box-shadow .15s,border-color .15s}
+.button:hover{background:var(--red-hi);box-shadow:0 0 28px rgba(227,36,43,.38)}
+.button[aria-disabled=true]{background:transparent;color:var(--steel);border-color:var(--edge2);cursor:not-allowed;box-shadow:none}
+.button:focus-visible,a:focus-visible{outline:3px solid rgba(227,36,43,.55);outline-offset:2px}
+
+.buy-legal{display:flex;flex-wrap:wrap;gap:1rem;font-size:.9rem;margin:1.4rem 0 .6rem}
+.buy-legal a{color:var(--steel)}
+.buy-legal a:hover{color:#fff}
+.status{min-height:1.5rem;margin:.8rem 0 0;color:#E9C68A;font-weight:600;font-size:.9rem}
+.status:not(:empty){border-left:3px solid var(--red);padding-left:.7rem}
+
+footer{border-top:1px solid #17181B;padding:1.6rem 0 2.2rem;color:var(--steel);font-size:.85rem;text-align:center}
+footer .legal{display:flex;flex-wrap:wrap;justify-content:center;gap:.4rem 1.2rem;margin-top:.6rem}
+footer .legal a{color:var(--steel);text-decoration:none}
+footer .legal a:hover{color:#fff;text-decoration:underline}
+
+@media (min-width:760px){
+  header{padding-top:1.8rem}
+  .logo img{width:112px;height:112px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}

@@ -40,18 +40,20 @@ const clean=(value,max)=>String(value||'').trim().slice(0,max);
 const email=clean(body.email,320).toLowerCase();
 if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) throw new Error('INVALID_EMAIL');
 
-// automate-demo (/start/) sends first_name and bottleneck; they fill name/need.
+// automate-demo (/start/) sends first_name and bottleneck; demo-question
+// (homepage #choose-demo) sends first_name and question. They fill name/need.
 const name=clean(body.name||body.first_name,200);
 if(!name) throw new Error('INVALID_NAME');
 
-const need=clean(body.need||body.bottleneck,200);
+const need=clean(body.need||body.bottleneck||body.question,200);
 if(!need) throw new Error('INVALID_NEED');
 
 const CONTRACTS={
   'ace-mkt-interest':{product_key:'ACE-MKT',offer_code:'SYS-MKT',source:'ace-mkt',notion_source:'Website - ACE-MKT product interest'},
   'p12-interest':{product_key:'ACE-PRO',offer_code:'P12',source:'ace-p12',notion_source:'Website - P12 product interest'},
   'grow-interest':{product_key:'ACE-GROW',offer_code:'SYS-GROW',source:'ace-grow',notion_source:'Website - ACE-GROW product interest'},
-  'automate-demo':{product_key:'ACE-DEMO',offer_code:'DEMO-AUTOMATE',source:'ig-comment-automate',notion_source:'Website - AUTOMATE demo funnel'}
+  'automate-demo':{product_key:'ACE-DEMO',offer_code:'DEMO-AUTOMATE',source:'ig-comment-automate',notion_source:'Website - AUTOMATE demo funnel'},
+  'demo-question':{product_key:'ACE-DEMO',offer_code:'DEMO-QUESTION',source:'website-demo',notion_source:'Website - Choose Your Demo question'}
 };
 const form=clean(body.form,50);
 const contract=CONTRACTS[form];
@@ -90,6 +92,20 @@ if(form==='automate-demo'){
   extra.team_size=clean(body.team_size,20);
   extra.bottleneck=clean(body.bottleneck,200);
   extra.interests=(Array.isArray(body.interests)?body.interests:[]).slice(0,10).map(v=>clean(v,100)).filter(Boolean);
+  extra.src=clean(body.src,100);
+  for(const k of ['utm_source','utm_medium','utm_campaign','utm_term','utm_content']) extra[k]=clean(body[k],200);
+}
+// Choose Your Demo "Ask a question" (homepage #choose-demo) carries the full
+// question (need above is its first 200 chars) and the demo keys watched.
+// A representative follows up within 24 hours: that is a human task, never
+// an automated send from this node.
+if(form==='demo-question'){
+  const DEMO_KEYS=['followup','pipeline','content','proposal','growth'];
+  extra.first_name=clean(body.first_name,120);
+  extra.question=clean(body.question||body.need,2000);
+  if(!extra.question) throw new Error('INVALID_QUESTION');
+  extra.interests=(Array.isArray(body.interests)?body.interests:[]).map(v=>clean(v,20).toLowerCase()).filter(v=>DEMO_KEYS.includes(v)).slice(0,5);
+  extra.followup_sla_hours=24;
   extra.src=clean(body.src,100);
   for(const k of ['utm_source','utm_medium','utm_campaign','utm_term','utm_content']) extra[k]=clean(body[k],200);
 }
