@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Your free ACE demo | ACE Growth Operating Systems</title>
+<meta name="description" content="Answer 4 quick questions and watch how ACE automates your growth.">
+<meta name="theme-color" content="#000000">
+<link rel="icon" type="image/png" sizes="64x64" href="/assets/favicon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+<meta property="og:title" content="Your free ACE demo is one minute away">
+<meta property="og:description" content="Answer 4 quick questions and watch how ACE automates your growth.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://acegrowthoperatingsystems.github.io/start/">
+<meta property="og:image" content="https://acegrowthoperatingsystems.github.io/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#000; --raise:#0F0F11; --raise2:#16171A; --edge:#26282D; --edge2:#34373D;
+    --red:#e3242b; --red-deep:#9E151B;
+    --silver:#C9CDD2; --steel:#949AA2; --white:#fff;
+  }
+  *{box-sizing:border-box}
+  [hidden]{display:none!important}
+  html{background:var(--ink);-webkit-text-size-adjust:100%}
+  body{margin:0;background:radial-gradient(ellipse 130% 440px at 50% 0,rgba(227,36,43,.18) 0%,rgba(158,21,27,.05) 50%,transparent 75%) no-repeat,var(--ink);color:var(--silver);
+    font-family:'IBM Plex Sans',system-ui,-apple-system,sans-serif;font-size:17px;line-height:1.55;
+    -webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:inherit}
+  .skip{position:absolute;left:-10000px;top:.5rem;background:#fff;color:#000;padding:.5rem .8rem;z-index:10}
+  .skip:focus{left:1rem}
+  .wrap{width:min(100% - 2rem,34rem);margin-inline:auto}
+  h1,h2,legend{font-family:'Archivo',sans-serif;color:var(--white);letter-spacing:-.02em}
+
+  header{padding:1.1rem 0 0;text-align:center;position:relative}
+  .logo{display:inline-block;line-height:0}
+  .logo img{width:104px;height:104px;display:block;mix-blend-mode:lighten}
+
+  .intro{text-align:center;padding:.6rem 0 1.4rem}
+  h1{font-size:clamp(1.9rem,8.4vw,2.75rem);line-height:1.04;font-weight:800;margin:0 auto .85rem;
+    max-width:15ch;text-wrap:balance}
+  .sub{margin:0 auto;max-width:32ch;color:#C2C7CD;font-size:1.02rem}
+
+  .card{background:var(--raise);border:1px solid var(--edge);border-radius:14px;
+    padding:1.25rem 1.1rem 1.35rem;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+  .progress{margin:0 0 1.15rem}
+  .progress-top{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;
+    font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--steel)}
+  .progress-top b{color:var(--silver);font-weight:500}
+  .bar{height:4px;background:var(--edge);border-radius:4px;margin-top:.55rem;overflow:hidden}
+  .bar span{display:block;height:100%;width:25%;background:var(--red);border-radius:4px;transition:width .3s ease}
+
+  fieldset{border:0;margin:0;padding:0;min-width:0}
+  fieldset + fieldset{margin-top:1.3rem}
+  form:not(.is-stepper) .step + .step{margin-top:1.6rem;padding-top:1.4rem;border-top:1px solid var(--edge)}
+  legend,.q{display:block;font-family:'Archivo',sans-serif;font-weight:700;color:var(--white);
+    font-size:1.2rem;line-height:1.25;margin:0 0 .3rem;padding:0;outline:none}
+  .hint{font-size:.88rem;color:var(--steel);margin:0 0 .8rem}
+  .q + .hint{margin-top:0}
+  label.field .q{margin-bottom:.75rem}
+
+  select,input[type=text],input[type=email]{width:100%;background:var(--raise2);border:1px solid var(--edge2);color:#fff;
+    border-radius:10px;padding:.9rem .95rem;font:inherit;font-size:16px;min-height:3.1rem;
+    -webkit-appearance:none;appearance:none;transition:border-color .15s}
+  select{background-image:linear-gradient(45deg,transparent 50%,var(--silver) 50%),linear-gradient(135deg,var(--silver) 50%,transparent 50%);
+    background-position:calc(100% - 1.25rem) 52%,calc(100% - .9rem) 52%;background-size:.38rem .38rem;background-repeat:no-repeat;padding-right:2.4rem}
+  select:invalid{color:#8A9098}
+  select option{color:#fff;background:#16171A}
+  input::placeholder{color:#6E747C}
+  select:focus,input:focus,textarea:focus{outline:3px solid rgba(227,36,43,.45);outline-offset:1px;border-color:var(--red)}
+
+  .choices{display:grid;gap:.5rem}
+  .choices.pills{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .choice{position:relative;display:flex;align-items:center;gap:.75rem;background:var(--raise2);
+    border:1px solid var(--edge2);border-radius:10px;padding:.8rem .9rem;min-height:3.1rem;cursor:pointer;
+    color:#E6E8EB;font-size:.98rem;line-height:1.3;transition:border-color .15s,background .15s;
+    -webkit-tap-highlight-color:transparent}
+  .choice input{flex:0 0 auto;width:1.15rem;height:1.15rem;margin:0;accent-color:var(--red)}
+  .choice:has(input:checked){border-color:var(--red);background:#1D1012}
+  .choice:has(input:focus-visible){outline:3px solid rgba(227,36,43,.45);outline-offset:1px}
+  .pills .choice{justify-content:center;padding:.7rem .3rem;text-align:center;font-weight:600}
+  .pills .choice input{position:absolute;inset:0;opacity:0;width:100%;height:100%;margin:0;cursor:pointer}
+  .pills .choice span{white-space:nowrap}
+
+  label.field{display:block;font-weight:600;color:#E6E8EB;font-size:.95rem;margin:0 0 .85rem}
+  label.field span.lab{display:block;margin-bottom:.35rem}
+  .req{color:var(--steel);font-weight:400;font-size:.85rem}
+  .consent{display:flex;align-items:flex-start;gap:.6rem;margin:.2rem 0 0;color:#A9AFB6;
+    font-size:.86rem;line-height:1.45;cursor:pointer}
+  .consent input{flex:0 0 auto;width:1.15rem;height:1.15rem;margin:.12rem 0 0;accent-color:var(--red)}
+  .consent a{color:var(--silver)}
+
+  .nav{display:flex;gap:.6rem;margin-top:1.35rem}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;border-radius:10px;
+    font-family:'Archivo',sans-serif;font-weight:800;font-size:1rem;letter-spacing:.04em;text-transform:uppercase;
+    min-height:3.4rem;padding:.9rem 1.2rem;cursor:pointer;text-decoration:none;border:1px solid transparent;
+    -webkit-tap-highlight-color:transparent;transition:background .15s,box-shadow .15s,border-color .15s}
+  .btn-primary{flex:1;background:var(--red);color:#fff;border-color:var(--red)}
+  .btn-primary:hover{background:#F0353C;box-shadow:0 0 30px rgba(227,36,43,.38)}
+  .btn-primary:disabled{opacity:.7;cursor:progress}
+  .btn-ghost{background:transparent;color:var(--silver);border-color:var(--edge2);flex:0 0 auto;padding-inline:1.1rem}
+  .btn-ghost:hover{border-color:var(--silver);color:#fff}
+  .btn:focus-visible{outline:3px solid #fff;outline-offset:2px}
+  form:not(.is-stepper) [data-next], form:not(.is-stepper) [data-back]{display:none}
+  .status{margin:.9rem 0 0;color:var(--silver);font-size:.92rem}
+  .status:empty{margin:0}
+  .status:not(:empty){border-left:3px solid var(--red);padding-left:.7rem}
+
+  .unlocked{text-align:center}
+  .unlocked h2{font-size:clamp(2rem,9vw,2.6rem);font-weight:800;margin:0 0 .4rem;outline:none}
+  .unlocked .sub{margin-bottom:1.2rem}
+  .video{position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--edge);background:#000;aspect-ratio:16/9}
+  .video video{display:block;width:100%;height:100%;background:#000}
+  .inbox{border:1px solid var(--edge);border-radius:12px;background:
+    radial-gradient(ellipse at 50% 0%,rgba(227,36,43,.16),transparent 65%),var(--raise2);
+    padding:1.6rem 1.2rem 1.5rem;text-align:center}
+  .inbox img{width:72px;height:72px;display:block;margin:0 auto .9rem;mix-blend-mode:lighten}
+  .inbox p.big{font-family:'Archivo',sans-serif;font-weight:700;color:#fff;font-size:1.22rem;line-height:1.25;margin:0 0 .45rem;text-wrap:balance}
+  .inbox p{margin:0;color:#B9BEC5;font-size:.95rem}
+  .book{width:100%;margin-top:1.1rem}
+  .heldnote{font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.06em;color:var(--steel);
+    margin:1rem 0 0;line-height:1.5}
+
+  .inside{margin:1.6rem 0 0;padding:0}
+  .inside h3{font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:.72rem;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--steel);margin:0 0 .7rem;text-align:center}
+  .inside ul{list-style:none;margin:0;padding:0;display:grid;gap:.45rem}
+  .inside li{display:flex;gap:.65rem;align-items:flex-start;color:#D4D8DC;font-size:.95rem;line-height:1.4}
+  .inside li::before{content:"";flex:0 0 auto;width:.5rem;height:.5rem;margin-top:.42rem;background:var(--red);
+    transform:rotate(45deg)}
+
+  footer{margin-top:2.4rem;border-top:1px solid #17181B;padding:1.4rem 0 calc(2rem + env(safe-area-inset-bottom));
+    color:var(--steel);font-size:.84rem;text-align:center}
+  footer nav{display:flex;justify-content:center;flex-wrap:wrap;gap:.4rem 1.3rem;margin-bottom:.6rem}
+  footer a{text-decoration:none} footer a:hover{color:#fff;text-decoration:underline}
+  noscript p{color:#fff;background:var(--raise2);border-left:3px solid var(--red);padding:.7rem .9rem;border-radius:6px}
+
+  @media (max-width:360px){
+    .choices.pills{grid-template-columns:repeat(3,minmax(0,1fr))}
+  }
+  @media (min-width:760px){
+    header{padding-top:2rem}
+    .logo img{width:128px;height:128px}
+    .intro{padding:1rem 0 2rem}
+    .card{padding:1.8rem 1.8rem 1.9rem}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<!-- This page's release flag. It governs THIS page only. Held: the form never
+     posts; it records the payload locally and shows the held success state. -->
+<body data-page-key="start-automate" data-release-state="APPROVAL_HELD">
+<a class="skip" href="#main">Skip to content</a>
+<header>
+  <a class="logo" href="../" aria-label="ACE Growth Operating Systems home"><img src="../assets/ace-logo.jpg" alt="ACE Growth Operating Systems" width="104" height="104"></a>
+</header>
+<main id="main" class="wrap">
+  <div class="intro" id="formIntro">
+    <h1>Your free ACE demo is one minute away.</h1>
+    <p class="sub">Answer 4 quick questions and watch how ACE automates your growth.</p>
+  </div>
+
+  <div class="card" id="demo">
+    <div class="progress" id="progress" hidden>
+      <div class="progress-top"><b id="stepLabel">Step 1 of 4</b><span>About 1 minute</span></div>
+      <div class="bar" id="stepBar" role="progressbar" aria-label="Questionnaire progress" aria-valuemin="1" aria-valuemax="4" aria-valuenow="1"><span id="stepFill"></span></div>
+    </div>
+    <noscript><p>Please turn on JavaScript to unlock the demo, or email AceGrowth.os@gmail.com.</p></noscript>
+
+    <form data-start-form novalidate>
+      <input type="hidden" name="source" value="ig-comment-automate"><input type="hidden" name="product_key" value="ACE-DEMO"><input type="hidden" name="offer_code" value="DEMO-AUTOMATE"><input type="hidden" name="form" value="automate-demo">
+
+      <div class="step" data-step="1">
+        <label class="field" for="business_type">
+          <span class="q" id="q1" tabindex="-1" data-step-focus>What kind of business do you run?</span>
+          <select id="business_type" name="business_type" required>
+            <option value="">Choose one</option>
+            <option>Home services / trades</option>
+            <option>Professional services</option>
+            <option>Health &amp; wellness</option>
+            <option>Real estate</option>
+            <option>Retail / e-commerce</option>
+            <option>Agency / consulting</option>
+            <option>Other</option>
+          </select>
+        </label>
+        <fieldset>
+          <legend class="q">How many people on your team?</legend>
+          <div class="choices pills">
+            <label class="choice"><input type="radio" name="team_size" value="1" required><span>1</span></label>
+            <label class="choice"><input type="radio" name="team_size" value="2–5"><span>2–5</span></label>
+            <label class="choice"><input type="radio" name="team_size" value="6–20"><span>6–20</span></label>
+            <label class="choice"><input type="radio" name="team_size" value="21–50"><span>21–50</span></label>
+            <label class="choice"><input type="radio" name="team_size" value="50+"><span>50+</span></label>
+          </div>
+        </fieldset>
+        <div class="nav"><button class="btn btn-primary" type="button" data-next>Next</button></div>
+      </div>
+
+      <div class="step" data-step="2">
+        <fieldset>
+          <legend class="q" tabindex="-1" data-step-focus>What’s slowing your growth most right now?</legend>
+          <p class="hint">Pick the biggest one.</p>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="bottleneck" value="Not enough leads" required><span>Not enough leads</span></label>
+            <label class="choice"><input type="radio" name="bottleneck" value="Leads go cold before we follow up"><span>Leads go cold before we follow up</span></label>
+            <label class="choice"><input type="radio" name="bottleneck" value="Too much time on admin"><span>Too much time on admin</span></label>
+            <label class="choice"><input type="radio" name="bottleneck" value="Inconsistent marketing / posting"><span>Inconsistent marketing / posting</span></label>
+            <label class="choice"><input type="radio" name="bottleneck" value="Proposals and quotes take too long"><span>Proposals and quotes take too long</span></label>
+            <label class="choice"><input type="radio" name="bottleneck" value="Other"><span>Other</span></label>
+          </div>
+        </fieldset>
+        <div class="nav"><button class="btn btn-ghost" type="button" data-back aria-label="Back">Back</button><button class="btn btn-primary" type="button" data-next>Next</button></div>
+      </div>
+
+      <div class="step" data-step="3">
+        <fieldset>
+          <legend class="q" tabindex="-1" data-step-focus>Could your business benefit from…</legend>
+          <p class="hint">Pick all that apply.</p>
+          <div class="choices">
+            <label class="choice"><input type="checkbox" name="interests" value="Automated prospecting"><span>Automated prospecting</span></label>
+            <label class="choice"><input type="checkbox" name="interests" value="Automated marketing &amp; social posting"><span>Automated marketing &amp; social posting</span></label>
+            <label class="choice"><input type="checkbox" name="interests" value="Automated sales systems"><span>Automated sales systems</span></label>
+            <label class="choice"><input type="checkbox" name="interests" value="Instant lead response &amp; follow-up"><span>Instant lead response &amp; follow-up</span></label>
+            <label class="choice"><input type="checkbox" name="interests" value="Automated booking"><span>Automated booking</span></label>
+            <label class="choice"><input type="checkbox" name="interests" value="Automated proposals"><span>Automated proposals</span></label>
+            <label class="choice"><input type="checkbox" name="interests" value="Accelerated growth &amp; profitability"><span>Accelerated growth &amp; profitability</span></label>
+          </div>
+        </fieldset>
+        <div class="nav"><button class="btn btn-ghost" type="button" data-back aria-label="Back">Back</button><button class="btn btn-primary" type="button" data-next>Next</button></div>
+      </div>
+
+      <div class="step" data-step="4">
+        <p class="q" tabindex="-1" data-step-focus>Where should we send your demo?</p>
+        <p class="hint">We’ll also email you a copy of the video.</p>
+        <label class="field"><span class="lab">First name</span><input type="text" name="first_name" autocomplete="given-name" autocapitalize="words" maxlength="120" required></label>
+        <label class="field"><span class="lab">Email</span><input type="email" name="email" autocomplete="email" inputmode="email" maxlength="320" required></label>
+        <label class="consent"><input type="checkbox" name="consent" required><span>I agree to receive emails from ACE about my demo and how ACE can help my business. I can unsubscribe at any time. See the <a href="../privacy/">Privacy Policy</a>.</span></label>
+        <div class="nav"><button class="btn btn-ghost" type="button" data-back aria-label="Back">Back</button><button class="btn btn-primary" type="submit">Unlock my demo</button></div>
+      </div>
+      <p class="status" role="status" aria-live="polite"></p>
+    </form>
+
+    <section class="unlocked" id="unlocked" hidden aria-labelledby="unlockedTitle">
+      <h2 id="unlockedTitle" tabindex="-1">You’re in.</h2>
+      <p class="sub">Your ACE demo is unlocked.</p>
+      <div class="video" id="videoSlot" hidden></div>
+      <div class="inbox" id="videoInbox" hidden>
+        <img src="../assets/ace-logo.jpg" alt="" width="72" height="72">
+        <p class="big">Your demo video is on its way to your inbox.</p>
+        <p>Keep an eye out for an email from ACE.</p>
+      </div>
+      <a class="btn btn-primary book" id="bookDemo" hidden target="_blank" rel="noopener">Book your free demo</a>
+      <p class="heldnote" id="heldNote" hidden></p>
+    </section>
+  </div>
+
+  <div class="inside">
+    <h3>What ACE does for you</h3>
+    <ul>
+      <li>Answers new leads within minutes</li>
+      <li>Follows up and books calls</li>
+      <li>Sends proposals</li>
+      <li>Creates and schedules social posts</li>
+      <li>Builds prospect lists</li>
+      <li>You approve from your phone</li>
+    </ul>
+  </div>
+</main>
+<footer>
+  <div class="wrap">
+    <nav aria-label="Legal"><a href="../terms/">Terms</a><a href="../refund/">Refund</a><a href="../privacy/">Privacy</a><a href="mailto:AceGrowth.os@gmail.com">AceGrowth.os@gmail.com</a></nav>
+    <div>ACE Growth Operating Systems</div>
+  </div>
+</footer>
+<script src="../assets/release-flag.js" defer></script>
+<script src="../assets/start-config.js" defer></script>
+<script src="../assets/start-funnel.js" defer></script>
+</body>
+</html>

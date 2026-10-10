@@ -200,7 +200,7 @@ export function checkManifestMatchesImplementation(sources) {
   if (manifest.release_state !== 'APPROVAL_HELD') return fail(name, 'manifest release_state is not APPROVAL_HELD');
   if (manifest.live_submission_enabled !== false) return fail(name, 'manifest live_submission_enabled is not false');
 
-  const routeMap = { '/marketing/': 'marketing', '/p12/': 'p12' };
+  const routeMap = { '/marketing/': 'marketing', '/p12/': 'p12', '/growth/': 'growth', '/start/': 'start' };
   for (const route of manifest.routes || []) {
     const key = routeMap[route.path];
     if (!key) return fail(name, `manifest references unknown route path ${route.path}`);
@@ -408,6 +408,8 @@ export function loadRealSources() {
   return {
     marketing: readFileSafe('marketing/index.html'),
     p12: readFileSafe('p12/index.html'),
+    growth: readFileSafe('growth/index.html'),
+    start: readFileSafe('start/index.html'),
     js: readFileSafe('assets/product-launch.js'),
     css: readFileSafe('assets/product-launch.css'),
     manifest: readFileSafe('launch-readiness/product-pages-20260913.json'),

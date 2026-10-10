@@ -40,16 +40,18 @@ const clean=(value,max)=>String(value||'').trim().slice(0,max);
 const email=clean(body.email,320).toLowerCase();
 if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) throw new Error('INVALID_EMAIL');
 
-const name=clean(body.name,200);
+// automate-demo (/start/) sends first_name and bottleneck; they fill name/need.
+const name=clean(body.name||body.first_name,200);
 if(!name) throw new Error('INVALID_NAME');
 
-const need=clean(body.need,200);
+const need=clean(body.need||body.bottleneck,200);
 if(!need) throw new Error('INVALID_NEED');
 
 const CONTRACTS={
   'ace-mkt-interest':{product_key:'ACE-MKT',offer_code:'SYS-MKT',source:'ace-mkt',notion_source:'Website - ACE-MKT product interest'},
   'p12-interest':{product_key:'ACE-PRO',offer_code:'P12',source:'ace-p12',notion_source:'Website - P12 product interest'},
-  'grow-interest':{product_key:'ACE-GROW',offer_code:'SYS-GROW',source:'ace-grow',notion_source:'Website - ACE-GROW product interest'}
+  'grow-interest':{product_key:'ACE-GROW',offer_code:'SYS-GROW',source:'ace-grow',notion_source:'Website - ACE-GROW product interest'},
+  'automate-demo':{product_key:'ACE-DEMO',offer_code:'DEMO-AUTOMATE',source:'ig-comment-automate',notion_source:'Website - AUTOMATE demo funnel'}
 };
 const form=clean(body.form,50);
 const contract=CONTRACTS[form];
@@ -80,7 +82,20 @@ if(!submittedAt||Number.isNaN(Date.parse(submittedAt))) throw new Error('INVALID
 const suppliedReleaseState=clean(body.release_state,40);
 if(suppliedReleaseState!=='APPROVAL_HELD') throw new Error('RELEASE_NOT_APPROVAL_HELD');
 
+// Extra questionnaire fields carried by the /start/ AUTOMATE funnel only.
+const extra={};
+if(form==='automate-demo'){
+  extra.first_name=clean(body.first_name,120);
+  extra.business_type=clean(body.business_type,100);
+  extra.team_size=clean(body.team_size,20);
+  extra.bottleneck=clean(body.bottleneck,200);
+  extra.interests=(Array.isArray(body.interests)?body.interests:[]).slice(0,10).map(v=>clean(v,100)).filter(Boolean);
+  extra.src=clean(body.src,100);
+  for(const k of ['utm_source','utm_medium','utm_campaign','utm_term','utm_content']) extra[k]=clean(body[k],200);
+}
+
 return [{json:{
+  ...extra,
   email,name,need,form,
   product_key:contract.product_key,offer_code:contract.offer_code,source:contract.source,
   notion_source:contract.notion_source,
