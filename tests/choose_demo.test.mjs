@@ -34,11 +34,11 @@ const runMapper = (body) => new Function('$', '$execution', mapperSrc)(
 const DEADLINE_LINE = 'const LAUNCH_PRICING_ENDS="2027-03-01T00:00:00-05:00";';
 const FIXED_NOW = Date.parse('2026-10-10T12:00:00-04:00'); // injectable clock for deterministic tests
 const DEMOS = [
+  ['pipeline', 'Prospecting Autopilot', 'Find new clients every week'],
+  ['content', 'Social Marketing Autopilot', 'Post every day without the work'],
   ['followup', 'The Follow-Up Machine', 'Answer every lead fast and book more calls'],
-  ['pipeline', 'Pipeline Builder', 'Find new clients every week'],
-  ['content', 'Content Autopilot', 'Post every day without the work'],
-  ['proposal', 'Proposal Engine', 'Send proposals the same day and close more'],
-  ['growth', 'The Growth Engine', 'See the whole ACE system working together'],
+  ['proposal', 'Proposal & Sales Engine', 'Send proposals the same day and close more'],
+  ['growth', 'The Growth Engine', 'See the whole ACE system working together to create accelerated compounding growth. Leverage business exponentially.'],
 ];
 
 // ---------------- config ----------------
@@ -87,7 +87,7 @@ test('demo-config: held, five real demo videos, Founding Member deadline', () =>
 
 test('playlist order is fixed and growth closes it', () => {
   const c = loadConfig();
-  deq(c.normalizeKeys('growth,content,followup'), ['followup', 'content', 'growth']);
+  deq(c.normalizeKeys('growth,content,followup'), ['content', 'followup', 'growth']);
   deq(c.normalizeKeys(['growth']), ['growth']);
   deq(c.normalizeKeys('bogus, CONTENT ,content'), ['content']);
   deq(c.normalizeKeys(''), []);
@@ -137,7 +137,7 @@ test('homepage section ships hidden + inert, right after the hero', () => {
   assert.ok(section.includes('Make selections above to select the appropriate demo'));
   const tiles = [...section.matchAll(/name="demo" value="([a-z]+)"/g)].map(m => m[1]);
   deq(tiles, DEMOS.map(d => d[0]));
-  for (const [, title, outcome] of DEMOS) { assert.ok(section.includes(title)); assert.ok(section.includes(outcome)); }
+  for (const [, title, outcome] of DEMOS) { assert.ok(section.includes(title.replace(/&/g, '&amp;'))); assert.ok(section.includes(outcome)); }
   assert.match(css, /\.cyd\[hidden\],\.cyd \[hidden\]\{display:none!important\}/);
   // config loads before the controller, both after the page's own script
   assert.ok(indexHtml.indexOf('<script src="assets/demo-config.js" defer>') < indexHtml.indexOf('<script src="assets/demo-picker.js" defer>'));
