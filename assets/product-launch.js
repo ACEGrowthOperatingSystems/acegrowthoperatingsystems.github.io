@@ -6,8 +6,8 @@ const RELEASE_AUTHORIZED=Boolean(window.ACE_RELEASE&&window.ACE_RELEASE.isReleas
 const ENDPOINT="https://withyoudaily.app.n8n.cloud/webhook/ace-lead";
 
 const PREVIEW_MESSAGE="Preview verified. Submission is held until launch authorization; nothing was sent.";
-const HELD_SUCCESS_MESSAGE="Thank you. Your request was received for internal review. It remains unqualified and untagged. No outreach or other external action has been authorized.";
-const FAILURE_MESSAGE="We could not safely confirm that your request was held for review. Please try again later.";
+const HELD_SUCCESS_MESSAGE="Thanks — we got it. We'll reply by email within one business day.";
+const FAILURE_MESSAGE="Something went wrong sending your message. Please try again, or email AceGrowth.os@gmail.com.";
 
 const bytesToHex=bytes=>Array.from(bytes,b=>b.toString(16).padStart(2,"0")).join("");
 const sha256=async value=>bytesToHex(new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(value))));
