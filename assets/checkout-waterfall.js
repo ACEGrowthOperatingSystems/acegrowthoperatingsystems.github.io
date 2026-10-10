@@ -38,15 +38,18 @@ const parsePrice=text=>{
 
 const active=CHECKOUT.offers.filter(o=>!o.contactOnly&&o.standard);
 
-// Whole-percent saving per offer, for each charged component.
+// Exact saving (percent, unrounded) for every charged component of every
+// shown offer. The banner may say "more than a third off" ONLY if every one
+// of them is above THIRD_OFF_MIN; otherwise it makes no numeric claim.
+const THIRD_OFF_MIN=33.34;
 const savings=[];
 active.forEach(o=>{
   const l=parsePrice(o.launch),s=parsePrice(o.standard);
   if(!l||!s)return;
-  if(s.monthly>0)savings.push(Math.round((1-l.monthly/s.monthly)*100));
-  if(s.onboarding>0)savings.push(Math.round((1-l.onboarding/s.onboarding)*100));
+  if(s.monthly>0)savings.push((1-l.monthly/s.monthly)*100);
+  if(s.onboarding>0)savings.push((1-l.onboarding/s.onboarding)*100);
 });
-const uniformPct=savings.length&&savings.every(p=>p===savings[0])&&savings[0]>0?savings[0]:null;
+const moreThanAThird=savings.length>0&&savings.every(p=>p>THIRD_OFF_MIN);
 
 const el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!=null)n.textContent=text;return n};
 
@@ -54,7 +57,7 @@ const el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className
 const banner=el("div","wf-banner");
 banner.setAttribute("role","note");
 banner.appendChild(el("p","wf-banner-k","From your demo"));
-banner.appendChild(el("p","wf-banner-h",uniformPct?`Launch pricing: save ${uniformPct}% vs standard`:"Launch pricing — save vs standard"));
+banner.appendChild(el("p","wf-banner-h",moreThanAThird?"Launch pricing: more than a third off standard":"Launch pricing — save vs standard"));
 banner.appendChild(el("p","wf-banner-d","Every plan below shows its launch price with the standard price struck through. Your monthly price is locked while you stay subscribed."));
 const ends=DEMO&&DEMO.launchPricingEnds?DEMO.launchPricingEnds():null;
 if(ends){

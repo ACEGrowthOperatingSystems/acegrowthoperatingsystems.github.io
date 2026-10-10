@@ -266,8 +266,18 @@ test('waterfall renders nothing without ?from=demo', () => {
 test('waterfall: computed %, recommendations, bundle saving, downsell; no countdown while LAUNCH_PRICING_ENDS is null', () => {
   const r = runWaterfall({ search: '?from=demo&interests=content' });
   assert.equal(r.top.hidden, false);
-  // Every launch price rounds to 35% below standard in checkout-config.js.
-  assert.ok(r.text.includes('Launch pricing: save 35% vs standard'), r.text);
+  // Every shown offer's exact saving (monthly and onboarding) is > 33.34%.
+  const parse = (t) => ({ m: Number((t.match(/\$([\d,]+)\/month/) || [])[1]?.replace(/,/g, '')), o: Number((t.match(/\$([\d,]+) onboarding/) || [0, '0'])[1].replace(/,/g, '')) });
+  const w = {}; vm.runInNewContext(checkoutConfigSrc, { window: w });
+  const shown = [...w.ACE_CHECKOUT.offers].filter(o => !o.contactOnly && o.standard);
+  assert.equal(shown.length, 6);
+  for (const o of shown) {
+    const l = parse(o.launch), s = parse(o.standard);
+    assert.ok((1 - l.m / s.m) * 100 > 33.34, `${o.key} monthly saving`);
+    if (s.o) assert.ok((1 - l.o / s.o) * 100 > 33.34, `${o.key} onboarding saving`);
+  }
+  assert.ok(r.text.includes('Launch pricing: more than a third off standard'), r.text);
+  assert.doesNotMatch(r.text, /save \d+%|35%/);
   assert.doesNotMatch(r.text, /ends|left|hurry|today only|expires/i, 'no deadline text while LAUNCH_PRICING_ENDS is null');
   assert.equal(r.intervals.length, 0, 'no countdown timer while LAUNCH_PRICING_ENDS is null');
   // content -> Content Creation Machine + Creation + Distribution, moved first and badged.
@@ -296,11 +306,15 @@ test('waterfall: follow-up/proposal/pipeline/growth recommend Essential + Profes
 });
 
 test('waterfall: non-uniform discount falls back to "save vs standard"; real deadline shows a countdown', () => {
-  const skew = checkoutConfigSrc.replace('launch:"$405/month",standard:"$620/month"', 'launch:"$405/month",standard:"$900/month"');
-  assert.notEqual(skew, checkoutConfigSrc);
-  const res = runWaterfall({ search: '?from=demo', checkoutSrc: skew });
+  // One offer at exactly a third off (405/607.5 is not representable; use 400/600) must drop the claim.
+  const third = checkoutConfigSrc.replace('launch:"$405/month",standard:"$620/month"', 'launch:"$400/month",standard:"$600/month"');
+  assert.notEqual(third, checkoutConfigSrc);
+  const res = runWaterfall({ search: '?from=demo', checkoutSrc: third });
   assert.ok(res.text.includes('Launch pricing \u2014 save vs standard'), res.text);
-  assert.doesNotMatch(res.text, /save \d+%/);
+  assert.doesNotMatch(res.text, /a third|save \d+%/);
+  const onb = checkoutConfigSrc.replace('launch:"$1,500 onboarding + $810/month",standard:"$2,300 onboarding', 'launch:"$1,600 onboarding + $810/month",standard:"$2,300 onboarding');
+  assert.notEqual(onb, checkoutConfigSrc);
+  assert.ok(runWaterfall({ search: '?from=demo', checkoutSrc: onb }).text.includes('Launch pricing \u2014 save vs standard'), 'onboarding saving also gates the claim');
   const future = new Date(Date.now() + 5 * 864e5).toISOString();
   const withDate = configSrc.replace('const LAUNCH_PRICING_ENDS=null;', `const LAUNCH_PRICING_ENDS="${future}";`);
   const d = runWaterfall({ search: '?from=demo', demoSrc: withDate });
@@ -341,7 +355,11 @@ test('no forbidden strings, invented prices or Stripe links in the funnel', () =
   }
   assert.doesNotMatch(section, /WithYou/i);
   // ACE palette: no navy/blue in the new styles.
-  for (const [name, src] of [['choose-demo.css', css], ['checkout-waterfall.css', wfCss]]) {
+  const aceCss = read('assets/checkout-ace.css');
+  assert.doesNotMatch(checkoutHtml, /product-launch\.css/, 'checkout uses its own ACE skin, not the shared navy stylesheet');
+  assert.match(checkoutHtml, /<link rel="stylesheet" href="\.\.\/\.\.\/assets\/checkout-ace\.css">/);
+  assert.match(checkoutHtml, /<img src="\.\.\/\.\.\/assets\/ace-logo\.jpg"/);
+  for (const [name, src] of [['choose-demo.css', css], ['checkout-waterfall.css', wfCss], ['checkout-ace.css', aceCss], ['checkout/ace-mkt/index.html', checkoutHtml]]) {
     assert.doesNotMatch(src, /#5fa8ff|#07111f|#0d1b2e|#142b4b|navy|\bblue\b/i, name);
   }
 });
