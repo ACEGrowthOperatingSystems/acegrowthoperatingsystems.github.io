@@ -19,6 +19,22 @@
       "form": "ace-mkt-interest",
       "source": "ace-mkt",
       "consent_required": true
+    },
+    {
+      "path": "/growth/",
+      "product_key": "ACE-GROW",
+      "offer_code": "SYS-GROW",
+      "form": "grow-interest",
+      "source": "ace-grow",
+      "consent_required": true
+    },
+    {
+      "path": "/start/",
+      "product_key": "ACE-DEMO",
+      "offer_code": "DEMO-AUTOMATE",
+      "form": "automate-demo",
+      "source": "ig-comment-automate",
+      "consent_required": true
     }
   ],
   "approval_boundaries": [
