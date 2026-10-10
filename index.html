@@ -637,7 +637,37 @@
   }
   /* QA 4.07 (8 Oct): the 3D Commander carousel pushed the page 53px wider than a 390px phone; clip it to the section */
   #commanders{overflow-x:clip}
+
+  /* ---- Hero fits the first screen: headline + primary CTA above the fold ---- */
+  .hero{min-height:auto;padding:2.2rem 0 4.5rem}
+  .hero-copy{display:flex;flex-direction:column}
+  .hero-copy h1{order:1}
+  .hero-copy .strap{order:2;margin-top:1.1rem}
+  .hero-copy #brief{order:3}
+  .hero-copy .console{order:4}
+  .hero-copy .onefield{margin-top:1.6rem}
+  .emblem{width:min(36%,8.5rem);margin:0 auto 1rem}
+  .masterbtn{margin:0 auto 1.6rem;padding:.6rem 1.2rem}
+  .hero h1{font-size:clamp(2.2rem,9.4vw,3.2rem)}
+  .hero .scroll{display:none}
+  @media (min-width:901px){
+    .hero{min-height:calc(100svh - 66px);padding:2.5rem 0 3rem}
+    .hero-grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);
+      grid-template-areas:"mark copy" "btn copy";grid-template-rows:auto 1fr;align-items:start;column-gap:3.5rem;text-align:left}
+    .emblem{grid-area:mark;width:min(100%,16rem);margin:1.6rem auto 1.4rem}
+    .masterbtn{grid-area:btn;align-self:start;margin:0 auto}
+    .hero-copy{grid-area:copy}
+    .hero h1{font-size:clamp(2.6rem,4.6vw,4.1rem);margin-inline:0;max-width:none}
+    .hero-copy .strap{margin-left:0;margin-right:0;max-width:none}
+    .hero-copy .onefield{margin-left:0;margin-right:0}
+    .hero-copy .console{margin-left:0;margin-right:0;max-width:29rem}
+    .hero-copy #brief .formnote,.hero-copy #brief .microcopy{text-align:left !important}
+    .hero-copy #brief .consent{max-width:29rem}
+    .hero .scroll{display:flex}
+  }
 </style>
+<link rel="icon" type="image/png" sizes="64x64" href="/assets/favicon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
 </head>
 <body>
 
@@ -665,8 +695,7 @@
         <span class="tri" aria-hidden="true"></span>
         <span>Watch the overview<small>60 seconds &middot; every command</small></span>
       </button>
-      <div>
-        <p class="eyebrow rise" style="text-align:center">Private preview</p>
+      <div class="hero-copy">
         <h1 class="reveal">You've seen what<br>AI can do.<br><em>Now see what your<br>business can do with it.</em></h1>
         <p class="strap reveal">Intelligence. Automation. Execution. Growth. Working as one.</p>
         <div class="console rise" id="console" aria-hidden="true">
@@ -699,12 +728,12 @@
         <button class="prob rise" data-i="0" type="button">
           <span class="q">I need more customers and qualified prospects.</span>
           <span class="sym">Pipeline arrives in bursts when someone remembers to look, then dries up.</span>
-          <span class="ans"><b>What changes:</b> Named decision-makers found continuously, with the evidence behind each one, arriving whether or not anyone is looking.</span>
+          <span class="ans"><b>What changes:</b> Prospect lists built for you, with a named contact on each one, ready for you to approve from your phone.</span>
         </button>
         <button class="prob rise" data-i="1" type="button">
           <span class="q">I need to grow revenue faster.</span>
           <span class="sym">Effort spreads evenly across opportunities that are not evenly worth it.</span>
-          <span class="ans"><b>What changes:</b> Opportunities scored and routed, so the hours go where they actually convert.</span>
+          <span class="ans"><b>What changes:</b> New leads answered within minutes, then followed up until a call is booked.</span>
         </button>
         <button class="prob rise" data-i="2" type="button">
           <span class="q">I need to automate work and reduce operating burden.</span>
@@ -714,7 +743,7 @@
         <button class="prob rise" data-i="3" type="button">
           <span class="q">I need better marketing, content, and audience growth.</span>
           <span class="sym">Publishing depends on whoever has time, so cadence breaks the week it gets full.</span>
-          <span class="ans"><b>What changes:</b> Assets produced, checked and published on schedule, in your voice, from your own material.</span>
+          <span class="ans"><b>What changes:</b> Social posts created and scheduled from your own material, approved from your phone.</span>
         </button>
         <button class="prob rise" data-i="4" type="button">
           <span class="q">I need to convert more leads into customers.</span>
@@ -729,7 +758,7 @@
         <button class="prob rise" data-i="6" type="button">
           <span class="q">I want to launch or validate a business idea.</span>
           <span class="sym">Building before validating is the most expensive mistake available.</span>
-          <span class="ans"><b>What changes:</b> Structured validation that produces evidence of real demand before the build, not after.</span>
+          <span class="ans"><b>What changes:</b> Prospect lists built and followed up for you, so you hear from real buyers before you build.</span>
         </button>
         <button class="prob rise" data-i="7" type="button">
           <span class="q">I already use AI, but my tools and agents do not work together.</span>
@@ -974,11 +1003,11 @@
           <div class="row"><dt>Class</dt><dd>Growth operating system</dd></div>
           <div class="row"><dt>Deployment</dt><dd>Single tenant — your accounts</dd></div>
           <div class="row"><dt>Operator load</dt><dd>Configuration, not operation</dd></div>
-          <div class="row"><dt>Runs</dt><dd>Unattended, continuously</dd></div>
+          <div class="row"><dt>New leads</dt><dd>Answered within minutes</dd></div>
           <div class="row"><dt>Architecture</dt><dd><span class="redacted" data-label="WITHHELD">&mdash;</span></dd></div>
           <div class="row"><dt>Orchestration</dt><dd><span class="redacted" data-label="WITHHELD">&mdash;</span></dd></div>
           <div class="row"><dt>Agent structure</dt><dd><span class="redacted" data-label="WITHHELD">&mdash;</span></dd></div>
-          <div class="row"><dt>Verification</dt><dd>Included at every tier</dd></div>
+          <div class="row"><dt>Approval</dt><dd>You approve from your phone</dd></div>
         </dl>
         <div class="plate-foot">FIELDS MARKED WITHHELD ARE PROPRIETARY AND STAY THAT WAY</div>
       </div>
@@ -1018,7 +1047,7 @@
       <button class="x" id="reelx" type="button" aria-label="Close">&times;</button>
       <h3 id="reelName"></h3>
       <p class="sub" id="reelSub"></p>
-      <div class="screen"><span class="mark">A</span><p id="reelState">Trailer in production</p></div>
+      <div class="screen"><span class="mark">A</span></div>
       <h4>What this commander delivers</h4>
       <ul id="reelCaps"></ul>
       <p class="foot" id="reelFoot"></p>
@@ -1167,7 +1196,7 @@
 /* Commander roles. Public depth only: name, focus, what it does for a
      customer. No routing keys, no orchestration tasks, no product catalogue. */
   (function(){
-    const D = {"0": {"n": "AUGUSTUS", "focus": "Governance", "role": "Keeps the whole system pointed at your priorities. Decides what gets worked on next, and holds approval where it belongs — with you."}, "1": {"n": "ARI", "focus": "Research", "role": "Turns questions about your market, your customers and your competitors into evidence, so decisions rest on something firmer than instinct."}, "2": {"n": "MAXIMUS", "focus": "Build", "role": "Takes a validated idea and makes it real — the product, the workflow, the assets — built to a standard that can actually be tested."}, "3": {"n": "ADRION", "focus": "Economics", "role": "Tells you what is actually profitable. Prices the work, checks the unit economics, and flags what is quietly costing you money."}, "4": {"n": "ACHILLES", "focus": "Pipeline", "role": "Finds the accounts worth your week, works out who to talk to, and reads the signals that say now rather than later."}, "5": {"n": "PROXIMO", "focus": "Demand", "role": "Turns a validated product into demand — the offer, the campaign and the follow-up that move an opportunity toward a close."}};
+    const D = {"0": {"n": "AUGUSTUS", "focus": "Governance", "role": "Keeps the whole system pointed at your priorities. Decides what gets worked on next, and holds approval where it belongs — with you."}, "1": {"n": "ARI", "focus": "Research", "role": "Turns questions about your market, your customers and your competitors into evidence, so decisions rest on something firmer than instinct."}, "2": {"n": "MAXIMUS", "focus": "Build", "role": "Takes a validated idea and makes it real — the product, the workflow, the assets — built to a standard that can actually be tested."}, "3": {"n": "ADRION", "focus": "Economics", "role": "Sends your proposals and follows up on every one, so quotes never go quiet. You approve each one from your phone first."}, "4": {"n": "ACHILLES", "focus": "Pipeline", "role": "Finds the accounts worth your week, works out who to talk to, and reads the signals that say now rather than later."}, "5": {"n": "PROXIMO", "focus": "Demand", "role": "Turns a validated product into demand — the offer, the campaign and the follow-up that move an opportunity toward a close."}};
     const CMD = {"0": {"c": "#C9CDD2", "t": "Leadership & Governance"}, "1": {"c": "#5BD4E8", "t": "Market, Product & Technology R&D"}, "2": {"c": "#FF7A2F", "t": "Product & Venture Builder"}, "3": {"c": "#3FCf8E", "t": "Finance, Economics & Profitability"}, "4": {"c": "#C4161C", "t": "Revenue Intelligence & Prospecting"}, "5": {"c": "#E5399B", "t": "Marketing & Demand Generation"}, "6": {"c": "#9B5CF6", "t": "Content, Creative & Media Studio"}, "7": {"c": "#E8A33D", "t": "Sales & Strategic Partnerships"}, "8": {"c": "#2FBFA8", "t": "Growth, Customer Success & Retention"}, "9": {"c": "#3B82F6", "t": "AI Workforce & Automation"}};
     const cin=document.getElementById('cinema'), acts=document.getElementById('acts');
     const fill=document.getElementById('cinefill');
@@ -1177,7 +1206,7 @@
     const frames=[];
     frames.push({open:'Whatever your business needs.', cm:'#C4161C'});
     for(let i=0;i<6;i++) frames.push({i:i, cm:CMD[i].c, name:D[i].n, cmd:CMD[i].t, focus:D[i].focus, role:D[i].role});
-    frames.push({open:'Six commanders. One Centurion force. Working while you sleep.', cm:'#C4161C'});
+    frames.push({open:'Six commanders. One Centurion force. Answering new leads within minutes.', cm:'#C4161C'});
 
     acts.innerHTML = frames.map(f=>{
       if(f.open) return '<div class="act" style="--cm:'+f.cm+'"><p class="aOpen">'+f.open+'</p></div>';
@@ -1225,7 +1254,7 @@
 
   /* Commander demo theatre. Public depth only: name, focus, and what it does for a customer. */
   (function(){
-    const DEMO = {"0": {"n": "AUGUSTUS", "focus": "Governance", "role": "Keeps the whole system pointed at your priorities. Decides what gets worked on next, and holds approval where it belongs — with you."}, "1": {"n": "ARI", "focus": "Research", "role": "Turns questions about your market, your customers and your competitors into evidence, so decisions rest on something firmer than instinct."}, "2": {"n": "MAXIMUS", "focus": "Build", "role": "Takes a validated idea and makes it real — the product, the workflow, the assets — built to a standard that can actually be tested."}, "3": {"n": "ADRION", "focus": "Economics", "role": "Tells you what is actually profitable. Prices the work, checks the unit economics, and flags what is quietly costing you money."}, "4": {"n": "ACHILLES", "focus": "Pipeline", "role": "Finds the accounts worth your week, works out who to talk to, and reads the signals that say now rather than later."}, "5": {"n": "PROXIMO", "focus": "Demand", "role": "Turns a validated product into demand — the offer, the campaign and the follow-up that move an opportunity toward a close."}};
+    const DEMO = {"0": {"n": "AUGUSTUS", "focus": "Governance", "role": "Keeps the whole system pointed at your priorities. Decides what gets worked on next, and holds approval where it belongs — with you."}, "1": {"n": "ARI", "focus": "Research", "role": "Turns questions about your market, your customers and your competitors into evidence, so decisions rest on something firmer than instinct."}, "2": {"n": "MAXIMUS", "focus": "Build", "role": "Takes a validated idea and makes it real — the product, the workflow, the assets — built to a standard that can actually be tested."}, "3": {"n": "ADRION", "focus": "Economics", "role": "Sends your proposals and follows up on every one, so quotes never go quiet. You approve each one from your phone first."}, "4": {"n": "ACHILLES", "focus": "Pipeline", "role": "Finds the accounts worth your week, works out who to talk to, and reads the signals that say now rather than later."}, "5": {"n": "PROXIMO", "focus": "Demand", "role": "Turns a validated product into demand — the offer, the campaign and the follow-up that move an opportunity toward a close."}};
     const th=document.getElementById('theatre'), reel=document.getElementById('reel');
     if(!th) return;
     function open(i, cmd, colour){
@@ -1235,7 +1264,7 @@
       document.getElementById('reelSub').textContent='Commander of '+cmd;
       document.getElementById('reelCaps').innerHTML='<li class="rolecopy">'+d.role+'</li>';
       document.getElementById('reelFoot').textContent=
-        d.n+' is supported by the Centurion force. The trailer showing them at work is in production — until then, this is what the command delivers.';
+        d.n+' is supported by the Centurion force. This is what the command delivers.';
       th.classList.add('on');
       document.body.style.overflow='hidden';
     }
