@@ -668,6 +668,7 @@
 </style>
 <link rel="icon" type="image/png" sizes="64x64" href="/assets/favicon.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="assets/choose-demo.css">
 </head>
 <body>
 
@@ -717,6 +718,101 @@
     <span class="horizon"></span>
     <a class="scroll" href="#stuck"><span></span>See if this is you</a>
   </div>
+
+  <!-- CHOOSE YOUR DEMO. Held by its own flag: this section ships with `hidden`
+       and assets/demo-picker.js reveals it only when assets/demo-config.js
+       SECTION_RELEASE_STATE is exactly "RELEASED" (or, for review screenshots
+       only, when the URL has ?preview=1). No script = stays hidden. -->
+  <section id="choose-demo" class="cyd" hidden inert data-release-source="assets/demo-config.js" aria-labelledby="cydTitle">
+    <div class="wrap">
+      <p class="cyd-preview" id="cydPreview" hidden>Review preview &middot; held &middot; hidden from the public</p>
+      <div class="cyd-head">
+        <p class="cyd-eyebrow">Free demos &middot; <b>pick yours</b></p>
+        <h2 id="cydTitle">CHOOSE YOUR DEMO</h2>
+        <p class="cyd-sub">Pick what matters most to your business. We'll build your demo playlist.</p>
+      </div>
+      <fieldset class="cyd-grid">
+        <legend class="cyd-legend">What matters most to your business? Pick all that apply.</legend>
+        <label class="cyd-tile" data-demo="followup"><input type="checkbox" name="demo" value="followup"><span class="cyd-check" aria-hidden="true"></span><span class="cyd-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/><path d="M13 7.5l-3 4h4l-3 4"/></svg></span><span class="cyd-txt"><span class="cyd-title">The Follow-Up Machine</span><span class="cyd-out">Answer every lead fast and book more calls</span></span></label>
+        <label class="cyd-tile" data-demo="pipeline"><input type="checkbox" name="demo" value="pipeline"><span class="cyd-check" aria-hidden="true"></span><span class="cyd-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1"/></svg></span><span class="cyd-txt"><span class="cyd-title">Pipeline Builder</span><span class="cyd-out">Find new clients every week</span></span></label>
+        <label class="cyd-tile" data-demo="content"><input type="checkbox" name="demo" value="content"><span class="cyd-check" aria-hidden="true"></span><span class="cyd-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/><path d="M10.5 12.3v5l4-2.5z"/></svg></span><span class="cyd-txt"><span class="cyd-title">Content Autopilot</span><span class="cyd-out">Post every day without the work</span></span></label>
+        <label class="cyd-tile" data-demo="proposal"><input type="checkbox" name="demo" value="proposal"><span class="cyd-check" aria-hidden="true"></span><span class="cyd-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M9 14l2 2 4-4"/></svg></span><span class="cyd-txt"><span class="cyd-title">Proposal Engine</span><span class="cyd-out">Send proposals the same day and close more</span></span></label>
+        <label class="cyd-tile" data-demo="growth"><input type="checkbox" name="demo" value="growth"><span class="cyd-check" aria-hidden="true"></span><span class="cyd-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 20h18"/><path d="M5 16l5-5 3 3 6-7"/><path d="M15 7h4v4"/></svg></span><span class="cyd-txt"><span class="cyd-title">The Growth Engine</span><span class="cyd-out">See the whole ACE system working together</span></span></label>
+      </fieldset>
+      <div class="cyd-cta">
+        <button class="cyd-watch" id="cydWatch" type="button" disabled aria-describedby="cydHelp"><span class="cyd-tri" aria-hidden="true"></span>Watch Demo Video<span class="cyd-count" id="cydCount" hidden></span></button>
+        <p class="cyd-help" id="cydHelp">Make selections above to select the appropriate demo</p>
+      </div>
+    </div>
+
+    <div class="cyd-modal" id="cydModal" hidden role="dialog" aria-modal="true" aria-labelledby="cydKicker">
+      <div class="cyd-shell">
+        <div class="cyd-top">
+          <p class="cyd-kicker" id="cydKicker">Your demo playlist</p>
+          <button class="cyd-x" id="cydClose" type="button" aria-label="Close demo player">&times;</button>
+        </div>
+        <ol class="cyd-chips" id="cydChips"></ol>
+
+        <div class="cyd-stage" id="cydStage">
+          <div class="cyd-frame" id="cydFrame">
+            <video id="cydVideo" playsinline webkit-playsinline preload="metadata" controls hidden></video>
+            <div class="cyd-soon" id="cydSoon" hidden>
+              <img src="assets/ace-logo.jpg" alt="" width="64" height="64">
+              <p class="cyd-soon-k">Demo video coming soon</p>
+              <p class="cyd-soon-t" id="cydSoonTitle"></p>
+              <p class="cyd-soon-o" id="cydSoonOut"></p>
+            </div>
+          </div>
+          <div class="cyd-info">
+            <p class="cyd-step" id="cydStep"></p>
+            <h3 class="cyd-now" id="cydNowTitle"></h3>
+            <p class="cyd-now-out" id="cydNowOut"></p>
+            <p class="cyd-dur" id="cydDur" hidden></p>
+            <div class="cyd-ctrls">
+              <button class="cyd-btn cyd-btn--ghost" id="cydPrev" type="button">Previous</button>
+              <button class="cyd-btn" id="cydNext" type="button">Next demo</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="cyd-end" id="cydEnd" hidden>
+          <h3 class="cyd-end-h" id="cydEndTitle" tabindex="-1">What would you like to do next?</h3>
+          <p class="cyd-end-sub">You've seen how ACE does the work. Pick your next step.</p>
+          <div class="cyd-choices">
+            <a class="cyd-choice cyd-choice--buy" id="cydPricing" href="checkout/ace-mkt/?from=demo">
+              <span class="cyd-choice-k">Ready to start</span>
+              <b>See plans &amp; pricing</b>
+              <span class="cyd-choice-d">Launch pricing is on every plan. Pick yours and check out.</span>
+              <span class="cyd-deadline" id="cydDeadline" hidden></span>
+            </a>
+            <button class="cyd-choice" id="cydAsk" type="button" aria-expanded="false" aria-controls="cydForm">
+              <span class="cyd-choice-k">Not sure yet</span>
+              <b>Ask a question</b>
+              <span class="cyd-choice-d">A representative will follow up within 24 hours.</span>
+            </button>
+          </div>
+
+          <form class="cyd-form" id="cydForm" data-demo-question-form hidden novalidate>
+            <input type="hidden" name="form" value="demo-question"><input type="hidden" name="source" value="website-demo"><input type="hidden" name="product_key" value="ACE-DEMO"><input type="hidden" name="offer_code" value="DEMO-QUESTION">
+            <div class="cyd-row">
+              <label class="cyd-field"><span>First name</span><input type="text" name="first_name" autocomplete="given-name" autocapitalize="words" maxlength="120" required></label>
+              <label class="cyd-field"><span>Email</span><input type="email" name="email" autocomplete="email" inputmode="email" maxlength="320" required></label>
+            </div>
+            <label class="cyd-field"><span>Your question</span><textarea name="question" rows="3" maxlength="2000" required placeholder="Ask anything about ACE, your setup or pricing."></textarea></label>
+            <label class="cyd-consent"><input type="checkbox" name="consent" required><span>I agree to receive emails from ACE about my question and how ACE can help my business. I can unsubscribe at any time. See the <a href="privacy/">Privacy Policy</a>.</span></label>
+            <button class="cyd-btn cyd-send" type="submit">Send my question</button>
+            <p class="cyd-status" role="status" aria-live="polite"></p>
+          </form>
+          <div class="cyd-done" id="cydDone" hidden tabindex="-1">
+            <span class="cyd-done-mark" aria-hidden="true"></span>
+            <p class="cyd-done-big">Got it. A representative will follow up within 24 hours.</p>
+            <p class="cyd-heldnote" id="cydHeldNote" hidden></p>
+          </div>
+          <button class="cyd-again" id="cydAgain" type="button">Watch again</button>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- PROBLEM-LED ENTRY -->
   <section id="stuck">
@@ -1455,5 +1551,7 @@
     document.querySelectorAll('.rise').forEach(el=>io.observe(el));
   } else { document.querySelectorAll('.rise').forEach(el=>el.classList.add('in')); }
 </script>
+<script src="assets/demo-config.js" defer></script>
+<script src="assets/demo-picker.js" defer></script>
 </body>
 </html>

@@ -6,6 +6,7 @@
 <title>ACE Marketing Operating System &mdash; Checkout</title>
 <meta name="description" content="Choose your ACE Marketing Operating System plan.">
 <link rel="stylesheet" href="../../assets/product-launch.css">
+<link rel="stylesheet" href="../../assets/checkout-waterfall.css">
 <style>.offers{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,20rem),1fr));gap:1rem;margin:1.2rem 0}.offers .checkout{max-width:none}.offers h2{margin:.1rem 0 .3rem;font-size:1.25rem}</style>
 <link rel="icon" type="image/png" sizes="64x64" href="/assets/favicon.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
@@ -25,6 +26,9 @@
 <main id="main">
 <section><div class="wrap">
 <div class="section-head"><p class="eyebrow">Checkout</p><h1>ACE Marketing Operating System</h1></div>
+
+<!-- Choose Your Demo waterfall: filled by checkout-waterfall.js only when ?from=demo. -->
+<div id="wfTop" hidden></div>
 
 <div class="offers">
   <div class="checkout" data-offer="SA-CONTENT-DISTRIBUTION">
@@ -81,6 +85,7 @@
     <p class="small">Scoped to your organization. Contact AceGrowth.os@gmail.com.</p>
   </div>
 </div>
+<div id="wfBottom" hidden></div>
 <p class="buy-legal"><a href="../../terms/">Terms</a><a href="../../refund/">Refund Policy</a><a href="../../privacy/">Privacy</a></p>
 <p class="small">No refunds after onboarding starts; full refund before. Your monthly price is locked while you stay subscribed.</p>
 <p class="status" id="checkoutStatus" role="status" aria-live="polite"></p>
@@ -92,4 +97,6 @@
 <script src="../../assets/release-flag.js" defer></script>
 <script src="../../assets/checkout-config.js" defer></script>
 <script src="../../assets/checkout.js" defer></script>
+<script src="../../assets/demo-config.js" defer></script>
+<script src="../../assets/checkout-waterfall.js" defer></script>
 </body></html>
