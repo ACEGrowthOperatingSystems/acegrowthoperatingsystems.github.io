@@ -49,7 +49,7 @@ const DEMOS=[
   {key:"content",title:"Social Marketing Autopilot",outcome:"Post every day without the work",file:"assets/demos/content.mp4",poster:"assets/demos/content-poster.jpg",duration:"0:32"},
   {key:"followup",title:"The Follow-Up Machine",outcome:"Answer every lead fast and book more calls",file:"assets/demos/followup.mp4",poster:"assets/demos/followup-poster.jpg",duration:"0:35"},
   {key:"proposal",title:"Proposal & Sales Engine",outcome:"Send proposals the same day and close more",file:"assets/demos/proposal.mp4",poster:"assets/demos/proposal-poster.jpg",duration:"0:31"},
-  {key:"growth",title:"The Growth Engine",outcome:"See the whole ACE system working together to create accelerated compounding growth. Leverage business exponentially.",file:"assets/demos/growth.mp4",poster:"assets/demos/growth-poster.jpg",duration:"0:35"}
+  {key:"growth",title:"The Growth Engine",outcome:"See the whole ACE system working together to create accelerated compounding growth. Leverage business exponentially.",file:"assets/demos/growth.mp4",poster:"assets/demos/growth-poster.jpg",duration:"0:32"}
 ];
 
 // /start/ questionnaire interest (exact option text) -> demo keys.

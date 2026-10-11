@@ -61,7 +61,7 @@ test('demo-config: held, five real demo videos, Founding Member deadline', () =>
   assert.equal(nul.daysLeft(), null); assert.equal(nul.deadlineLabel(), ''); assert.equal(nul.foundingOfferOpen(), true);
   deq(c.DEMOS.map(d => [d.key, d.title, d.outcome]), DEMOS);
   // Every demo points at a real 9:16 MP4 + poster committed under assets/demos/.
-  const DURATIONS = { followup: '0:35', pipeline: '0:34', content: '0:32', proposal: '0:31', growth: '0:35' };
+  const DURATIONS = { pipeline: '0:34', content: '0:32', followup: '0:35', proposal: '0:31', growth: '0:32' };
   for (const d of c.DEMOS) {
     assert.equal(d.file, `assets/demos/${d.key}.mp4`, d.key);
     assert.equal(d.poster, `assets/demos/${d.key}-poster.jpg`, d.key);
