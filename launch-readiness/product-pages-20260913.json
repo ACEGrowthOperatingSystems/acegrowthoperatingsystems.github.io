@@ -44,6 +44,24 @@
       "source": "website-demo",
       "consent_required": true,
       "release_gate": "assets/demo-config.js SECTION_RELEASE_STATE"
+    },
+    {
+      "path": "/#custom-demo",
+      "product_key": "ACE-DEMO",
+      "offer_code": "CUSTOM-DEMO-REQUEST",
+      "form": "custom-demo-request",
+      "source": "website-custom-demo",
+      "consent_required": true,
+      "release_gate": "assets/demo-config.js SECTION_RELEASE_STATE"
+    },
+    {
+      "path": "/#weekly-brief",
+      "product_key": "ACE-BRIEF",
+      "offer_code": "WEEKLY-BRIEF",
+      "form": "weekly-brief-subscribe",
+      "source": "website-popup",
+      "consent_required": true,
+      "release_gate": "assets/weekly-brief-config.js POPUP_RELEASE_STATE"
     }
   ],
   "approval_boundaries": [
