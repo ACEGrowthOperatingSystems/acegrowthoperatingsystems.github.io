@@ -1,0 +1,24 @@
+/* /catalog/ only, layered on checkout-ace.css. */
+.cat-header{display:flex;align-items:center;justify-content:space-between;width:min(var(--max),calc(100% - 2rem));margin:auto;padding-top:1rem}
+.cat-header .logo img{width:72px;height:72px}
+.cat-checkout{min-height:42px;padding:.55rem 1rem}
+.section-head h1{font-size:clamp(1.6rem,4.6vw,2.5rem)}
+.tabs{display:flex;gap:.5rem;justify-content:center;margin:0 0 1.2rem;flex-wrap:wrap}
+.tabs [role=tab]{background:transparent;border:1px solid var(--edge2);color:var(--silver);border-radius:999px;padding:.55rem 1.1rem;font:600 .9rem 'IBM Plex Sans',sans-serif;cursor:pointer;min-height:44px}
+.tabs [role=tab][aria-selected=true]{border-color:var(--red);color:#fff;background:rgba(227,36,43,.14)}
+.cat-family h2{font-size:1.35rem;margin:1.6rem 0 .8rem}
+.cat-product{margin:0 0 1rem}
+.cat-product h3{font-family:'Archivo',sans-serif;color:#fff;margin:0 0 .2rem;font-size:1.15rem}
+.cat-lines{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,15rem),1fr));gap:.8rem}
+.cat-line{border-top:1px solid var(--edge);padding-top:.8rem}
+.cat-tier{font-family:'IBM Plex Mono',monospace;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--red);margin:0}
+.cat-line .price{font-size:clamp(1.05rem,2.6vw,1.3rem);margin:.25rem 0 .3rem}
+.cat-line .buy-row{margin-top:.6rem;gap:.6rem}
+.button-ghost{background:transparent;color:#fff;border-color:var(--edge2)}
+.pricing-copy{max-width:44rem;margin:auto}
+.pricing-copy h2{font-size:1.35rem}
+.pricing-copy strong{color:#fff}
+dialog#demoDialog{background:#000;border:1px solid var(--edge2);border-radius:14px;padding:.8rem;max-width:min(420px,94vw)}
+dialog#demoDialog::backdrop{background:rgba(0,0,0,.8)}
+dialog#demoDialog video{width:100%;aspect-ratio:9/16;display:block;background:#000;border-radius:8px}
+dialog#demoDialog form{text-align:center;margin-top:.6rem}

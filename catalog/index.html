@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<title>ACE Product Catalog &mdash; Founding Member Rates</title>
+<meta name="description" content="ACE products and plans with setup and monthly prices.">
+<meta name="theme-color" content="#000000">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/checkout-ace.css">
+<link rel="stylesheet" href="../assets/catalog.css">
+<link rel="icon" type="image/png" sizes="64x64" href="/assets/favicon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+</head>
+<!-- This page's own release flag. Governs /catalog/ only. Default is held. -->
+<body data-page-key="catalog" data-release-state="APPROVAL_HELD">
+<a class="skip" href="#main">Skip to content</a>
+<header class="cat-header">
+  <a class="logo" href="../" aria-label="ACE Growth Operating Systems home"><img src="../assets/ace-logo.jpg" alt="ACE Growth Operating Systems" width="72" height="72"></a>
+  <a class="button cat-checkout" href="#plans">Checkout</a>
+</header>
+<main id="main">
+<section><div class="wrap">
+<div class="section-head"><p class="eyebrow">Product Catalog</p><h1>Pick what you need. Approve everything from your phone.</h1>
+<p class="small" id="foundingNote">Founding Member Rate, locked while you stay subscribed.</p></div>
+
+<div class="tabs" role="tablist" aria-label="Catalog sections">
+  <button role="tab" id="tab-plans" aria-controls="plans" aria-selected="true">Catalog</button>
+  <button role="tab" id="tab-pricing" aria-controls="pricing" aria-selected="false" tabindex="-1">How pricing works</button>
+</div>
+
+<div id="plans" role="tabpanel" aria-labelledby="tab-plans">
+  <div id="catalogRoot"><noscript><p class="small">This catalog needs JavaScript to show prices.</p></noscript></div>
+</div>
+
+<div id="pricing" role="tabpanel" aria-labelledby="tab-pricing" hidden>
+  <div class="pricing-copy">
+    <h2>How your price is built</h2>
+    <p><strong>Setup</strong> is charged at checkout, because setup starts then. DIY plans have no setup fee.</p>
+    <p><strong>Monthly</strong> on done-for-you plans starts at your first delivery, not at checkout. DIY plans bill monthly from checkout. The ACE Lead Generator monthly plan starts at the first send.</p>
+    <p><strong>Usage credit.</strong> Most plans include a monthly usage credit for the outside services your system uses, priced at supplier cost plus 20%. You get an alert at 80%. At 100%, work pauses until you top up, except replies to new leads, which continue up to 10% over your monthly credit and are billed at supplier cost plus 20% on your next bill.</p>
+    <p data-pending="usage-first-use"><strong>DIY and Lead Generator plans</strong> have no included credit; usage is billed at supplier cost plus 20% from first use.</p>
+    <p><strong>Top-ups</strong> of $20, $50 or $100 are available any time from your My ACE account.</p>
+    <p><strong>Founding Member Rate</strong> is available until March 1, 2027 and stays locked while you stay subscribed. Plans have a 3-month minimum.</p>
+    <p><strong>Refunds.</strong> Full refund before onboarding starts. Onboarding starts when you submit the onboarding questionnaire; no refunds after that. See the <a href="../refund/">Refund Policy</a>.</p>
+  </div>
+</div>
+
+<p class="status" id="checkoutStatus" role="status" aria-live="polite"></p>
+<p class="buy-legal"><a href="../terms/">Terms</a><a href="../refund/">Refund Policy</a><a href="../privacy/">Privacy</a></p>
+</div></section>
+</main>
+
+<dialog id="demoDialog" aria-label="Demo video">
+  <video id="demoVideo" controls playsinline preload="none"></video>
+  <form method="dialog"><button class="button" type="submit">Close</button></form>
+</dialog>
+
+<footer><div class="wrap">ACE Growth Operating Systems &middot; Founding Member Rates
+<nav class="legal" aria-label="Legal"><a href="../terms/">Terms</a><a href="../refund/">Refund</a><a href="../privacy/">Privacy</a></nav></div></footer>
+<script src="../assets/release-flag.js" defer></script>
+<script src="../assets/catalog-config.js" defer></script>
+<script src="../assets/catalog.js" defer></script>
+</body></html>
