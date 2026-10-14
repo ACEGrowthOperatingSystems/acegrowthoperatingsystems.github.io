@@ -16,6 +16,7 @@
 // A button stays inert while its link is the placeholder, a TEST link, or
 // not a buy.stripe.com link, or while the page release flag is held.
 // Usage top-ups (lines 26-28) are bought inside My ACE, never here.
+// Lead Generator add-ons (A01, A02) are pending approval and never buyable here.
 // ============================================================================
 
 const PLACEHOLDER="REPLACE_WITH_LIVE_LINK";
@@ -49,19 +50,53 @@ const LINES=[
   {"line":25,"key":"L25-GROWTH-AUTOPILOT-OS-GROWTH-SCALE","family":"OPERATING SYSTEM","product":"Growth Autopilot OS","tier":"Growth Scale","plan":"DFY","setupFounding":5000,"setupStandard":6500,"monthlyFounding":3499,"monthlyStandard":4499,"includedCredit":1100,"demo":"growth","description":"The whole system: answers new leads within minutes, sends proposals, follows up and books calls, schedules social posts and builds prospect lists. You approve from your phone.","buyable":true,"link":"REPLACE_WITH_LIVE_LINK"},
   {"line":26,"key":"L26-USAGE-TOPUP-20","family":"CREDIT PACK","product":"Usage top-up","tier":"$20","plan":"TOPUP","setupFounding":null,"setupStandard":null,"monthlyFounding":20,"monthlyStandard":20,"includedCredit":null,"demo":null,"description":"Adds usage credit to your account when you need more.","buyable":false,"link":"REPLACE_WITH_LIVE_LINK"},
   {"line":27,"key":"L27-USAGE-TOPUP-50","family":"CREDIT PACK","product":"Usage top-up","tier":"$50","plan":"TOPUP","setupFounding":null,"setupStandard":null,"monthlyFounding":50,"monthlyStandard":50,"includedCredit":null,"demo":null,"description":"Adds usage credit to your account when you need more.","buyable":false,"link":"REPLACE_WITH_LIVE_LINK"},
-  {"line":28,"key":"L28-USAGE-TOPUP-100","family":"CREDIT PACK","product":"Usage top-up","tier":"$100","plan":"TOPUP","setupFounding":null,"setupStandard":null,"monthlyFounding":100,"monthlyStandard":100,"includedCredit":null,"demo":null,"description":"Adds usage credit to your account when you need more.","buyable":false,"link":"REPLACE_WITH_LIVE_LINK"}
+  {"line":28,"key":"L28-USAGE-TOPUP-100","family":"CREDIT PACK","product":"Usage top-up","tier":"$100","plan":"TOPUP","setupFounding":null,"setupStandard":null,"monthlyFounding":100,"monthlyStandard":100,"includedCredit":null,"demo":null,"description":"Adds usage credit to your account when you need more.","buyable":false,"link":"REPLACE_WITH_LIVE_LINK"},
+  // Lead Generator add-ons. PRICES NOT APPROVED. Never buyable from this file:
+  // buyable stays false and pending stays true until Jim approves the prices.
+  // The whole block is hidden on /catalog/ unless ADDONS_APPROVED (below) is true.
+  {"line":null,"key":"A01-LEAD-GENERATOR-WEBSITE-LEAD-GENERATOR","family":"LEAD GENERATOR ADD-ON","product":"Website Lead Generator","tier":null,"plan":"ADDON","setupFounding":99,"setupStandard":149,"monthlyFounding":29,"monthlyStandard":49,"includedCredit":null,"demo":null,"description":"Add-on for the ACE Lead Generator.","buyable":false,"pending":true,"link":"REPLACE_WITH_LIVE_LINK"},
+  {"line":null,"key":"A02-LEAD-GENERATOR-EXTRA-SENDING-MAILBOX","family":"LEAD GENERATOR ADD-ON","product":"Extra Sending Mailbox","tier":null,"plan":"ADDON","setupFounding":49,"setupStandard":49,"monthlyFounding":19,"monthlyStandard":19,"includedCredit":null,"demo":null,"description":"Add-on for the ACE Lead Generator. New sending mailboxes need 14-21 days to warm up before the first send.","buyable":false,"pending":true,"link":"REPLACE_WITH_LIVE_LINK"}
 ];
+
+// Lead Generator add-on block on /catalog/. false = the block is not rendered
+// at all. Flip to true ONLY after Jim approves the add-on prices. Even when
+// true, add-on lines are shown as "Pending approval" and are never buyable.
+const ADDONS_APPROVED=false;
+
+// Approved per-tier plan facts (prospects or posts per month) from the
+// approved Claude Doc "ACE Product Catalog & Pricing - Launch 20 Oct"
+// (fe43efe3). Display text only; keyed by line key. Add nothing here that is
+// not in that doc.
+const TIER_FACTS={
+  "L01-AUTOMATED-CONTENT-CREATION":["20 posts a month"],
+  "L02-AUTOMATED-CONTENT-CREATION-DIY":["10 posts a month"],
+  "L03-AUTOMATED-SOCIAL-MARKETING":["30 posts a month"],
+  "L07-AUTOMATED-PROSPECTING-MACHINE":["500 prospects a month"],
+  "L08-AUTOMATED-PROSPECTING-MACHINE-DIY":["250 prospects a month"],
+  "L09-ACE-LEAD-GENERATOR-IGNITE":["500 prospects a month"],
+  "L10-ACE-LEAD-GENERATOR-ACCELERATE":["1,500 prospects a month"],
+  "L11-ACE-LEAD-GENERATOR-FULL-THROTTLE":["3,000 prospects a month"],
+  "L12-ACE-LEAD-GENERATOR-REDLINE":["5,000 prospects a month"],
+  "L13-PROSPECTING-AUTOPILOT-OS-IGNITE":["500 prospects a month"],
+  "L14-PROSPECTING-AUTOPILOT-OS-ACCELERATE":["1,500 prospects a month"],
+  "L15-PROSPECTING-AUTOPILOT-OS-FULL-THROTTLE":["3,000 prospects a month"],
+  "L16-PROSPECTING-AUTOPILOT-OS-REDLINE":["5,000 prospects a month"],
+  "L17-SOCIAL-MEDIA-MARKETING-OS-STARTER":["20 posts a month"],
+  "L18-SOCIAL-MEDIA-MARKETING-OS-PRO":["30 posts a month"],
+  "L19-SOCIAL-MEDIA-MARKETING-OS-SCALE":["60 posts a month"]
+};
 
 const isLiveLink=v=>typeof v==="string"&&v!==PLACEHOLDER&&/^https:\/\/buy\.stripe\.com\/(?!test_)[A-Za-z0-9_]+$/.test(v);
 const byKey={};LINES.forEach(l=>{byKey[l.key]=l;});
 const usd=n=>"$"+Number(n).toLocaleString("en-US");
 
 window.ACE_CATALOG=Object.freeze({
-  PLACEHOLDER,FOUNDING_RATE_ENDS,
+  PLACEHOLDER,FOUNDING_RATE_ENDS,ADDONS_APPROVED:ADDONS_APPROVED===true,
+  tierFacts:key=>Object.freeze((TIER_FACTS[key]||[]).slice()),
   lines:Object.freeze(LINES.map(l=>Object.freeze({...l}))),
   get:key=>byKey[key]||null,
   usd,
-  isConfigured:key=>Boolean(byKey[key]&&byKey[key].buyable&&isLiveLink(byKey[key].link)),
+  isConfigured:key=>Boolean(byKey[key]&&byKey[key].buyable===true&&!byKey[key].pending&&byKey[key].family!=="LEAD GENERATOR ADD-ON"&&isLiveLink(byKey[key].link)),
   isLiveLink
 });
 
