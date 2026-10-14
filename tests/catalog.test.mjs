@@ -61,17 +61,18 @@ function render({ config = configSrc, released = false } = {}) {
 const usd = (n) => '$' + Number(n).toLocaleString('en-US');
 
 // ---------------- config ----------------
-test('28 approved lines (25 buyable + 3 top-ups) plus 2 add-on lines that are never buyable', () => {
+test('28 approved lines (25 buyable + 3 top-ups) plus 1 add-on line that is never buyable', () => {
   const c = load();
   const approved = c.lines.filter((l) => l.family !== 'LEAD GENERATOR ADD-ON');
   assert.equal(approved.length, 28);
   assert.equal(approved.filter((l) => l.buyable).length, 25);
   assert.deepEqual([...approved.filter((l) => !l.buyable).map((l) => l.monthlyFounding)], [20, 50, 100]);
   const addons = c.lines.filter((l) => l.family === 'LEAD GENERATOR ADD-ON');
-  assert.equal(addons.length, 2);
+  assert.equal(addons.length, 1);
   for (const a of addons) { assert.equal(a.buyable, false, a.key); assert.equal(a.pending, true, a.key); }
   assert.deepEqual(JSON.parse(JSON.stringify(addons.map((a) => [a.product, a.setupFounding, a.setupStandard, a.monthlyFounding, a.monthlyStandard]))),
-    [['Website Lead Generator', 99, 149, 29, 49], ['Extra Sending Mailbox', 49, 49, 19, 19]]);
+    [['Website Lead Generator', 99, 149, 29, 49]]);
+  assert.equal(c.lines.some((l) => /Extra Sending Mailbox/.test(l.product)), false, 'Extra Sending Mailbox not approved (5.09, 14 Oct)');
 });
 
 test('every buyable line matches the approved Founding and Standard amounts', () => {
@@ -167,7 +168,7 @@ test('add-on block hidden while ADDONS_APPROVED=false; when true it is "Pending 
   const hacked = withAddons(withLiveLinks(configSrc)).replace(/("family":"LEAD GENERATOR ADD-ON".*?)"buyable":false/g, '$1"buyable":true');
   const on = render({ config: hacked, released: true });
   const cards = on.nodes.filter((n) => n.dataset.addon);
-  assert.equal(cards.length, 2);
+  assert.equal(cards.length, 1);
   for (const c of cards) {
     assert.equal(c.all().filter((n) => n.dataset.buy).length, 0, c.dataset.addon);
     assert.match(c.textContent, /Pending approval/);
@@ -250,4 +251,14 @@ test('checklists use only approved claims and catalog plan terms', () => {
 test('tier facts are limited to approved prospects/posts counts', () => {
   const c = load();
   for (const l of c.lines) for (const f of c.tierFacts(l.key)) assert.match(f, /^[\d,]+ (prospects|posts) a month$/, l.key);
+});
+
+test('Customer Acquisition OS Starter does not claim proposals (proposals from Pro up, 5.09 decision 14 Oct)', () => {
+  const c = load();
+  const starter = c.get('L20-CUSTOMER-ACQUISITION-OS-STARTER');
+  assert.doesNotMatch(starter.description, /sends proposals/i);
+  assert.match(starter.description, /Proposals are included from Pro up/);
+  for (const k of ['L21-CUSTOMER-ACQUISITION-OS-PRO', 'L22-CUSTOMER-ACQUISITION-OS-SCALE']) {
+    assert.match(c.get(k).description, /sends proposals/);
+  }
 });
