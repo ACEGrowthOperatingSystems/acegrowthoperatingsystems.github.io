@@ -16,7 +16,7 @@ const words=s=>s.trim().split(/\s+/).length;
 test('disclosure states every 12 Oct billing fact and stays within length limits', () => {
   const {D}=run('ACE-MKT');
   const all=D.bullets.join(' ');
-  for (const re of [/charged today/, /first delivery/, /3-month minimum/, /\$20, \$50 or \$100/, /80% and 100%/, /10% of your monthly credit/, /questionnaire/, /No refunds after onboarding starts/])
+  for (const re of [/charged today/, /first delivery/, /3-month minimum/, /\$20, \$50 or \$100/, /alert at 80% of your credit/, /10% of your monthly credit/, /questionnaire/, /No refunds after onboarding starts/])
     assert.match(all, re);
   assert.ok(words(all) <= 90, `disclosure is ${words(all)} words`);
   assert.ok(words(D.ackLabel) <= 35 && D.ackLabel.startsWith('I understand'));

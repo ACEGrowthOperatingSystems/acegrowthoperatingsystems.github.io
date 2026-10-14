@@ -10,8 +10,8 @@ const D=window.ACE_DISCLOSURE={
     "The setup fee is charged today, as setup starts at checkout.",
     "Your monthly plan starts on first delivery.",
     "Every plan has a 3-month minimum, then month to month.",
-    "Each plan includes a monthly usage credit. Top-ups are $20, $50 or $100.",
-    "You get alerts at 80% and 100% of credit. At 100%, work pauses except replies to new leads, which continue on an overdraft of up to 10% of your monthly credit, billed on your next bill.",
+    "Usage credit top-ups are $20, $50 or $100.",
+    "You get an alert at 80% of your credit. At 100%, work pauses except replies to new leads, which continue on an overdraft of up to 10% of your monthly credit, billed on your next bill.",
     "Onboarding starts when you submit the onboarding questionnaire. No refunds after onboarding starts."
   ],
   leadGenerator:"Lead Generator: new sending mailboxes need 14 to 21 days to warm up. Your monthly plan starts at first send.",
