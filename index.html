@@ -669,6 +669,7 @@
 <link rel="icon" type="image/png" sizes="64x64" href="/assets/favicon.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
 <link rel="stylesheet" href="assets/choose-demo.css">
+<link rel="stylesheet" href="assets/weekly-brief-popup.css">
 </head>
 <body>
 
@@ -743,6 +744,10 @@
         <button class="cyd-watch" id="cydWatch" type="button" disabled aria-describedby="cydHelp"><span class="cyd-tri" aria-hidden="true"></span>Watch Demo Video<span class="cyd-count" id="cydCount" hidden></span></button>
         <p class="cyd-help" id="cydHelp">Make selections above to select the appropriate demo</p>
       </div>
+      <div class="cdr-entry" id="custom-demo">
+        <p class="cdr-entry-k">Want it shown on your own business?</p>
+        <button class="cdr-open" id="cdrOpen" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="cdrModal">Click here to request a customized demo for your business</button>
+      </div>
     </div>
 
     <div class="cyd-modal" id="cydModal" hidden role="dialog" aria-modal="true" aria-labelledby="cydKicker">
@@ -809,6 +814,117 @@
             <p class="cyd-heldnote" id="cydHeldNote" hidden></p>
           </div>
           <button class="cyd-again" id="cydAgain" type="button">Watch again</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CUSTOMIZED DEMO REQUEST. Part of this held section: same flag
+         (assets/demo-config.js SECTION_RELEASE_STATE). Controller:
+         assets/custom-demo-request.js. While held nothing is posted. -->
+    <div class="cyd-modal cdr-modal" id="cdrModal" hidden role="dialog" aria-modal="true" aria-labelledby="cdrTitle">
+      <div class="cyd-shell cdr-shell">
+        <div class="cyd-top">
+          <p class="cyd-kicker">Customized demo</p>
+          <button class="cyd-x" id="cdrClose" type="button" aria-label="Close customized demo request">&times;</button>
+        </div>
+        <p class="cyd-preview cdr-preview" id="cdrPreview" hidden>Held preview &middot; nothing is sent</p>
+        <h3 class="cdr-h" id="cdrTitle">Request a customized demo for your business</h3>
+        <p class="cdr-sub">A few quick questions so we can show ACE working on your business. Is the cost of not automating weighing you down?</p>
+
+        <form class="cyd-form cdr-form" id="cdrForm" data-custom-demo-form novalidate>
+          <input type="hidden" name="form" value="custom-demo-request"><input type="hidden" name="source" value="website-custom-demo"><input type="hidden" name="product_key" value="ACE-DEMO"><input type="hidden" name="offer_code" value="CUSTOM-DEMO-REQUEST">
+
+          <p class="cdr-step">1 &middot; About your business</p>
+          <label class="cyd-field"><span>Business name</span><input type="text" name="business_name" autocomplete="organization" maxlength="200" required></label>
+          <label class="cyd-field"><span>Industry / type of business</span><select name="industry" required>
+            <option value="">Choose one</option>
+            <option>Home services / trades</option>
+            <option>Professional services</option>
+            <option>Health &amp; wellness</option>
+            <option>Real estate</option>
+            <option>Retail / e-commerce</option>
+            <option>Agency / consulting</option>
+            <option>Other</option>
+          </select></label>
+          <label class="cyd-field"><span>Tell us briefly what your business does</span><textarea name="business_description" rows="3" maxlength="1000" required placeholder="Who you serve, and where things slow down today."></textarea></label>
+
+          <fieldset class="cdr-group">
+            <legend class="cdr-step">2 &middot; What would you like to see? Pick any or all.</legend>
+            <div class="cdr-checks">
+              <label class="cdr-check"><input type="checkbox" name="capabilities" value="pipeline"><span><b>Prospecting Autopilot</b>Builds prospect lists for you</span></label>
+              <label class="cdr-check"><input type="checkbox" name="capabilities" value="content"><span><b>Social Marketing Autopilot</b>Schedules your social posts</span></label>
+              <label class="cdr-check"><input type="checkbox" name="capabilities" value="followup"><span><b>The Follow-Up Machine</b>Answers new leads within minutes, follows up and books calls</span></label>
+              <label class="cdr-check"><input type="checkbox" name="capabilities" value="proposal"><span><b>Proposal &amp; Sales Engine</b>Sends proposals for you</span></label>
+              <label class="cdr-check"><input type="checkbox" name="capabilities" value="growth"><span><b>The Growth Engine</b>The whole ACE system working together, and you approve from your phone</span></label>
+              <label class="cdr-check"><input type="checkbox" name="capabilities" value="not-sure"><span><b>Not sure yet</b>Show me what fits</span></label>
+            </div>
+          </fieldset>
+
+          <p class="cdr-step">3 &middot; Timing</p>
+          <label class="cyd-field"><span>When would you like ACE working in your business?</span><select name="timeframe" required>
+            <option value="">Choose one</option>
+            <option value="asap">ASAP</option>
+            <option value="within-30-days">Within 30 days</option>
+            <option value="1-3-months">1&ndash;3 months</option>
+            <option value="just-exploring">Just exploring</option>
+          </select></label>
+          <div class="cyd-row">
+            <label class="cyd-field"><span>Best day for your demo &amp; proposal review</span><select name="preferred_day" required>
+              <option value="">Choose a day</option>
+              <option value="monday">Monday</option>
+              <option value="tuesday">Tuesday</option>
+              <option value="wednesday">Wednesday</option>
+              <option value="thursday">Thursday</option>
+              <option value="friday">Friday</option>
+              <option value="any-weekday">Any weekday</option>
+            </select></label>
+            <label class="cyd-field"><span>Best time</span><select name="preferred_time" required>
+              <option value="">Choose a time</option>
+              <option value="morning">Morning (9am&ndash;12pm)</option>
+              <option value="afternoon">Afternoon (12pm&ndash;3pm)</option>
+              <option value="late-afternoon">Late afternoon (3pm&ndash;6pm)</option>
+            </select></label>
+          </div>
+          <p class="cdr-tz">All times are Eastern Time. We'll confirm the exact time with you.</p>
+
+          <p class="cdr-step">4 &middot; Leads</p>
+          <fieldset class="cdr-group">
+            <legend class="cdr-q">Are you interested in the ACE Lead Generator?</legend>
+            <div class="cdr-pills">
+              <label class="cdr-pill"><input type="radio" name="interested_ace_lead_generator" value="yes" required><span>Yes</span></label>
+              <label class="cdr-pill"><input type="radio" name="interested_ace_lead_generator" value="no"><span>No</span></label>
+              <label class="cdr-pill"><input type="radio" name="interested_ace_lead_generator" value="maybe"><span>Maybe</span></label>
+            </div>
+          </fieldset>
+          <fieldset class="cdr-group">
+            <legend class="cdr-q">Do you already have your own lead generator?</legend>
+            <div class="cdr-pills">
+              <label class="cdr-pill"><input type="radio" name="has_lead_generator" value="yes" required><span>Yes</span></label>
+              <label class="cdr-pill"><input type="radio" name="has_lead_generator" value="no"><span>No</span></label>
+            </div>
+          </fieldset>
+          <fieldset class="cdr-group" id="cdrSupplement" hidden>
+            <legend class="cdr-q">Are you looking to supplement it?</legend>
+            <div class="cdr-pills">
+              <label class="cdr-pill"><input type="radio" name="supplement_lead_generator" value="yes" required disabled><span>Yes</span></label>
+              <label class="cdr-pill"><input type="radio" name="supplement_lead_generator" value="no" disabled><span>No</span></label>
+            </div>
+          </fieldset>
+
+          <p class="cdr-step">5 &middot; Your details</p>
+          <div class="cyd-row">
+            <label class="cyd-field"><span>First name</span><input type="text" name="first_name" autocomplete="given-name" autocapitalize="words" maxlength="120" required></label>
+            <label class="cyd-field"><span>Email</span><input type="email" name="email" autocomplete="email" inputmode="email" maxlength="320" required></label>
+          </div>
+          <label class="cyd-field"><span>Phone <em>(optional)</em></span><input type="tel" name="phone" autocomplete="tel" inputmode="tel" maxlength="40"></label>
+          <label class="cyd-consent"><input type="checkbox" name="consent" required><span>I agree to be contacted by ACE by email (and by phone if I gave a number) about my customized demo and how ACE can help my business. I can unsubscribe at any time. See the <a href="privacy/">Privacy Policy</a>.</span></label>
+          <button class="cyd-btn cyd-send" type="submit">Request my customized demo</button>
+          <p class="cyd-status" role="status" aria-live="polite"></p>
+        </form>
+        <div class="cyd-done" id="cdrDone" hidden tabindex="-1">
+          <span class="cyd-done-mark" aria-hidden="true"></span>
+          <p class="cyd-done-big">Thank you. We'll be in touch to confirm your customized demo.</p>
+          <p class="cyd-heldnote" id="cdrHeldNote" hidden></p>
         </div>
       </div>
     </div>
@@ -1551,8 +1667,47 @@
     document.querySelectorAll('.rise').forEach(el=>io.observe(el));
   } else { document.querySelectorAll('.rise').forEach(el=>el.classList.add('in')); }
 </script>
+
+<!-- ACE WEEKLY BRIEF pop-up. Held by its own flag: ships with `hidden` and
+     assets/weekly-brief-popup.js shows it only when
+     assets/weekly-brief-config.js POPUP_RELEASE_STATE is exactly "RELEASED"
+     (or, for review only, with ?preview=1). No script = never shown. -->
+<section id="weekly-brief" class="wbp" hidden inert role="dialog" aria-modal="false" aria-labelledby="wbpTitle" data-release-source="assets/weekly-brief-config.js">
+  <div class="wbp-card">
+    <button class="wbp-x" id="wbpClose" type="button" aria-label="Close the Weekly Brief offer">&times;</button>
+    <p class="wbp-preview" id="wbpPreview" hidden>Held preview &middot; nothing is sent</p>
+    <p class="wbp-k">Free &middot; <b>every week</b></p>
+    <h2 class="wbp-h" id="wbpTitle">ACE Weekly Brief</h2>
+    <p class="wbp-sub">How to get ahead with Automation</p>
+    <ul class="wbp-list">
+      <li>The Power of Automation</li>
+      <li>ACE Academy</li>
+      <li>Details and discounts on ACE Growth Operating Systems</li>
+      <li>Partnership opportunities</li>
+    </ul>
+    <form class="wbp-form" id="wbpForm" data-weekly-brief-form novalidate>
+      <input type="hidden" name="form" value="weekly-brief-subscribe"><input type="hidden" name="source" value="website-popup"><input type="hidden" name="product_key" value="ACE-BRIEF"><input type="hidden" name="offer_code" value="WEEKLY-BRIEF">
+      <div class="wbp-row">
+        <label class="wbp-field"><span>First name</span><input type="text" name="first_name" autocomplete="given-name" autocapitalize="words" maxlength="120" required></label>
+        <label class="wbp-field"><span>Email</span><input type="email" name="email" autocomplete="email" inputmode="email" maxlength="320" required></label>
+      </div>
+      <label class="wbp-consent"><input type="checkbox" name="consent" required><span>I agree to receive the ACE Weekly Brief by email. I can unsubscribe at any time. See the <a href="privacy/">Privacy Policy</a>.</span></label>
+      <button class="wbp-send" type="submit">Subscribe free</button>
+      <p class="wbp-status" role="status" aria-live="polite"></p>
+    </form>
+    <div class="wbp-done" id="wbpDone" hidden tabindex="-1">
+      <p class="wbp-done-big">You're subscribed. Watch your inbox for the ACE Weekly Brief.</p>
+      <p class="wbp-heldnote" id="wbpHeldNote" hidden></p>
+    </div>
+    <p class="wbp-tag">Stop paying the price for not automating.</p>
+    <button class="wbp-later" id="wbpLater" type="button">No thanks</button>
+  </div>
+</section>
 <script src="assets/demo-config.js" defer></script>
 <script src="assets/demo-picker.js" defer></script>
+<script src="assets/custom-demo-request.js" defer></script>
+<script src="assets/weekly-brief-config.js" defer></script>
+<script src="assets/weekly-brief-popup.js" defer></script>
 <!-- Site menu + Checkout button. Held by its own flag in assets/site-nav.js; does not change this page's release state. -->
 <script src="/assets/site-nav.js" defer></script>
 </body>

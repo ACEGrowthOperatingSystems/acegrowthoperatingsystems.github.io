@@ -222,3 +222,53 @@
 @media (prefers-reduced-motion:reduce){
   .cyd-tile,.cyd-watch,.cyd-choice,.cyd-shell{transition:none;animation:none}
 }
+
+/* ---------- customized demo request (#custom-demo, #cdrModal) ----------
+   Same ACE palette and field styles as the question form above. */
+.cdr-entry{display:flex;flex-direction:column;align-items:center;gap:.6rem;margin:2.4rem auto 0;padding-top:1.8rem;
+  border-top:1px solid #1E2024;max-width:40rem;text-align:center}
+.cdr-entry-k{margin:0;font-family:'IBM Plex Mono',monospace;font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--cyd-steel)}
+.cdr-open{display:inline-block;min-height:3.4rem;width:min(100%,30rem);padding:.9rem 1.4rem;
+  border-radius:12px;border:1px solid var(--cyd-silver);background:transparent;color:#fff;cursor:pointer;
+  font-family:'Archivo',sans-serif;font-weight:700;font-size:.98rem;line-height:1.3;text-align:center;
+  transition:border-color .2s,background .2s,box-shadow .2s;-webkit-tap-highlight-color:transparent}
+.cdr-open::after{content:" \2192";color:var(--cyd-red);margin-left:.35rem}
+.cdr-open:hover{border-color:var(--cyd-red);background:#170F10;box-shadow:0 0 34px rgba(227,36,43,.18)}
+.cdr-open:focus-visible{outline:2px solid var(--cyd-red);outline-offset:3px}
+
+.cdr-shell{width:min(100%,40rem)}
+.cdr-preview{margin:0 0 .9rem}
+.cdr-h{font-family:'Archivo',sans-serif;font-weight:800;color:#fff;font-size:clamp(1.35rem,3.2vw,1.9rem);line-height:1.12;margin:0 0 .5rem;text-wrap:balance}
+.cdr-sub{color:#A9AFB6;margin:0 0 .4rem;font-size:.95rem;line-height:1.5}
+.cdr-form{margin-top:.9rem}
+.cdr-step{margin:.5rem 0 0;padding:0;font-family:'IBM Plex Mono',monospace;font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:#E9C68A}
+.cdr-group{border:0;margin:0;padding:0;min-width:0;display:grid;gap:.55rem}
+.cdr-q{padding:0;font-weight:600;color:#E6E8EB;font-size:.92rem;margin-bottom:.1rem}
+.cdr-checks{display:grid;grid-template-columns:1fr 1fr;gap:.55rem}
+.cdr-check{position:relative;display:flex;align-items:flex-start;gap:.65rem;padding:.8rem .85rem;border-radius:12px;cursor:pointer;
+  border:1px solid #2A2C31;background:#141517;transition:border-color .2s,background .2s}
+.cdr-check input{flex:0 0 auto;width:1.15rem;height:1.15rem;margin:.1rem 0 0;accent-color:var(--cyd-red)}
+.cdr-check span{display:flex;flex-direction:column;gap:.2rem;color:#A9AFB6;font-size:.84rem;line-height:1.4}
+.cdr-check b{color:#fff;font-family:'Archivo',sans-serif;font-weight:700;font-size:.95rem}
+.cdr-check:has(input:checked){border-color:rgba(var(--cyd-gold),.6);background:#1B1613}
+.cdr-check:has(input:focus-visible){outline:2px solid var(--cyd-red);outline-offset:2px}
+.cdr-pills{display:flex;flex-wrap:wrap;gap:.5rem}
+.cdr-pill{position:relative;flex:1 1 0;min-width:5.5rem;cursor:pointer}
+.cdr-pill input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+.cdr-pill span{display:flex;align-items:center;justify-content:center;min-height:2.9rem;border-radius:10px;border:1px solid #34373D;
+  background:#17181B;color:#C9CDD2;font-weight:600;font-size:.95rem;transition:all .2s}
+.cdr-pill input:checked+span{border-color:var(--cyd-red);background:#1F1112;color:#fff;box-shadow:0 0 18px rgba(227,36,43,.25)}
+.cdr-pill input:focus-visible+span{outline:2px solid var(--cyd-red);outline-offset:2px}
+.cdr-tz{margin:-.3rem 0 0;color:var(--cyd-steel);font-size:.8rem}
+.cyd-field select{width:100%;background:#17181B;border:1px solid #34373D;color:#fff;border-radius:10px;
+  padding:.85rem 2.4rem .85rem .9rem;font:inherit;font-size:16px;font-weight:400;-webkit-appearance:none;appearance:none;
+  background-image:linear-gradient(45deg,transparent 50%,#C9CDD2 50%),linear-gradient(135deg,#C9CDD2 50%,transparent 50%);
+  background-position:calc(100% - 1.15rem) 55%,calc(100% - .8rem) 55%;background-size:.35rem .35rem;background-repeat:no-repeat}
+.cyd-field select:focus{outline:3px solid rgba(227,36,43,.45);outline-offset:1px;border-color:var(--cyd-red)}
+.cyd-field em{font-style:normal;font-weight:400;color:var(--cyd-steel)}
+@media (max-width:760px){
+  .cdr-entry{margin-top:1.8rem;padding-top:1.4rem}
+  .cdr-open{width:100%;font-size:.95rem}
+  .cdr-checks{grid-template-columns:1fr}
+  .cdr-shell{padding-top:.6rem}
+}

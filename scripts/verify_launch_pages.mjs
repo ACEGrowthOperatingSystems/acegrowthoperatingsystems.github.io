@@ -224,7 +224,7 @@ export function checkManifestMatchesImplementation(sources) {
   if (manifest.release_state !== 'APPROVAL_HELD') return fail(name, 'manifest release_state is not APPROVAL_HELD');
   if (manifest.live_submission_enabled !== false) return fail(name, 'manifest live_submission_enabled is not false');
 
-  const routeMap = { '/marketing/': 'marketing', '/p12/': 'p12', '/growth/': 'growth', '/start/': 'start', '/#choose-demo': 'home' };
+  const routeMap = { '/marketing/': 'marketing', '/p12/': 'p12', '/growth/': 'growth', '/start/': 'start', '/#choose-demo': 'home', '/#custom-demo': 'home', '/#weekly-brief': 'weeklyBrief' };
   for (const route of manifest.routes || []) {
     const key = routeMap[route.path];
     if (!key) return fail(name, `manifest references unknown route path ${route.path}`);
@@ -444,8 +444,9 @@ export function runAllChecks(sources) {
   ];
 }
 
-// The homepage is ~1 MB of inline base64 imagery; only the held
-// #choose-demo section is a launch route, so only that section is loaded.
+// The homepage is ~1 MB of inline base64 imagery; only its held launch
+// sections are loaded: #choose-demo (which also holds the #custom-demo
+// request form) and the #weekly-brief pop-up.
 export function extractSection(html, id) {
   if (html == null) return null;
   const start = html.indexOf(`<section id="${id}"`);
@@ -459,6 +460,8 @@ export function loadRealSources() {
   return {
     home: extractSection(readFileSafe('index.html'), 'choose-demo'),
     'assets/demo-config.js': readFileSafe('assets/demo-config.js'),
+    weeklyBrief: extractSection(readFileSafe('index.html'), 'weekly-brief'),
+    'assets/weekly-brief-config.js': readFileSafe('assets/weekly-brief-config.js'),
     marketing: readFileSafe('marketing/index.html'),
     p12: readFileSafe('p12/index.html'),
     growth: readFileSafe('growth/index.html'),

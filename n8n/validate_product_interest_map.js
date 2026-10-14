@@ -41,11 +41,16 @@ const email=clean(body.email,320).toLowerCase();
 if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) throw new Error('INVALID_EMAIL');
 
 // automate-demo (/start/) sends first_name and bottleneck; demo-question
-// (homepage #choose-demo) sends first_name and question. They fill name/need.
+// (homepage #choose-demo) sends first_name and question; custom-demo-request
+// (homepage #custom-demo) sends first_name and business_description;
+// weekly-brief-subscribe (homepage #weekly-brief pop-up) sends first_name
+// only, so its need is the subscription itself. They fill name/need.
 const name=clean(body.name||body.first_name,200);
 if(!name) throw new Error('INVALID_NAME');
 
-const need=clean(body.need||body.bottleneck||body.question,200);
+const formKey=clean(body.form,50);
+const need=clean(body.need||body.bottleneck||body.question||body.business_description||
+  (formKey==='weekly-brief-subscribe'?'ACE Weekly Brief subscription':''),200);
 if(!need) throw new Error('INVALID_NEED');
 
 const CONTRACTS={
@@ -53,9 +58,11 @@ const CONTRACTS={
   'p12-interest':{product_key:'ACE-PRO',offer_code:'P12',source:'ace-p12',notion_source:'Website - P12 product interest'},
   'grow-interest':{product_key:'ACE-GROW',offer_code:'SYS-GROW',source:'ace-grow',notion_source:'Website - ACE-GROW product interest'},
   'automate-demo':{product_key:'ACE-DEMO',offer_code:'DEMO-AUTOMATE',source:'ig-comment-automate',notion_source:'Website - AUTOMATE demo funnel'},
-  'demo-question':{product_key:'ACE-DEMO',offer_code:'DEMO-QUESTION',source:'website-demo',notion_source:'Website - Choose Your Demo question'}
+  'demo-question':{product_key:'ACE-DEMO',offer_code:'DEMO-QUESTION',source:'website-demo',notion_source:'Website - Choose Your Demo question'},
+  'custom-demo-request':{product_key:'ACE-DEMO',offer_code:'CUSTOM-DEMO-REQUEST',source:'website-custom-demo',notion_source:'Website - Customized demo request'},
+  'weekly-brief-subscribe':{product_key:'ACE-BRIEF',offer_code:'WEEKLY-BRIEF',source:'website-popup',notion_source:'Website - Weekly Brief pop-up'}
 };
-const form=clean(body.form,50);
+const form=formKey;
 const contract=CONTRACTS[form];
 if(!contract) throw new Error('INVALID_FORM');
 if(clean(body.product_key,50)!==contract.product_key) throw new Error('INVALID_PRODUCT_KEY');
@@ -106,6 +113,40 @@ if(form==='demo-question'){
   if(!extra.question) throw new Error('INVALID_QUESTION');
   extra.interests=(Array.isArray(body.interests)?body.interests:[]).map(v=>clean(v,20).toLowerCase()).filter(v=>DEMO_KEYS.includes(v)).slice(0,5);
   extra.followup_sla_hours=24;
+  extra.src=clean(body.src,100);
+  for(const k of ['utm_source','utm_medium','utm_campaign','utm_term','utm_content']) extra[k]=clean(body[k],200);
+}
+// Customized demo request (homepage #custom-demo). Every choice field is
+// whitelisted; anything else becomes ''. supplement_lead_generator is kept
+// ONLY when has_lead_generator is 'yes' (the question is conditional).
+// Scheduling the demo / proposal review is a human task, never an
+// automated send or calendar booking from this node.
+if(form==='custom-demo-request'){
+  const pick=(value,allowed)=>{const v=clean(value,40).toLowerCase();return allowed.includes(v)?v:''};
+  const CAPABILITY_KEYS=['pipeline','content','followup','proposal','growth','not-sure'];
+  extra.first_name=clean(body.first_name,120);
+  extra.business_name=clean(body.business_name,200);
+  extra.industry=clean(body.industry,100);
+  extra.business_description=clean(body.business_description,1000);
+  extra.capabilities=(Array.isArray(body.capabilities)?body.capabilities:[]).map(v=>clean(v,20).toLowerCase()).filter((v,i,a)=>CAPABILITY_KEYS.includes(v)&&a.indexOf(v)===i).slice(0,6);
+  extra.timeframe=pick(body.timeframe,['asap','within-30-days','1-3-months','just-exploring']);
+  extra.preferred_day=pick(body.preferred_day,['monday','tuesday','wednesday','thursday','friday','any-weekday']);
+  extra.preferred_time=pick(body.preferred_time,['morning','afternoon','late-afternoon']);
+  extra.preferred_timezone='America/New_York';
+  extra.interested_ace_lead_generator=pick(body.interested_ace_lead_generator,['yes','no','maybe']);
+  extra.has_lead_generator=pick(body.has_lead_generator,['yes','no']);
+  extra.supplement_lead_generator=extra.has_lead_generator==='yes'?pick(body.supplement_lead_generator,['yes','no']):'';
+  extra.phone=clean(body.phone,40).replace(/[^\d+().\- ]/g,'');
+  extra.src=clean(body.src,100);
+  for(const k of ['utm_source','utm_medium','utm_campaign','utm_term','utm_content']) extra[k]=clean(body[k],200);
+}
+// ACE Weekly Brief pop-up subscription. Any Kit subscribe happens later,
+// server-side, behind external_action_authorized; never from this node.
+if(form==='weekly-brief-subscribe'){
+  extra.first_name=clean(body.first_name,120);
+  extra.brief_optin=true;
+  extra.newsletter='ace-weekly-brief';
+  extra.page_path=clean(body.page_path,200);
   extra.src=clean(body.src,100);
   for(const k of ['utm_source','utm_medium','utm_campaign','utm_term','utm_content']) extra[k]=clean(body[k],200);
 }
