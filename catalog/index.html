@@ -26,16 +26,25 @@
 <div class="section-head"><p class="eyebrow">Product Catalog</p><h1>Pick what you need. Approve everything from your phone.</h1>
 <p class="small" id="foundingNote">Founding Member Rate, locked while you stay subscribed.</p></div>
 
-<div class="tabs" role="tablist" aria-label="Catalog sections">
-  <button role="tab" id="tab-plans" aria-controls="plans" aria-selected="true">Catalog</button>
-  <button role="tab" id="tab-pricing" aria-controls="pricing" aria-selected="false" tabindex="-1">How pricing works</button>
+<p class="status" id="checkoutStatus" role="status" aria-live="polite"></p>
+<div id="plans">
+<div class="tabs" id="familyTabs" role="tablist" aria-label="Choose a product family">
+  <button type="button" role="tab" id="tab-alacarte" aria-controls="panel-alacarte" aria-selected="true">A la carte</button>
+  <button type="button" role="tab" id="tab-leadgen" aria-controls="panel-leadgen" aria-selected="false" tabindex="-1">Lead Generator</button>
+  <button type="button" role="tab" id="tab-os" aria-controls="panel-os" aria-selected="false" tabindex="-1">Operating Systems</button>
+  <button type="button" role="tab" id="tab-topups" aria-controls="panel-topups" aria-selected="false" tabindex="-1">Top-ups</button>
+  <button type="button" role="tab" id="tab-pricing" class="tab-help" aria-controls="pricing" aria-selected="false" tabindex="-1">How pricing works</button>
 </div>
 
-<div id="plans" role="tabpanel" aria-labelledby="tab-plans">
-  <div id="catalogRoot"><noscript><p class="small">This catalog needs JavaScript to show prices.</p></noscript></div>
+<div id="catalogRoot">
+  <noscript><p class="small">This catalog needs JavaScript to show prices.</p></noscript>
+  <div id="panel-alacarte" class="cat-panel" role="tabpanel" aria-labelledby="tab-alacarte" tabindex="0"></div>
+  <div id="panel-leadgen" class="cat-panel" role="tabpanel" aria-labelledby="tab-leadgen" tabindex="0" hidden></div>
+  <div id="panel-os" class="cat-panel" role="tabpanel" aria-labelledby="tab-os" tabindex="0" hidden></div>
+  <div id="panel-topups" class="cat-panel" role="tabpanel" aria-labelledby="tab-topups" tabindex="0" hidden></div>
 </div>
 
-<div id="pricing" role="tabpanel" aria-labelledby="tab-pricing" hidden>
+<div id="pricing" class="cat-panel" role="tabpanel" aria-labelledby="tab-pricing" tabindex="0" hidden>
   <div class="pricing-copy">
     <h2>How your price is built</h2>
     <p><strong>Setup</strong> is charged at checkout, because setup starts then. DIY plans have no setup fee.</p>
@@ -47,8 +56,8 @@
     <p><strong>Refunds.</strong> Full refund before onboarding starts. Onboarding starts when you submit the onboarding questionnaire; no refunds after that. See the <a href="../refund/">Refund Policy</a>.</p>
   </div>
 </div>
+</div>
 
-<p class="status" id="checkoutStatus" role="status" aria-live="polite"></p>
 <p class="buy-legal"><a href="../terms/">Terms</a><a href="../refund/">Refund Policy</a><a href="../privacy/">Privacy</a></p>
 </div></section>
 </main>
