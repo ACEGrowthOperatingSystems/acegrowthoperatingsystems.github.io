@@ -339,3 +339,61 @@ const payload={idempotency_key:crypto.randomUUID()};
 }
 
 console.log('PASS: verify_launch_pages fail-closed contract');
+
+// --- Per-page release gate (site moved off the site-wide literal). ---
+const PER_PAGE_GATE = 'const RELEASE_AUTHORIZED=Boolean(window.ACE_RELEASE&&window.ACE_RELEASE.isReleased());';
+function perPageSources() {
+  const sources = goodSources();
+  sources.js = sources.js.replace('const RELEASE_AUTHORIZED=false;', PER_PAGE_GATE);
+  sources.releaseFlag = loadRealSources().releaseFlag;
+  return sources;
+}
+
+// 13. Exact per-page gate + fail-closed release-flag.js passes.
+{
+  const result = checkReleaseAuthorizedFalse(perPageSources());
+  assert.equal(result.pass, true, `exact per-page gate should pass: ${result.detail}`);
+}
+
+// 14. Per-page gate without release-flag.js fails closed.
+{
+  const sources = perPageSources();
+  sources.releaseFlag = null;
+  assert.equal(checkReleaseAuthorizedFalse(sources).pass, false, 'missing release-flag.js must fail');
+}
+
+// 15. release-flag.js forced true fails closed.
+{
+  const sources = perPageSources();
+  sources.releaseFlag = sources.releaseFlag.replace('isReleased(){return released}', 'isReleased(){return true}');
+  assert.equal(checkReleaseAuthorizedFalse(sources).pass, false, 'isReleased forced true must fail');
+}
+
+// 16. Loose or case-folded comparison in release-flag.js fails closed.
+{
+  const sources = perPageSources();
+  sources.releaseFlag = sources.releaseFlag.replace('const released=state===RELEASED;', 'const released=state.toUpperCase()===RELEASED;');
+  assert.equal(checkReleaseAuthorizedFalse(sources).pass, false, 'case-folded comparison must fail');
+  const loose = perPageSources();
+  loose.releaseFlag = loose.releaseFlag.replace('const released=state===RELEASED;', 'const released=state==RELEASED;');
+  assert.equal(checkReleaseAuthorizedFalse(loose).pass, false, 'loose == comparison must fail');
+}
+
+// 17. Any other RELEASE_AUTHORIZED expression fails closed.
+{
+  const sources = perPageSources();
+  sources.js = sources.js.replace(PER_PAGE_GATE, 'const RELEASE_AUTHORIZED=Boolean(window.ACE_RELEASE);');
+  assert.equal(checkReleaseAuthorizedFalse(sources).pass, false, 'non-exact gate must fail');
+  const reassigned = perPageSources();
+  reassigned.js = reassigned.js.replace(PER_PAGE_GATE, PER_PAGE_GATE.replace('const ', 'let ') + 'RELEASE_AUTHORIZED=1;');
+  assert.equal(checkReleaseAuthorizedFalse(reassigned).pass, false, 'reassignment must fail');
+}
+
+// 18. A *_AUTHORIZED=true constant still fails with the per-page gate.
+{
+  const sources = perPageSources();
+  sources.js = sources.js.replace(PER_PAGE_GATE, PER_PAGE_GATE + 'const LIVE_SEND_AUTHORIZED=true;');
+  assert.equal(checkReleaseAuthorizedFalse(sources).pass, false, 'other *_AUTHORIZED=true must still fail');
+}
+
+console.log('per-page release gate tests: OK');
