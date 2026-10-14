@@ -85,12 +85,36 @@ export function checkConsentRequiredUnchecked(sources, routeKey, routeLabel) {
   return ok(`${routeLabel}: consent required + unchecked`);
 }
 
+// The per-page flag must resolve to released ONLY on the exact string
+// "RELEASED" read from the page's own body attribute, and must never be
+// forced true.
+export function checkReleaseFlagFailClosed(flag) {
+  if (!/const RELEASED="RELEASED";/.test(flag)) return 'RELEASED constant is not the exact string "RELEASED"';
+  if (!/const released=state===RELEASED;/.test(flag)) return 'released is not an exact (===) match on RELEASED';
+  if (!/dataset\.releaseState/.test(flag)) return 'state is not read from the page body data-release-state';
+  if (/released\s*[:=]\s*true\b/.test(flag) || /isReleased\(\)\s*\{\s*return\s+true/.test(flag)) return 'released is forced true';
+  if (/\.to(Upper|Lower)Case\(\)/.test(flag) || /(^|[^=!])==(?!=)/.test(flag)) return 'loose or case-folded comparison';
+  return null;
+}
+
 export function checkReleaseAuthorizedFalse(sources) {
   const name = 'form controller: RELEASE_AUTHORIZED=false';
   const js = sources.js;
   if (js == null) return fail(name, 'file missing');
-  if (!/RELEASE_AUTHORIZED\s*=\s*false\s*;/.test(js)) {
-    return fail(name, 'RELEASE_AUTHORIZED is not literally false');
+  const literalFalse = /RELEASE_AUTHORIZED\s*=\s*false\s*;/.test(js);
+  if (!literalFalse) {
+    // The site moved from a site-wide literal to a per-page gate. That gate is
+    // accepted ONLY in its exact form, and ONLY when assets/release-flag.js is
+    // the fail-closed exact-match implementation. Any other RELEASE_AUTHORIZED
+    // expression fails closed.
+    const perPageGate = /const RELEASE_AUTHORIZED=Boolean\(window\.ACE_RELEASE&&window\.ACE_RELEASE\.isReleased\(\)\);/.test(js);
+    if (!perPageGate) return fail(name, 'RELEASE_AUTHORIZED is neither literally false nor the exact per-page gate');
+    const assignments = [...js.matchAll(/\bRELEASE_AUTHORIZED\s*=(?!=)/g)].length;
+    if (assignments !== 1) return fail(name, 'RELEASE_AUTHORIZED is assigned more than once');
+    const flag = sources.releaseFlag;
+    if (flag == null) return fail(name, 'per-page gate used but assets/release-flag.js is missing');
+    const flagError = checkReleaseFlagFailClosed(flag);
+    if (flagError) return fail(name, `release-flag.js not fail-closed: ${flagError}`);
   }
   // Regression guard for the fd14c07 defect: the release gate was renamed
   // (RELEASE_AUTHORIZED -> SUBMISSION_AUTHORIZED) and flipped to true, which
@@ -440,6 +464,7 @@ export function loadRealSources() {
     growth: readFileSafe('growth/index.html'),
     start: readFileSafe('start/index.html'),
     js: readFileSafe('assets/product-launch.js'),
+    releaseFlag: readFileSafe('assets/release-flag.js'),
     css: readFileSafe('assets/product-launch.css'),
     manifest: readFileSafe('launch-readiness/product-pages-20260913.json'),
     mapper: readFileSafe('n8n/validate_product_interest_map.js'),
