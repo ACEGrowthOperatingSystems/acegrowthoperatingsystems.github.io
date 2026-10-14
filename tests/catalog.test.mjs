@@ -22,6 +22,7 @@ const STANDARD = { 1:[695,199],2:[0,49],3:[795,249],4:[0,99],5:[895,299],6:[0,99
 
 const FLAG_LINE = 'const ADDONS_APPROVED=false;';
 const withAddons = (src = configSrc) => { assert.ok(src.includes(FLAG_LINE)); return src.replace(FLAG_LINE, 'const ADDONS_APPROVED=true;'); };
+const withPlaceholders = (src) => src.replace(/"link":"https:\/\/buy\.stripe\.com\/[A-Za-z0-9]+"/g, '"link":"REPLACE_WITH_LIVE_LINK"');
 const withLiveLinks = (src) => src.replaceAll('"link":"REPLACE_WITH_LIVE_LINK"', '"link":"https://buy.stripe.com/live123"');
 
 // ---------------- stub DOM ----------------
@@ -81,9 +82,18 @@ test('every buyable line matches the approved Founding and Standard amounts', ()
   }
 });
 
-test('no line is buyable while links are placeholders; test and foreign links refused; add-ons refused even with a live link', () => {
+test('the 25 buyable lines carry live buy.stripe.com links; top-ups and add-ons never configured; test and foreign links refused', () => {
   const c = load();
-  for (const l of c.lines) assert.equal(c.isConfigured(l.key), false, l.key);
+  const buyable = c.lines.filter((l) => l.buyable && l.family !== 'LEAD GENERATOR ADD-ON');
+  assert.equal(buyable.length, 25);
+  for (const l of buyable) {
+    assert.equal(c.isConfigured(l.key), true, l.key);
+    assert.match(l.link, /^https:\/\/buy\.stripe\.com\/(?!test_)[A-Za-z0-9]+$/, l.key);
+  }
+  assert.equal(new Set(buyable.map((l) => l.link)).size, 25);
+  for (const l of c.lines.filter((x) => !x.buyable || x.family === 'LEAD GENERATOR ADD-ON')) assert.equal(c.isConfigured(l.key), false, l.key);
+  const placeholders = load(withPlaceholders(configSrc));
+  for (const l of placeholders.lines) assert.equal(placeholders.isConfigured(l.key), false, l.key);
   assert.equal(c.isLiveLink('https://buy.stripe.com/test_abc123'), false);
   assert.equal(c.isLiveLink('https://evil.example/abc'), false);
   assert.equal(c.isLiveLink('https://buy.stripe.com/abc123'), true);
@@ -134,16 +144,17 @@ test('held page: every Add to cart is inert and never navigates', () => {
 });
 
 test('released page with placeholder links is still inert; both gates open navigates', () => {
-  const r = render({ released: true });
+  const r = render({ config: withPlaceholders(configSrc), released: true });
   for (const b of r.nodes.filter((n) => n.dataset.buy)) {
     assert.equal(b.dataset.inertReason, 'LINK_PLACEHOLDER'); b.click();
   }
   assert.deepEqual(r.assigned, []);
-  const r2 = render({ config: withLiveLinks(configSrc), released: true });
+  const r2 = render({ released: true });
   const b = r2.nodes.find((n) => n.dataset.buy === 'L09-ACE-LEAD-GENERATOR-IGNITE');
   assert.equal(b.getAttribute('aria-disabled'), 'false');
   b.click();
-  assert.deepEqual(r2.assigned, ['https://buy.stripe.com/live123']);
+  assert.deepEqual(r2.assigned, [r2.cat.get('L09-ACE-LEAD-GENERATOR-IGNITE').link]);
+  assert.match(r2.assigned[0], /^https:\/\/buy\.stripe\.com\/(?!test_)/);
 });
 
 test('add-on block hidden while ADDONS_APPROVED=false; when true it is "Pending approval" and never buyable', () => {
