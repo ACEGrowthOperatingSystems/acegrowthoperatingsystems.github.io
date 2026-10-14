@@ -5,7 +5,9 @@
 //   1. this page's own release flag (assets/release-flag.js) must be RELEASED
 //   2. the checkout link (assets/checkout-config.js) must no longer be the
 //      REPLACE_WITH_LIVE_LINK placeholder
-// Either one closed means the button is inert and says why. There is no path
+//   3. the buyer has ticked the billing acknowledgement (#billingAck), when
+//      the page has one (decision 12 Oct: required tick box at checkout)
+// Either gate closed means the button is inert and says why. There is no path
 // through this file that reaches Stripe while either gate is closed.
 
 const released=Boolean(window.ACE_RELEASE&&window.ACE_RELEASE.isReleased());
@@ -13,6 +15,7 @@ const config=window.ACE_CHECKOUT;
 const status=document.getElementById("checkoutStatus");
 
 const HELD_NOTICE="Checkout is not open. This page is held pending release authorization and no payment can be taken.";
+const ACK_NOTICE="Please tick the box under Before you pay to confirm you have read the billing terms.";
 const UNCONFIGURED_NOTICE="Checkout is not open. No payment link is configured for this offer.";
 
 document.querySelectorAll("[data-buy]").forEach(button=>{
@@ -27,6 +30,13 @@ document.querySelectorAll("[data-buy]").forEach(button=>{
     if(!open){
       event.preventDefault();
       if(status)status.textContent=!released?HELD_NOTICE:UNCONFIGURED_NOTICE;
+      return;
+    }
+    const ack=document.getElementById("billingAck");
+    if(ack&&!ack.checked){
+      event.preventDefault();
+      if(status)status.textContent=ACK_NOTICE;
+      ack.focus();
       return;
     }
     window.location.assign(config.links[productKey]);

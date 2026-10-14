@@ -365,8 +365,9 @@ test('visitor-facing copy says Founding Member Rate, never launch price', () => 
   assert.doesNotMatch(startHtml, /[Ll]aunch pric/);
   assert.match(section, /id="cydRateLine">Founding Member Rate on every plan, locked in for as long as you stay\./);
   assert.match(pickerSrc, /`Available until \$\{until\} \\u00b7 /);
-  // Credit wording kept on every card.
-  assert.equal((checkoutHtml.match(/monthly usage credit; usage pauses at 100% of the credit\./g) || []).length, 6);
+  // Credit wording kept on every card; full credit terms (80%/100% alerts,
+  // lead-reply overdraft per decision 12 Oct) live in the Before you pay box.
+  assert.equal((checkoutHtml.match(/monthly usage credit\. Credit terms are under Before you pay\./g) || []).length, 6);
 });
 
 test('checkout page stays held; waterfall never touches buy buttons or links', () => {
