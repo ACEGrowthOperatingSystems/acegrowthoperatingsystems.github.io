@@ -1,0 +1,147 @@
+{
+ "voice_end": 35.95,
+ "T1": 30.19,
+ "captions": [
+  [
+   0.55,
+   1.5,
+   "Heyyy buddy!",
+   []
+  ],
+  [
+   1.55,
+   3.78,
+   "You will NOT believe my day!",
+   [
+    "NOT"
+   ]
+  ],
+  [
+   3.83,
+   6.47,
+   "ACE brought in fresh leads before breakfast,",
+   [
+    "ACE"
+   ]
+  ],
+  [
+   6.51,
+   8.47,
+   "cranked out a whole week of content,",
+   []
+  ],
+  [
+   8.52,
+   10.54,
+   "and posted it EVERYWHERE!",
+   [
+    "EVERYWHERE!"
+   ]
+  ],
+  [
+   10.54,
+   13.35,
+   "Then it went FULL THROTTLE on prospecting,",
+   [
+    "FULL",
+    "THROTTLE"
+   ]
+  ],
+  [
+   13.4,
+   15.15,
+   "turned prospects into customers,",
+   []
+  ],
+  [
+   15.2,
+   17.43,
+   "followed up with my whole pipeline...",
+   []
+  ],
+  [
+   17.48,
+   19.89,
+   "even got my clients sending referrals!",
+   []
+  ],
+  [
+   19.93,
+   23.58,
+   "And it all keeps growing... on autopilot.",
+   [
+    "autopilot."
+   ]
+  ],
+  [
+   23.62,
+   24.15,
+   "Me?",
+   []
+  ],
+  [
+   24.19,
+   25.76,
+   "I tapped Approve.",
+   [
+    "Approve."
+   ]
+  ],
+  [
+   25.81,
+   27.93,
+   "On my phone! On the beach!",
+   []
+  ],
+  [
+   27.93,
+   30.26,
+   "Gonna hang with the boys tonight!",
+   []
+  ]
+ ],
+ "events": [
+  [
+   3.88,
+   0
+  ],
+  [
+   6.56,
+   1
+  ],
+  [
+   9.42,
+   2
+  ],
+  [
+   11.24,
+   3
+  ],
+  [
+   13.45,
+   4
+  ],
+  [
+   15.25,
+   5
+  ],
+  [
+   19.05,
+   6
+  ],
+  [
+   22.0,
+   7
+  ],
+  [
+   24.24,
+   null,
+   "ONE-TAP APPROVAL",
+   "Approved from his phone",
+   "Everything above ran with one tap"
+  ]
+ ],
+ "final_card": 27.98,
+ "tagline": 31.04,
+ "cta": 33.77
+}
