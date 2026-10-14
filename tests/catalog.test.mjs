@@ -251,3 +251,14 @@ test('tier facts are limited to approved prospects/posts counts', () => {
   const c = load();
   for (const l of c.lines) for (const f of c.tierFacts(l.key)) assert.match(f, /^[\d,]+ (prospects|posts) a month$/, l.key);
 });
+
+test('How pricing works panel carries the 4 common questions and no off-list claims', async () => {
+  const fs = await import('node:fs');
+  const html = fs.readFileSync(new URL('../catalog/index.html', import.meta.url), 'utf8');
+  const faq = html.slice(html.indexOf('class="cat-faq"'), html.indexOf('</div>', html.indexOf('class="cat-faq"')));
+  const qs = [...faq.matchAll(/<summary>([^<]+)<\/summary>/g)].map((m) => m[1]);
+  assert.deepEqual(qs, ['What happens after I pay?', 'How long until the Lead Generator starts sending?', 'Can I cancel?', 'How do I approve the work?']);
+  assert.match(faq, /14 to 21 days/);
+  assert.match(faq, /3-month minimum/);
+  assert.doesNotMatch(faq, /guarante|lifetime|!/i);
+});
