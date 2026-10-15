@@ -15,7 +15,7 @@ const fmt=t=>{if(!t)return"";const d=new Date(t);return d.toLocaleString([], {we
 
 const SAMPLE={ok:true,counts:{PENDING:2,APPROVED:1},drafts:[
   {id:1,source:"ChatGPT",kind:"ad_post",channel:"instagram",title:"Day 1 · Ad 1 · Slow lead response",body:"Still waiting hours to answer new leads?\n\nEvery minute you delay, your hottest prospects cool off. ACE answers new leads within minutes.\n\nTap Follow\nReply DEMO for a free demo",scheduled_for:"2026-10-20T13:00:00Z",urgent:false,status:"PENDING",ref:"MSG-13239"},
-  {id:2,source:"Claude",kind:"video",channel:"instagram",title:"ACE Baby · Cowboy 8-Stage short (v8)",body:"Final approved cut, ready to schedule.",urgent:true,status:"PENDING",ref:"5.03"}]};
+  {id:2,source:"Claude",kind:"video",channel:"instagram",title:"ACE Baby · Cowboy 8-Stage short (v8)",body:"Final approved cut, ready to schedule.",media_url:"/media/posts/ace-baby-cowboy-8stage-v8.mp4",stage:"final",urgent:true,status:"PENDING",ref:"5.03"}]};
 
 let client=null,tab="PENDING",preview=false,data=SAMPLE;
 
@@ -29,15 +29,27 @@ function card(d){
     d.scheduled_for?`<span class="pill">Slot ${esc(fmt(d.scheduled_for))}</span>`:"",
     `<span class="pill">From ${esc(d.source)}</span>`,
     d.ref?`<span class="pill">${esc(d.ref)}</span>`:""].join("");
+  const local=t=>{const x=new Date(t);x.setMinutes(x.getMinutes()-x.getTimezoneOffset());return x.toISOString().slice(0,16)};
+  const slot=d.scheduled_for&&new Date(d.scheduled_for)>new Date()?d.scheduled_for:new Date(Date.now()+3600e3).toISOString();
+  const textOnly=d.kind==="outreach"||d.kind==="other";
+  const approveRow=d.stage==="preview"
+    ?`<p class="hint">Free draft. Approving this lets Claude add the Hedra lip-sync animation (about $1.20–$1.90). The animated reel comes back here for your final OK.</p>
+      <div class="row"><button class="btn btn-approve" type="button" data-decide="APPROVED">Approve → animate</button></div>`
+    :textOnly
+    ?`<div class="row"><button class="btn btn-approve" type="button" data-decide="APPROVED">Approve</button></div>`
+    :`<div class="row"><button class="btn btn-approve" type="button" data-decide="APPROVED" data-when="now">Approve + post now</button></div>
+      <label class="when">Or schedule for <input type="datetime-local" data-when-input value="${esc(local(slot))}"></label>
+      <div class="row"><button class="btn btn-approve alt" type="button" data-decide="APPROVED" data-when="schedule">Approve + schedule</button></div>`;
+  const pub=d.status==="APPROVED"&&d.publish_at?` · Goes out ${esc(fmt(d.published_at||d.publish_at))}`:"";
   const actions=d.status==="PENDING"
-    ?`<textarea aria-label="Change requested" placeholder="What should change? (needed for Change)" data-comment></textarea>
-      <div class="row"><button class="btn btn-approve" type="button" data-decide="APPROVED">Approve</button>
-      <button class="btn btn-change" type="button" data-decide="CHANGE_REQUESTED">Change</button>
+    ?`${approveRow}
+      <textarea aria-label="Change requested" placeholder="What should change? (needed for Change)" data-comment></textarea>
+      <div class="row"><button class="btn btn-change" type="button" data-decide="CHANGE_REQUESTED">Change</button>
       <button class="btn btn-reject" type="button" data-decide="REJECTED">Reject</button></div>
       <p class="status" data-status role="status"></p>`
-    :`<p class="done ${esc(d.status)}">${esc(DONE[d.status]||d.status)}${d.decided_at?" · "+esc(fmt(d.decided_at)):""}${d.owner_comment?" · “"+esc(d.owner_comment)+"”":""}</p>`;
+    :`<p class="done ${esc(d.status)}">${esc(DONE[d.status]||d.status)}${d.decided_at?" · "+esc(fmt(d.decided_at)):""}${pub}${d.publish_result?" · "+esc(d.publish_result):""}${d.owner_comment?" · “"+esc(d.owner_comment)+"”":""}</p>`;
   return `<article class="card" data-id="${esc(d.id)}"><div class="meta">${meta}</div>
-    <p class="d-title">${esc(d.title)}</p>${d.body?`<p class="d-body">${esc(d.body)}</p>`:""}${media}${actions}</article>`;
+    <p class="d-title">${esc(d.title)}</p>${media}${d.body?`<p class="d-body">${esc(d.body)}</p>`:""}${actions}</article>`;
 }
 
 function render(r){
@@ -74,7 +86,10 @@ function wire(){
     if(t.dataset.decide==="CHANGE_REQUESTED"&&!comment){st.textContent="Type what should change, then tap Change.";art.querySelector("[data-comment]").focus();return}
     if(preview){st.textContent="Preview only. Nothing was saved.";return}
     art.querySelectorAll("button").forEach(b=>b.disabled=true);st.textContent="Saving...";
-    try{const r=await rpc("owner_decide_draft",{p_draft_id:Number(art.dataset.id),p_decision:t.dataset.decide,p_comment:comment||null});
+    try{let when=null;
+      if(t.dataset.when==="schedule"){const v=art.querySelector("[data-when-input]").value;if(!v){st.textContent="Pick a date and time first.";art.querySelectorAll("button").forEach(b=>b.disabled=false);return}
+        when=new Date(v);if(when<new Date()){st.textContent="That time has passed. Pick a future time or tap Post now.";art.querySelectorAll("button").forEach(b=>b.disabled=false);return}when=when.toISOString()}
+      const r=await rpc("owner_decide_draft",{p_draft_id:Number(art.dataset.id),p_decision:t.dataset.decide,p_comment:comment||null,p_publish_at:when});
       if(r&&r.ok){await refresh()}else{st.textContent="Already decided or not allowed. Refreshing.";setTimeout(()=>refresh(),900)}}
     catch(_){st.textContent="That did not save. Check your connection and try again.";art.querySelectorAll("button").forEach(b=>b.disabled=false)}
   });

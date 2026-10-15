@@ -8,6 +8,7 @@ const html = read('owner/index.html');
 const js = read('assets/owner.js');
 const cfg = read('assets/owner-config.js');
 const sql = read('supabase/owner_draft_center_v1.sql');
+const sql2 = read('supabase/owner_draft_center_v2.sql');
 const fn = read('supabase/functions/owner-push/index.ts');
 
 test('owner page is noindex and not linked from public pages', () => {
@@ -49,4 +50,16 @@ test('change request needs a comment (page and server)', () => {
 test('push private key is generated server-side, never configured by hand', () => {
   assert.match(fn, /generateVAPIDKeys\(\)/);
   assert.doesNotMatch(fn, /Deno\.env\.get\("VAPID/);
+});
+
+test('v2: one approval per finished post, post now or schedule', () => {
+  assert.match(js, /Approve \+ post now/); assert.match(js, /Approve \+ schedule/);
+  assert.match(js, /p_publish_at:when/);
+  assert.match(sql2, /media_url is not null or kind in \('outreach','other'\)/);
+  assert.match(sql2, /new.publish_at is distinct from old.publish_at/);
+  assert.match(sql2, /greatest\(coalesce\(p_publish_at, now\(\)\), now\(\)\)/);
+});
+test('v2: ACE Baby lip-sync preview approves animation, never publishing', () => {
+  assert.match(js, /Approve → animate/);
+  assert.match(sql2, /stage = 'final' and kind not in/);
 });
