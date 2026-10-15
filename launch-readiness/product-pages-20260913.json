@@ -29,6 +29,22 @@
       "consent_required": true
     },
     {
+      "path": "/growth-website/",
+      "product_key": "ACE-WEB",
+      "offer_code": "WEB-GROWTH",
+      "form": "growth-website-reserve",
+      "source": "ace-growth-website",
+      "consent_required": true
+    },
+    {
+      "path": "/ace-mobile/",
+      "product_key": "ACE-MOBILE",
+      "offer_code": "MOBILE-COMMAND",
+      "form": "ace-mobile-reserve",
+      "source": "ace-mobile",
+      "consent_required": true
+    },
+    {
       "path": "/start/",
       "product_key": "ACE-DEMO",
       "offer_code": "DEMO-AUTOMATE",
