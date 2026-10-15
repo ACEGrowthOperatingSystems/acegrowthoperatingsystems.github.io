@@ -40,7 +40,13 @@ for (const [slug, c] of Object.entries(PAGES)) {
   test(`${slug}: no Stripe link, no WithYou, no earnings claims`, () => {
     assert.doesNotMatch(html, /buy\.stripe\.com|checkout\.stripe/);
     assert.doesNotMatch(html, /WithYou|LifeGuide/i);
-    assert.doesNotMatch(html, /guarantee|\bROI\b|revenue of \$|earn \$|cancel anytime/i);
+    assert.doesNotMatch(html, /guarantee|\bROI\b|revenue of \$|earn \$/i);
+  });
+
+  test(`${slug}: 6-month minimum stated (Jim 15 Oct) and matched in Terms/Refund`, () => {
+    assert.ok(html.includes('Cancel anytime after 6 months.'));
+    assert.match(read('terms/index.html'), /6-month minimum term/);
+    assert.match(read('refund/index.html'), /6-month minimum term/);
   });
 
   test(`${slug}: anchors resolve, legal linked`, () => {
