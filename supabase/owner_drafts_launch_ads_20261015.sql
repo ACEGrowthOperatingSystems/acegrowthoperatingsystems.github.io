@@ -7,7 +7,7 @@ delete from ace_v2.owner_drafts where id = 51 and status = 'PENDING';
 delete from ace_v2.owner_drafts where id = 49 and status = 'PENDING';
 -- 4) YouTube bio without the website link
 update ace_v2.owner_drafts set body = replace(body, ' Want to see ACE in action? Reply DEMO or visit acegrowthoperatingsystems.github.io.', ' Want to see ACE in action? Reply DEMO for a free demo.') where id = 47;
--- 5) the 8 finished Day 1-2 ads (suggested times 9am, 12pm, 3pm, 6pm ET; change them when you approve)
+-- 5) the 8 finished Day 1-2 ads (job site, salon, race car text per Jim 15 Oct; race car is now the ACE Indy car still) (suggested times 9am, 12pm, 3pm, 6pm ET; change them when you approve)
 insert into ace_v2.owner_drafts(source,kind,channel,title,body,media_url,scheduled_for,batch,stage,urgent) values
 ('Claude','ad_post','instagram,facebook','Ad · Day 1 · Still waiting hours to answer new leads?','Still waiting hours to answer new leads?
 
@@ -51,7 +51,7 @@ Reply DEMO for a free demo
 #ACEBaby #SmallBusinessAutomation #AgenticAutomation','https://acegrowthoperatingsystems.github.io/media/posts/ace-baby-ad-d2a5-stack-of-papers.jpg','2026-10-17 13:00+00','launch-ads-d1-2','final',false),
 ('Claude','ad_post','instagram,facebook','Ad · Day 2 · Leads slipping through the cracks?','Leads slipping through the cracks?
 
-ACE keeps your pipeline tight: no more lost leads, just clear next steps.
+ACE helps you stay on top of your leads with automation!
 
 Tap Follow
 Reply DEMO for a free demo
@@ -59,18 +59,16 @@ Reply DEMO for a free demo
 #ACEBaby #SmallBusinessAutomation #AgenticAutomation','https://acegrowthoperatingsystems.github.io/media/posts/ace-baby-ad-d2a6-job-site.jpg','2026-10-17 16:00+00','launch-ads-d1-2','final',false),
 ('Claude','ad_post','instagram,facebook','Ad · Day 2 · No time to market your business?','No time to market your business?
 
-ACE handles the outreach and posting, so you stay visible while you work.
+ACE agents automate outreach!
 
 Tap Follow
 Reply DEMO for a free demo
 
 #ACEBaby #SmallBusinessAutomation #AgenticAutomation','https://acegrowthoperatingsystems.github.io/media/posts/ace-baby-ad-d2a7-salon.jpg','2026-10-17 19:00+00','launch-ads-d1-2','final',false),
-('Claude','ad_post','instagram,facebook','Ad · Day 2 · Competitors are automating. Are you?','Competitors are automating. Are you?
-
-ACE puts automation in your pocket, so you stay ahead without the hassle.
+('Claude','ad_post','instagram,facebook','Ad · Day 2 · If you like speed,','If you like speed, put your business in 5th gear and automate your business from anywhere.
 
 Tap Follow
 Reply DEMO for a free demo
 
-#ACEBaby #SmallBusinessAutomation #AgenticAutomation','https://acegrowthoperatingsystems.github.io/media/posts/ace-baby-ad-d2a8-race-car.jpg','2026-10-17 22:00+00','launch-ads-d1-2','final',false);
+#ACEBaby #SmallBusinessAutomation #AgenticAutomation','https://awiedneibikvrgjejddo.supabase.co/storage/v1/object/public/ace-social/ace-baby-ad-d2a8-indy-car-v1.jpg','2026-10-17 22:00+00','launch-ads-d1-2','final',false);
 select status, count(*) from ace_v2.owner_drafts group by status;
