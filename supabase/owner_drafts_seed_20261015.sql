@@ -382,3 +382,47 @@ Every day can be Draft Day with ACE.
 
 Tap Follow
 Reply DEMO for a free demo','MSG-13249','launch-week-1');
+
+-- Oct 20 launch-day pack (ChatGPT MSG-13251): reviewed by Claude; CTA exact, no prices, 'within minutes'.
+insert into ace_v2.owner_drafts(source,kind,channel,title,body,ref,batch) values
+('ChatGPT','ad_post','instagram,facebook,youtube','Launch Day (Oct 20) · Announcement · option 1','Ready to stop missing out on new business?
+Meet ACE, the automation system that answers new leads within minutes, sends proposals, follows up, books calls, schedules your social posts, and builds your prospect list—all with your approval from your phone.
+No more chasing leads or losing time.
+ACE keeps your business moving, even when you’re off the clock.
+
+Tap Follow
+Reply DEMO for a free demo','MSG-13251','launch-day'),
+('ChatGPT','ad_post','instagram,facebook,youtube','Launch Day (Oct 20) · Announcement · option 2','Business running you instead of the other way around?
+ACE puts automation to work: it answers leads within minutes, follows up, sends proposals, books calls, schedules posts, and builds your prospect list.
+You approve everything from your phone—simple and fast.
+Let ACE handle the busywork so you can focus on what matters.
+
+Tap Follow
+Reply DEMO for a free demo','MSG-13251','launch-day'),
+('ChatGPT','ad_post','instagram,facebook','Launch Day · Pinned post “Start here”','Start here if you want your business to run smoother.
+ACE is for owners who want to answer leads within minutes, follow up, send proposals, book calls, schedule posts, and build prospect lists—without doing it all themselves.
+You approve everything from your phone.
+Want to see how it works?
+
+Tap Follow
+Reply DEMO for a free demo','MSG-13251','launch-day'),
+('ChatGPT','other','instagram,facebook,youtube','Profile bios (Instagram · Facebook · YouTube)','INSTAGRAM (142/150):
+Automation that answers leads, follows up, books calls, and builds prospect lists. Approve drafts from your phone. Reply DEMO for a free demo.
+
+FACEBOOK ABOUT (176/255):
+ACE answers new leads, follows up, sends proposals, books calls, schedules posts, and builds prospect lists. You approve everything from your phone. Reply DEMO for a free demo.
+
+YOUTUBE (305 chars):
+ACE automates your business: answers leads within minutes, follows up, sends proposals, books calls, schedules posts, and builds prospect lists. Approve every step from your phone—no chasing leads or missed opportunities. Want to see ACE in action? Reply DEMO or visit acegrowthoperatingsystems.github.io.','MSG-13251','launch-day'),
+('ChatGPT','ad_post','instagram,facebook','Launch Day · Story sequence (5 frames)','Frame 1: Tired of missing new leads?
+Frame 2: Meet ACE: automation that answers leads within minutes.
+Frame 3: It follows up, sends proposals, books calls, and builds your prospect list.
+Frame 4: You approve everything from your phone—fast and easy.
+Frame 5: Want a free demo?  [Link sticker: acegrowthoperatingsystems.github.io]','MSG-13251','launch-day'),
+('ChatGPT','outreach','instagram,facebook','DEMO auto-reply DM · pick one','OPTION 1 (brand voice):
+Thanks for your interest in ACE! Here’s your free demo: acegrowthoperatingsystems.github.io
+What kind of business do you run, and what’s your biggest bottleneck right now?
+
+OPTION 2 (ACE Baby voice):
+Hey, it’s ACE Baby! Here’s your demo link: acegrowthoperatingsystems.github.io
+What’s your business, and what’s slowing you down the most these days?','MSG-13251','launch-day');
