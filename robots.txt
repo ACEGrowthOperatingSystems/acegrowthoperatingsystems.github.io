@@ -70,4 +70,6 @@ User-agent: *
 Disallow: /evidence/
 Disallow: /launch-readiness/
 Disallow: /n8n/
+Disallow: /owner/
+Disallow: /media/
 Allow: /
