@@ -234,3 +234,151 @@ VO: "See your demo at acegrowthoperatingsystems dot github dot io."
 Text: See your demo + acegrowthoperatingsystems.github.io
 
 Caption: Busy day? ACE schedules social posts, builds prospect lists, and answers leads—owner approves from the phone. #salon #cafe #automation','MSG-13235 · 5.03','launch-videos');
+
+-- Days 3-7 ads + Agentic Automation 4-7 (ChatGPT MSG-13249). Claude normalized the CTA to Jim's exact two lines
+-- and 'instantly' to the approved 'within minutes'.
+insert into ace_v2.owner_drafts(source,kind,channel,title,body,ref,batch) values
+('ChatGPT','ad_post','instagram','Day 3 · Ad 9 (image + caption)','You’re about to lock up for the night when another DM pops up: ‘Can you send me your price list?’
+
+ACE answers new leads and inquiries within minutes—even when you’re off the clock.
+
+Tap Follow
+Reply DEMO for a free demo','MSG-13249','launch-week-1'),
+('ChatGPT','ad_post','instagram','Day 3 · Ad 10 (carousel)','Salon owners: It’s Saturday, you’re double-booked, and your inbox is a mess.
+
+ACE sends proposals and follows up so you never miss a high-value client.
+
+Tap Follow
+Reply DEMO for a free demo','MSG-13249','launch-week-1'),
+('ChatGPT','ad_post','instagram','Day 3 · Ad 11 (short video)','Confession time: You keep meaning to post on social, but it slips through the cracks.
+
+ACE schedules your social posts—no more missed days, no more guilt.
+
+Tap Follow
+Reply DEMO for a free demo','MSG-13249','launch-week-1'),
+('ChatGPT','ad_post','instagram','Day 3 · Ad 12 (meme · ace baby voice)','Y’all ever approve a whole week’s worth of drafts while sippin’ lemonade by the pool? I do.
+
+My humans just tap their phone and ACE gets it done.
+
+Tap Follow
+Reply DEMO for a free demo','MSG-13249','launch-week-1'),
+('ChatGPT','ad_post','instagram','Day 4 · Ad 13 (image + caption)','It’s 7am and your prospect list is already growing—before you’ve even had coffee.
+
+ACE builds prospect lists while you sleep.
+
+Tap Follow
+Reply DEMO for a free demo','MSG-13249','launch-week-1'),
+('ChatGPT','ad_post','instagram','Day 4 · Ad 14 (carousel)','Coaches: Ever wish you could follow up with every inquiry, every time, without lifting a finger?
+
+ACE follows up and books calls so you can focus on your clients.
+
+Tap Follow
+Reply DEMO for a free demo','MSG-13249','launch-week-1'),
+('ChatGPT','ad_post','instagram','Day 4 · Ad 15 (short video)','Contrarian take: Hustling harder isn’t the answer. Automating smarter is.
+
+ACE handles your lead responses and proposals—so you can work on your business, not in it.
+
+Tap Follow
+Reply DEMO for a free demo','MSG-13249','launch-week-1'),
+('ChatGPT','ad_post','instagram','Day 4 · Ad 16 (gif · ace baby voice)','I just told my buddy, ‘My humans approve everything from their phone. No laptop, no problem.’
+
+ACE keeps the business running, even when you’re out having fun.
+
+Tap Follow
+Reply DEMO for a free demo','MSG-13249','launch-week-1'),
+('ChatGPT','ad_post','instagram','Day 5 · Ad 17 (image + caption)','Med-spa owners: You’re in back-to-back treatments, but leads keep coming in.
+
+ACE answers new inquiries and sends proposals so you never miss a new booking.
+
+Tap Follow
+Reply DEMO for a free demo','MSG-13249','launch-week-1'),
+('ChatGPT','ad_post','instagram','Day 5 · Ad 18 (carousel)','It’s Friday afternoon and you’re ready to clock out—except your DMs are still blowing up.
+
+ACE answers new leads within minutes, so you can actually enjoy your weekend.
+
+Tap Follow
+Reply DEMO for a free demo','MSG-13249','launch-week-1'),
+('ChatGPT','ad_post','instagram','Day 5 · Ad 19 (short video)','Before ACE: Missed messages, lost leads. After ACE: Every inquiry answered, every time.
+
+ACE makes sure no one slips through the cracks.
+
+Tap Follow
+Reply DEMO for a free demo','MSG-13249','launch-week-1'),
+('ChatGPT','ad_post','instagram','Day 5 · Ad 20 (meme · ace baby voice)','Just approved a batch of proposals from the golf cart. Business? Handled.
+
+With ACE, you’re always in control—even when you’re off the clock.
+
+Tap Follow
+Reply DEMO for a free demo','MSG-13249','launch-week-1'),
+('ChatGPT','ad_post','instagram','Day 6 · Ad 21 (image + caption)','Contractors: You’re on a job site, but your phone keeps buzzing with new leads.
+
+ACE answers inquiries and builds your prospect list while you’re on the tools.
+
+Tap Follow
+Reply DEMO for a free demo','MSG-13249','launch-week-1'),
+('ChatGPT','ad_post','instagram','Day 6 · Ad 22 (carousel)','It’s Sunday night and you’re planning your week—your social posts are already scheduled.
+
+ACE keeps your content calendar full, so you can focus on what matters.
+
+Tap Follow
+Reply DEMO for a free demo','MSG-13249','launch-week-1'),
+('ChatGPT','ad_post','instagram','Day 6 · Ad 23 (short video)','Realtors, stop losing leads after hours.
+
+ACE answers new inquiries within minutes, no matter when they come in.
+
+Tap Follow
+Reply DEMO for a free demo','MSG-13249','launch-week-1'),
+('ChatGPT','ad_post','instagram','Day 6 · Ad 24 (gif · ace baby voice)','Poolside again. My humans just approved tomorrow’s posts with a swipe. Easy.
+
+ACE makes every day Draft Day.
+
+Tap Follow
+Reply DEMO for a free demo','MSG-13249','launch-week-1'),
+('ChatGPT','ad_post','instagram','Day 7 · Ad 25 (image + caption)','You’re wrapping up your week, but your pipeline is already filling for next week.
+
+ACE builds your prospect list and keeps the momentum going.
+
+Tap Follow
+Reply DEMO for a free demo','MSG-13249','launch-week-1'),
+('ChatGPT','ad_post','instagram','Day 7 · Ad 26 (carousel)','Coaches: Your DMs are full, but you’re coaching back-to-back.
+
+ACE follows up and books calls so you never miss a new client.
+
+Tap Follow
+Reply DEMO for a free demo','MSG-13249','launch-week-1'),
+('ChatGPT','ad_post','instagram','Day 7 · Ad 27 (short video)','Observation: The more you automate, the more you can actually take a break.
+
+ACE handles your lead responses, proposals, and posts—so you can step away.
+
+Tap Follow
+Reply DEMO for a free demo','MSG-13249','launch-week-1'),
+('ChatGPT','ad_post','instagram','Day 7 · Ad 28 (meme · ace baby voice)','Y’all, I just told my friends: ‘My humans run their business from the cabana. That’s ACE for ya.’
+
+Automation so easy, you can approve everything from anywhere.
+
+Tap Follow
+Reply DEMO for a free demo','MSG-13249','launch-week-1'),
+('ChatGPT','agentic_post','instagram','Agentic Automation post 4 (carousel)','It’s late, but your business keeps moving—because ACE is on it.
+
+ACE answers new leads and sends proposals, no matter the hour.
+
+Tap Follow
+Reply DEMO for a free demo','MSG-13249','launch-week-1'),
+('ChatGPT','agentic_post','instagram','Agentic Automation post 5 (short video)','You used to chase every lead. Now, ACE does it for you.
+
+ACE builds your prospect list and follows up automatically.
+
+Tap Follow
+Reply DEMO for a free demo','MSG-13249','launch-week-1'),
+('ChatGPT','agentic_post','instagram','Agentic Automation post 6 (image + caption)','You’re out with family, but your business is still booking calls.
+
+ACE follows up and books calls while you live your life.
+
+Tap Follow
+Reply DEMO for a free demo','MSG-13249','launch-week-1'),
+('ChatGPT','agentic_post','instagram','Agentic Automation post 7 (carousel)','You approve a proposal from your phone, and ACE handles the rest.
+
+Every day can be Draft Day with ACE.
+
+Tap Follow
+Reply DEMO for a free demo','MSG-13249','launch-week-1');
