@@ -224,7 +224,7 @@ export function checkManifestMatchesImplementation(sources) {
   if (manifest.release_state !== 'APPROVAL_HELD') return fail(name, 'manifest release_state is not APPROVAL_HELD');
   if (manifest.live_submission_enabled !== false) return fail(name, 'manifest live_submission_enabled is not false');
 
-  const routeMap = { '/marketing/': 'marketing', '/p12/': 'p12', '/growth/': 'growth', '/start/': 'start', '/#choose-demo': 'home', '/#custom-demo': 'home', '/#weekly-brief': 'weeklyBrief' };
+  const routeMap = { '/marketing/': 'marketing', '/p12/': 'p12', '/growth/': 'growth', '/growth-website/': 'growthWebsite', '/ace-mobile/': 'aceMobile', '/start/': 'start', '/#choose-demo': 'home', '/#custom-demo': 'home', '/#weekly-brief': 'weeklyBrief' };
   for (const route of manifest.routes || []) {
     const key = routeMap[route.path];
     if (!key) return fail(name, `manifest references unknown route path ${route.path}`);
@@ -465,6 +465,8 @@ export function loadRealSources() {
     marketing: readFileSafe('marketing/index.html'),
     p12: readFileSafe('p12/index.html'),
     growth: readFileSafe('growth/index.html'),
+    growthWebsite: readFileSafe('growth-website/index.html'),
+    aceMobile: readFileSafe('ace-mobile/index.html'),
     start: readFileSafe('start/index.html'),
     js: readFileSafe('assets/product-launch.js'),
     releaseFlag: readFileSafe('assets/release-flag.js'),

@@ -60,6 +60,8 @@ const CONTRACTS={
   'automate-demo':{product_key:'ACE-DEMO',offer_code:'DEMO-AUTOMATE',source:'ig-comment-automate',notion_source:'Website - AUTOMATE demo funnel'},
   'demo-question':{product_key:'ACE-DEMO',offer_code:'DEMO-QUESTION',source:'website-demo',notion_source:'Website - Choose Your Demo question'},
   'custom-demo-request':{product_key:'ACE-DEMO',offer_code:'CUSTOM-DEMO-REQUEST',source:'website-custom-demo',notion_source:'Website - Customized demo request'},
+  'growth-website-reserve':{product_key:'ACE-WEB',offer_code:'WEB-GROWTH',source:'ace-growth-website',notion_source:'Website - ACE Growth Website reservation'},
+  'ace-mobile-reserve':{product_key:'ACE-MOBILE',offer_code:'MOBILE-COMMAND',source:'ace-mobile',notion_source:'Website - ACE Mobile reservation'},
   'weekly-brief-subscribe':{product_key:'ACE-BRIEF',offer_code:'WEEKLY-BRIEF',source:'website-popup',notion_source:'Website - Weekly Brief pop-up'}
 };
 const form=formKey;
