@@ -9,7 +9,7 @@
 // button is inert and says why. No network calls here.
 //
 // Lead Generator add-ons are rendered only when ACE_CATALOG.ADDONS_APPROVED
-// is true, and even then they are shown as "Pending approval" with no buy
+// is true. A line still marked pending shows "Pending approval" and no buy
 // button. Prices come only from assets/catalog-config.js.
 //
 // Checklist wording is limited to approved capability claims and plan terms
@@ -220,7 +220,7 @@ if(pAlc){
   pAlc.appendChild(grid);
 }
 
-// ---- Lead Generator (+ add-ons, only when approved, never buyable) ----
+// ---- Lead Generator (+ add-ons, only when approved) ----
 const pLG=panel("panel-leadgen");
 if(pLG){
   Object.entries(groupBy("LEAD GENERATOR")).forEach(([p,ls])=>pLG.appendChild(tieredProduct(p,ls)));
@@ -229,17 +229,17 @@ if(pLG){
     const sec=el("section","cat-product addons");sec.id="addons";sec.dataset.addons="shown";
     const head=el("div","product-head");
     head.appendChild(el("h3",null,"Lead Generator add-ons"));
-    head.appendChild(el("p","tier-badge badge-pending","Pending approval"));
-    head.appendChild(el("p","small","These add-ons are not on sale yet."));
+    head.appendChild(el("p","small","Add these to an ACE Lead Generator plan."));
     sec.appendChild(head);
     const grid=el("div","tier-grid");grid.dataset.count=String(addons.length);
     addons.forEach(l=>{
       const card=el("article","tier-card addon-card");card.dataset.addon=l.key;
-      const h=el("h4","tier-name",l.product);h.id="t-"+(++uid);card.appendChild(h);card.setAttribute("aria-labelledby",h.id);
+      const h=el("h4","tier-name",l.tier?l.product+" ("+l.tier+")":l.product);h.id="t-"+(++uid);card.appendChild(h);card.setAttribute("aria-labelledby",h.id);
       const body=el("div","tier-body");body.dataset.offer=l.key;
       body.appendChild(priceBlock(l));
       body.appendChild(el("p","small",l.description));
-      body.appendChild(el("p","addon-pending","Pending approval"));
+      if(l.buyable===true&&!l.pending){const a=el("div","tier-actions");a.appendChild(buyButton(l));body.appendChild(a);}
+      else body.appendChild(el("p","addon-pending","Pending approval"));
       card.appendChild(body);grid.appendChild(card);
     });
     sec.appendChild(grid);pLG.appendChild(sec);

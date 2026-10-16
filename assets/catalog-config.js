@@ -4,10 +4,10 @@
 // ACE LAUNCH CATALOG (20 Oct 2026). THE ONLY PLACE /catalog/ PRICES AND LINKS
 // ARE CONFIGURED.
 //
-// Source: ace_v2.launch_catalog_20261020 (28 lines), approved by Jim
-// 12 Oct 2026 19:46Z (jim_decisions 5.09 APPROVED LAUNCH CATALOG; 3.03 FINAL;
-// 3.03 CREDIT PAUSE RULE 19:49Z). Offer keys match
-// ace_v2.checkout_offers_launch_20261020 / stripe_checkout_links_launch.
+// Source: ace_v2.current_approved_catalog (33 lines), the single current
+// APPROVED catalog (jim_decisions 5.09, 16 Oct 2026 19:18Z). Lines 1-25 are
+// unchanged from the 12 Oct launch catalog; lines 26-33 (top-ups, Website
+// Lead Generator, Fast Start) were added 16 Oct with live Stripe links.
 // Prices are whole US dollars and are display text only: Stripe charges
 // what the payment link says.
 //
@@ -15,8 +15,8 @@
 // Stripe payment link (buy.stripe.com/..., never buy.stripe.com/test_...).
 // A button stays inert while its link is the placeholder, a TEST link, or
 // not a buy.stripe.com link, or while the page release flag is held.
-// Usage top-ups (lines 26-28) are bought inside My ACE, never here.
-// Lead Generator add-ons (A01, A02) are pending approval and never buyable here.
+// Usage top-ups (lines 26-28) are bought inside My ACE, never here (their
+// live links are kept here as the single record and mirrored in my-ace-config).
 // ============================================================================
 
 const PLACEHOLDER="REPLACE_WITH_LIVE_LINK";
@@ -48,22 +48,25 @@ const LINES=[
   {"line":23,"key":"L23-GROWTH-AUTOPILOT-OS-GROWTH","family":"OPERATING SYSTEM","product":"Growth Autopilot OS","tier":"Growth","plan":"DFY","setupFounding":2500,"setupStandard":3500,"monthlyFounding":1499,"monthlyStandard":1799,"includedCredit":350,"demo":"growth","description":"The whole system: answers new leads within minutes, sends proposals, follows up and books calls, schedules social posts and builds prospect lists. You approve from your phone.","buyable":true,"link":"https://buy.stripe.com/7sY3cx80IbBM494gnpak00b"},
   {"line":24,"key":"L24-GROWTH-AUTOPILOT-OS-GROWTH-PRO","family":"OPERATING SYSTEM","product":"Growth Autopilot OS","tier":"Growth Pro","plan":"DFY","setupFounding":3500,"setupStandard":4500,"monthlyFounding":2099,"monthlyStandard":2699,"includedCredit":600,"demo":"growth","description":"The whole system: answers new leads within minutes, sends proposals, follows up and books calls, schedules social posts and builds prospect lists. You approve from your phone.","buyable":true,"link":"https://buy.stripe.com/00w3cxftabBM350efhak00j"},
   {"line":25,"key":"L25-GROWTH-AUTOPILOT-OS-GROWTH-SCALE","family":"OPERATING SYSTEM","product":"Growth Autopilot OS","tier":"Growth Scale","plan":"DFY","setupFounding":5000,"setupStandard":6500,"monthlyFounding":3499,"monthlyStandard":4499,"includedCredit":1100,"demo":"growth","description":"The whole system: answers new leads within minutes, sends proposals, follows up and books calls, schedules social posts and builds prospect lists. You approve from your phone.","buyable":true,"link":"https://buy.stripe.com/dRm28tdl2dJU8pkb35ak009"},
-  {"line":26,"key":"L26-USAGE-TOPUP-20","family":"CREDIT PACK","product":"Usage top-up","tier":"$20","plan":"TOPUP","setupFounding":null,"setupStandard":null,"monthlyFounding":20,"monthlyStandard":20,"includedCredit":null,"demo":null,"description":"Adds usage credit to your account when you need more.","buyable":false,"link":"REPLACE_WITH_LIVE_LINK"},
-  {"line":27,"key":"L27-USAGE-TOPUP-50","family":"CREDIT PACK","product":"Usage top-up","tier":"$50","plan":"TOPUP","setupFounding":null,"setupStandard":null,"monthlyFounding":50,"monthlyStandard":50,"includedCredit":null,"demo":null,"description":"Adds usage credit to your account when you need more.","buyable":false,"link":"REPLACE_WITH_LIVE_LINK"},
-  {"line":28,"key":"L28-USAGE-TOPUP-100","family":"CREDIT PACK","product":"Usage top-up","tier":"$100","plan":"TOPUP","setupFounding":null,"setupStandard":null,"monthlyFounding":100,"monthlyStandard":100,"includedCredit":null,"demo":null,"description":"Adds usage credit to your account when you need more.","buyable":false,"link":"REPLACE_WITH_LIVE_LINK"},
-  // Lead Generator add-on. Website Lead Generator prices approved 14 Oct under
-  // Jim's conditional rule (decision 5.09, 20:28Z). No live Stripe link yet, so
-  // buyable stays false and pending stays true until Jim says yes to its link.
-  // Extra Sending Mailbox was NOT approved (fails the profitability test) and is
-  // not offered at launch.
-  // The whole block is hidden on /catalog/ unless ADDONS_APPROVED (below) is true.
-  {"line":null,"key":"A01-LEAD-GENERATOR-WEBSITE-LEAD-GENERATOR","family":"LEAD GENERATOR ADD-ON","product":"Website Lead Generator","tier":null,"plan":"ADDON","setupFounding":99,"setupStandard":149,"monthlyFounding":29,"monthlyStandard":49,"includedCredit":null,"demo":null,"description":"Add-on for the ACE Lead Generator.","buyable":false,"pending":true,"link":"REPLACE_WITH_LIVE_LINK"}
+  {"line":26,"key":"L26-USAGE-TOPUP-20","family":"CREDIT PACK","product":"Usage top-up","tier":"$20","plan":"TOPUP","setupFounding":null,"setupStandard":null,"monthlyFounding":20,"monthlyStandard":20,"includedCredit":null,"demo":null,"description":"Adds usage credit to your account when you need more.","buyable":false,"link":"https://buy.stripe.com/7sY14p3Ks8pA6hc0orak00q"},
+  {"line":27,"key":"L27-USAGE-TOPUP-50","family":"CREDIT PACK","product":"Usage top-up","tier":"$50","plan":"TOPUP","setupFounding":null,"setupStandard":null,"monthlyFounding":50,"monthlyStandard":50,"includedCredit":null,"demo":null,"description":"Adds usage credit to your account when you need more.","buyable":false,"link":"https://buy.stripe.com/28E00l6WEgW69to0orak00s"},
+  {"line":28,"key":"L28-USAGE-TOPUP-100","family":"CREDIT PACK","product":"Usage top-up","tier":"$100","plan":"TOPUP","setupFounding":null,"setupStandard":null,"monthlyFounding":100,"monthlyStandard":100,"includedCredit":null,"demo":null,"description":"Adds usage credit to your account when you need more.","buyable":false,"link":"https://buy.stripe.com/7sYdRbdl27lw7lg0orak00r"},
+  // Lead Generator add-ons (catalog lines 29-33). Approved by Jim 16 Oct 2026:
+  // Website Lead Generator added to the catalog and live Stripe (jim_decisions
+  // 3.04, 18:55Z); Fast Start pre-warmed mailboxes (5.09, 19:09Z and 19:16Z).
+  // Live links from ace_v2.current_approved_catalog (stripe_amounts_match=true).
+  // Extra Sending Mailbox was NOT approved and is not offered at launch.
+  {"line":29,"key":"A01-LEAD-GENERATOR-WEBSITE-LEAD-GENERATOR","family":"LEAD GENERATOR ADD-ON","product":"Website Lead Generator","tier":null,"plan":"ADDON","setupFounding":99,"setupStandard":149,"monthlyFounding":29,"monthlyStandard":49,"includedCredit":null,"demo":null,"description":"Add-on for the ACE Lead Generator.","buyable":true,"pending":false,"link":"https://buy.stripe.com/6oUcN71Ck8pA494fjlak00p"},
+  {"line":30,"key":"A03-FAST-START-4","family":"LEAD GENERATOR ADD-ON","product":"Fast Start","tier":"4 mailboxes","plan":"ADDON","setupFounding":49,"setupStandard":49,"monthlyFounding":30,"monthlyStandard":30,"includedCredit":null,"demo":null,"description":"Pre-warmed sending mailboxes: send in 1 to 3 days instead of 14 to 21. $7.50 per mailbox per month. Follows the Lead Generator 3-month minimum from first send.","buyable":true,"pending":false,"link":"https://buy.stripe.com/dRm14p5SA49k9todbdak00t"},
+  {"line":31,"key":"A04-FAST-START-10","family":"LEAD GENERATOR ADD-ON","product":"Fast Start","tier":"10 mailboxes","plan":"ADDON","setupFounding":99,"setupStandard":99,"monthlyFounding":75,"monthlyStandard":75,"includedCredit":null,"demo":null,"description":"Pre-warmed sending mailboxes: send in 1 to 3 days instead of 14 to 21. $7.50 per mailbox per month. Follows the Lead Generator 3-month minimum from first send.","buyable":true,"pending":false,"link":"https://buy.stripe.com/9B614p3KseNY9to5ILak00u"},
+  {"line":32,"key":"A05-FAST-START-20","family":"LEAD GENERATOR ADD-ON","product":"Fast Start","tier":"20 mailboxes","plan":"ADDON","setupFounding":99,"setupStandard":99,"monthlyFounding":150,"monthlyStandard":150,"includedCredit":null,"demo":null,"description":"Pre-warmed sending mailboxes: send in 1 to 3 days instead of 14 to 21. $7.50 per mailbox per month. Follows the Lead Generator 3-month minimum from first send.","buyable":true,"pending":false,"link":"https://buy.stripe.com/28EeVf5SAcFQ4949Z1ak00v"},
+  {"line":33,"key":"A06-FAST-START-30","family":"LEAD GENERATOR ADD-ON","product":"Fast Start","tier":"30 mailboxes","plan":"ADDON","setupFounding":99,"setupStandard":99,"monthlyFounding":225,"monthlyStandard":225,"includedCredit":null,"demo":null,"description":"Pre-warmed sending mailboxes: send in 1 to 3 days instead of 14 to 21. $7.50 per mailbox per month. Follows the Lead Generator 3-month minimum from first send.","buyable":true,"pending":false,"link":"https://buy.stripe.com/6oUdRbbcU21c5d8c79ak00w"}
 ];
 
 // Lead Generator add-on block on /catalog/. false = the block is not rendered
-// at all. Flip to true ONLY after Jim approves the add-on prices. Even when
-// true, add-on lines are shown as "Pending approval" and are never buyable.
-const ADDONS_APPROVED=false;
+// at all. true since Jim approved the add-ons on 16 Oct 2026. A line marked
+// pending:true is still shown as "Pending approval" with no buy button.
+const ADDONS_APPROVED=true;
 
 // Approved per-tier plan facts (prospects or posts per month) from the
 // approved Claude Doc "ACE Product Catalog & Pricing - Launch 20 Oct"
@@ -98,7 +101,7 @@ window.ACE_CATALOG=Object.freeze({
   lines:Object.freeze(LINES.map(l=>Object.freeze({...l}))),
   get:key=>byKey[key]||null,
   usd,
-  isConfigured:key=>Boolean(byKey[key]&&byKey[key].buyable===true&&!byKey[key].pending&&byKey[key].family!=="LEAD GENERATOR ADD-ON"&&isLiveLink(byKey[key].link)),
+  isConfigured:key=>Boolean(byKey[key]&&byKey[key].buyable===true&&!byKey[key].pending&&byKey[key].family!=="CREDIT PACK"&&(byKey[key].family!=="LEAD GENERATOR ADD-ON"||ADDONS_APPROVED===true)&&isLiveLink(byKey[key].link)),
   isLiveLink
 });
 
