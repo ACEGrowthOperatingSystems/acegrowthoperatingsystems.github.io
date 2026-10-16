@@ -151,19 +151,24 @@
     .card{padding:1.8rem 1.8rem 1.9rem}
   }
   @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+  .playlist{display:grid;gap:18px;margin:18px 0}
+  .playlist figure{margin:0}
+  .playlist video{width:100%;max-width:360px;display:block;margin:0 auto;border-radius:14px;border:1px solid var(--edge2);background:#000}
+  .playlist figcaption{text-align:center;color:var(--silver);margin-top:8px;font-weight:600}
+  .choice small{color:var(--steel);font-weight:400}
 </style>
 </head>
 <!-- This page's release flag. It governs THIS page only. Held: the form never
      posts; it records the payload locally and shows the held success state. -->
-<body data-page-key="start-automate" data-release-state="APPROVAL_HELD">
+<body data-page-key="start-automate" data-release-state="RELEASED">
 <a class="skip" href="#main">Skip to content</a>
 <header>
-  <a class="logo" href="../" aria-label="ACE Growth Operating Systems home"><img src="../assets/ace-logo.jpg" alt="ACE Growth Operating Systems" width="104" height="104"></a>
+  <span class="logo"><img src="../assets/ace-logo.jpg" alt="ACE Growth Operating Systems" width="104" height="104"></span>
 </header>
 <main id="main" class="wrap">
   <div class="intro" id="formIntro">
     <h1>Your free ACE demo is one minute away.</h1>
-    <p class="sub">Answer 4 quick questions and watch how ACE automates your growth.</p>
+    <p class="sub">Answer 4 quick questions, pick your demos and watch how ACE automates your growth.</p>
   </div>
 
   <div class="card" id="demo">
@@ -221,43 +226,42 @@
 
       <div class="step" data-step="3">
         <fieldset>
-          <legend class="q" tabindex="-1" data-step-focus>Could your business benefit from…</legend>
-          <p class="hint">Pick all that apply.</p>
-          <div class="choices">
-            <label class="choice"><input type="checkbox" name="interests" value="Automated prospecting"><span>Automated prospecting</span></label>
-            <label class="choice"><input type="checkbox" name="interests" value="Automated marketing &amp; social posting"><span>Automated marketing &amp; social posting</span></label>
-            <label class="choice"><input type="checkbox" name="interests" value="Automated sales systems"><span>Automated sales systems</span></label>
-            <label class="choice"><input type="checkbox" name="interests" value="Instant lead response &amp; follow-up"><span>Instant lead response &amp; follow-up</span></label>
-            <label class="choice"><input type="checkbox" name="interests" value="Automated booking"><span>Automated booking</span></label>
-            <label class="choice"><input type="checkbox" name="interests" value="Automated proposals"><span>Automated proposals</span></label>
-            <label class="choice"><input type="checkbox" name="interests" value="Accelerated growth &amp; profitability"><span>Accelerated growth &amp; profitability</span></label>
+          <legend class="q" tabindex="-1" data-step-focus>Which demos would you like to watch?</legend>
+          <p class="hint">Pick all that interest you. Each one is about 30 seconds.</p>
+          <div class="choices" data-min-one>
+            <label class="choice"><input type="checkbox" name="interests" value="pipeline"><span><b>Prospecting Autopilot</b><br><small>Find new clients every week</small></span></label>
+            <label class="choice"><input type="checkbox" name="interests" value="content"><span><b>Social Marketing Autopilot</b><br><small>Post every day without the work</small></span></label>
+            <label class="choice"><input type="checkbox" name="interests" value="followup"><span><b>The Follow-Up Machine</b><br><small>Answer every lead fast and book more calls</small></span></label>
+            <label class="choice"><input type="checkbox" name="interests" value="proposal"><span><b>Proposal &amp; Sales Engine</b><br><small>Send proposals the same day and close more</small></span></label>
+            <label class="choice"><input type="checkbox" name="interests" value="growth"><span><b>The Growth Engine</b><br><small>The whole ACE system working together</small></span></label>
           </div>
         </fieldset>
         <div class="nav"><button class="btn btn-ghost" type="button" data-back aria-label="Back">Back</button><button class="btn btn-primary" type="button" data-next>Next</button></div>
       </div>
 
       <div class="step" data-step="4">
-        <p class="q" tabindex="-1" data-step-focus>Where should we send your demo?</p>
-        <p class="hint">We’ll also email you a copy of the video.</p>
+        <p class="q" tabindex="-1" data-step-focus>Almost there. Where can we reach you?</p>
+        <p class="hint">Your demos unlock right away.</p>
         <label class="field"><span class="lab">First name</span><input type="text" name="first_name" autocomplete="given-name" autocapitalize="words" maxlength="120" required></label>
         <label class="field"><span class="lab">Email</span><input type="email" name="email" autocomplete="email" inputmode="email" maxlength="320" required></label>
+        <label class="consent"><input type="checkbox" name="catalog_requested"><span><b>Yes, send me the ACE product catalog.</b> Our product catalog will be sent to your email by October 20. We look forward to getting back with you on your request.</span></label>
         <label class="consent"><input type="checkbox" name="consent" required><span>I agree to receive emails from ACE about my demo and how ACE can help my business. I can unsubscribe at any time. See the <a href="../privacy/">Privacy Policy</a>.</span></label>
-        <div class="nav"><button class="btn btn-ghost" type="button" data-back aria-label="Back">Back</button><button class="btn btn-primary" type="submit">Unlock my demo</button></div>
+        <div class="nav"><button class="btn btn-ghost" type="button" data-back aria-label="Back">Back</button><button class="btn btn-primary" type="submit">Unlock my demos</button></div>
       </div>
       <p class="status" role="status" aria-live="polite"></p>
     </form>
 
     <section class="unlocked" id="unlocked" hidden aria-labelledby="unlockedTitle">
       <h2 id="unlockedTitle" tabindex="-1">You’re in.</h2>
-      <p class="sub">Your ACE demo is unlocked.</p>
+      <p class="sub">Your ACE demos are unlocked. Press play.</p>
       <div class="video" id="videoSlot" hidden></div>
       <div class="inbox" id="videoInbox" hidden>
         <img src="../assets/ace-logo.jpg" alt="" width="72" height="72">
         <p class="big">Your demo video is on its way to your inbox.</p>
         <p>Keep an eye out for an email from ACE.</p>
       </div>
-      <a class="btn btn-primary book" id="chooseDemo" href="/#choose-demo">Choose your demo</a>
-      <p class="choosehint">Pick the demos that matter most to your business. We've ticked the ones you chose.</p>
+      <div class="playlist" id="playlist" hidden></div>
+      <p class="choosehint" id="catalogNote" hidden>Your ACE product catalog will be sent to your email by October 20. We look forward to getting back with you.</p>
       <a class="btn btn-primary book" id="bookDemo" hidden target="_blank" rel="noopener">Book your free demo</a>
       <p class="heldnote" id="heldNote" hidden></p>
     </section>

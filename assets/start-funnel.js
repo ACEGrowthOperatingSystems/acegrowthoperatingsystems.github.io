@@ -10,7 +10,7 @@
 // Per-page flag from assets/release-flag.js, which must be loaded first.
 // If that script is missing the expression is false, so the page stays HELD.
 const RELEASE_AUTHORIZED=Boolean(window.ACE_RELEASE&&window.ACE_RELEASE.isReleased());
-const ENDPOINT="https://withyoudaily.app.n8n.cloud/webhook/ace-lead";
+const ENDPOINT="https://withyoudaily.app.n8n.cloud/webhook/ace-demo-lead";
 const CONFIG=window.ACE_START_CONFIG||{videoConfigured:false,bookingConfigured:false};
 
 const HELD_NOTE="Preview: this page is held until launch authorization. Nothing was sent.";
@@ -28,6 +28,8 @@ const solveProof=async payload=>{
   throw new Error("BOT_PROOF_UNAVAILABLE");
 };
 
+// Pre-launch DM funnel intake (n8n "ACE — Demo Preview Lead Capture").
+const isAcceptedReceipt=(receipt,payload)=>Boolean(receipt&&receipt.ok===true&&receipt.accepted===true&&receipt.form===payload.form);
 const isStrictHeldReceipt=(receipt,payload)=>Boolean(
   receipt&&
   receipt.ok===true&&
@@ -88,6 +90,12 @@ const show=index=>{
 };
 
 const stepValid=index=>{
+  const group=steps[index].querySelector("[data-min-one]");
+  if(group&&!group.querySelector("input:checked")){
+    status.textContent="Pick at least one demo to watch.";
+    const first=group.querySelector("input");if(first)first.focus();
+    return false;
+  }
   const fields=Array.from(steps[index].querySelectorAll("input,select,textarea"));
   for(const field of fields){
     if(!field.checkValidity()){field.reportValidity();return false}
@@ -131,6 +139,7 @@ const buildPayload=()=>{
     first_name:one("first_name"),
     email:one("email"),
     consent:data.get("consent")==="on",
+    catalog_requested:data.get("catalog_requested")==="on",
     bot_field:String(data.get("bot_field")||""),
     interaction_started_at:startedAt,
     idempotency_key:crypto.randomUUID(),
@@ -147,7 +156,7 @@ const chooseDemoHref=interests=>{
   return keys.length?`/?interests=${keys.join(",")}#choose-demo`:"/#choose-demo";
 };
 
-const unlock=(held,interests=[])=>{
+const unlock=(held,interests=[],catalogRequested=false)=>{
   const slot=document.getElementById("videoSlot");
   const inbox=document.getElementById("videoInbox");
   if(CONFIG.videoConfigured){
@@ -174,8 +183,25 @@ const unlock=(held,interests=[])=>{
     book.hidden=true;
     book.removeAttribute("href");
   }
-  const choose=document.getElementById("chooseDemo");
-  if(choose)choose.href=chooseDemoHref(interests);
+  const list=document.getElementById("playlist");
+  const demoCfg=window.ACE_DEMO_CONFIG;
+  if(list&&demoCfg){
+    const keys=demoCfg.normalizeKeys(interests);
+    list.textContent="";
+    demoCfg.DEMOS.filter(d=>keys.includes(d.key)).forEach((d,i)=>{
+      const fig=document.createElement("figure");
+      const v=document.createElement("video");
+      v.controls=true;v.playsInline=true;v.setAttribute("playsinline","");v.preload=i===0?"auto":"metadata";
+      v.src="../"+d.file;if(d.poster)v.poster="../"+d.poster;
+      v.setAttribute("aria-label",d.title+" demo");
+      const cap=document.createElement("figcaption");cap.textContent=d.title;
+      fig.appendChild(v);fig.appendChild(cap);list.appendChild(fig);
+    });
+    list.hidden=!keys.length;
+    if(keys.length){slot.hidden=true;inbox.hidden=true}
+  }
+  const catNote=document.getElementById("catalogNote");
+  if(catNote)catNote.hidden=!catalogRequested;
   const heldNote=document.getElementById("heldNote");
   if(heldNote){heldNote.textContent=held?HELD_NOTE:"";heldNote.hidden=!held}
   form.hidden=true;
@@ -208,7 +234,7 @@ form.addEventListener("submit",async event=>{
     if(!RELEASE_AUTHORIZED){
       form.dataset.lastPayload=JSON.stringify(payload);
       status.textContent="";
-      unlock(true,payload.interests);
+      unlock(true,payload.interests,payload.catalog_requested);
       return;
     }
 
@@ -220,10 +246,10 @@ form.addEventListener("submit",async event=>{
     if(!response.ok)throw new Error("HTTP_ERROR");
 
     const receipt=await response.json();
-    if(!isStrictHeldReceipt(receipt,payload))throw new Error("INVALID_HELD_RECEIPT");
+    if(!isAcceptedReceipt(receipt,payload))throw new Error("INVALID_RECEIPT");
 
     status.textContent="";
-    unlock(false,payload.interests);
+    unlock(false,payload.interests,payload.catalog_requested);
   }catch(error){
     status.textContent=FAILURE_MESSAGE;
   }finally{
