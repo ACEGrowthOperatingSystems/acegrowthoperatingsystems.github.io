@@ -102,3 +102,23 @@ end $$;
 grant execute on function public.owner_opportunity_plan(text) to authenticated;
 
 select 'vault ok' r, (select count(*) from storage.buckets where id='ace-vault') buckets, (select count(*) from ace_v2.opportunity_launch_plan) phases;
+
+-- v1.1: post a vault asset to IG/FB/YouTube. Creates a PENDING owner_drafts row only;
+-- approval still happens through owner_decide_draft under the owner's own session.
+create or replace function public.owner_vault_to_post(p_asset_id bigint, p_caption text, p_channels text, p_media_url text)
+returns jsonb language plpgsql security definer set search_path to 'ace_v2','public' as $$
+declare a ace_v2.vault_assets; v_id bigint; v_kind text; v_ch text;
+begin
+  if not public.owner_is_owner() then return jsonb_build_object('ok',false,'error','not_owner'); end if;
+  select * into a from ace_v2.vault_assets where id=p_asset_id;
+  if not found then return jsonb_build_object('ok',false,'error','no_asset'); end if;
+  if p_media_url !~ '^https://' then return jsonb_build_object('ok',false,'error','bad_media_url'); end if;
+  if coalesce(trim(p_caption),'')='' then return jsonb_build_object('ok',false,'error','caption_required'); end if;
+  select string_agg(c, ',') into v_ch from (select distinct lower(trim(x)) c from unnest(string_to_array(p_channels, ',')) x where lower(trim(x)) in ('instagram','facebook','youtube')) s;
+  if v_ch is null then return jsonb_build_object('ok',false,'error','no_channel'); end if;
+  v_kind := case when coalesce(a.mime_type,'') like 'video/%' or a.storage_path ~* '\.(mp4|mov|webm)$' then 'video' else 'ad_post' end;
+  insert into ace_v2.owner_drafts(source,kind,channel,title,body,media_url,ref,stage,status)
+  values ('Jim',v_kind,v_ch,a.title,p_caption,p_media_url,'VAULT-'||a.id,'final','PENDING') returning id into v_id;
+  return jsonb_build_object('ok',true,'draft_id',v_id);
+end $$;
+grant execute on function public.owner_vault_to_post(bigint,text,text,text) to authenticated;
