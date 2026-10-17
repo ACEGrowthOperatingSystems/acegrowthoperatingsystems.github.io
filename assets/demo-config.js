@@ -37,7 +37,7 @@
 // No prices live here. Prices come only from assets/checkout-config.js.
 // ============================================================================
 
-const SECTION_RELEASE_STATE="APPROVAL_HELD";
+const SECTION_RELEASE_STATE="RELEASED";
 const VIDEO_PLACEHOLDER="REPLACE_WITH_VIDEO_URL";
 const LAUNCH_PRICING_ENDS="2027-03-01T00:00:00-05:00";
 const QUESTION_FORM_KEY="demo-question";

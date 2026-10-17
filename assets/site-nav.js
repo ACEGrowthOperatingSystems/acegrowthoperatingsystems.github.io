@@ -16,7 +16,7 @@
 // No prices, no payment links, no network calls live here.
 // ============================================================================
 
-const NAV_RELEASE_STATE="APPROVAL_HELD";
+const NAV_RELEASE_STATE="RELEASED";
 
 const LINKS=[
   ["Home","/"],

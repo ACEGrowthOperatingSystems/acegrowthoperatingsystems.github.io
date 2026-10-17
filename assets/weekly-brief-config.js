@@ -17,7 +17,7 @@
 // done server-side by n8n; the browser never talks to Kit.
 // ============================================================================
 
-const POPUP_RELEASE_STATE="APPROVAL_HELD";
+const POPUP_RELEASE_STATE="RELEASED";
 const FORM_KEY="weekly-brief-subscribe";
 const DELAY_MS=10000;
 const SEEN_KEY="ace-weekly-brief-popup-seen";
