@@ -1477,10 +1477,15 @@
       document.getElementById('reelCaps').innerHTML='<li class="rolecopy">'+d.role+'</li>';
       document.getElementById('reelFoot').textContent=
         d.n+' is supported by the Centurion force. This is what the command delivers.';
+      // Commander video from the Agentic Theater, presented by Min (17 Oct 2026).
+      const VID=['augustus','ari','maximus','adrion','achilles','proximo'][i];
+      const scr=reel.querySelector('.screen');
+      if(scr&&VID){scr.innerHTML='<video controls playsinline preload="metadata" poster="/assets/video/agentic/'+VID+'.jpg" src="/assets/video/agentic/'+VID+'.mp4" style="width:100%;height:100%;object-fit:contain;background:#000"></video>';}
+      document.getElementById('reelFoot').innerHTML=d.n+' is one of six commanders in the Centurion Legion. <a href="/agentic/" style="color:inherit">Meet them all in the Agentic Theater</a>.';
       th.classList.add('on');
       document.body.style.overflow='hidden';
     }
-    function close(){ th.classList.remove('on'); document.body.style.overflow=''; }
+    function close(){ const v=reel.querySelector('.screen video'); if(v){ try{v.pause()}catch(e){} } th.classList.remove('on'); document.body.style.overflow=''; }
     document.querySelectorAll('.demo').forEach(b=>{
       b.addEventListener('click',e=>{
         e.stopPropagation();

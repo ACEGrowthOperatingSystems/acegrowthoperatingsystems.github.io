@@ -18,17 +18,40 @@
 
 const NAV_RELEASE_STATE="RELEASED";
 
-const LINKS=[
-  ["Home","/"],
-  ["Choose your demo","/#choose-demo"],
-  ["Product catalog","/catalog/"],
-  ["How pricing works","/catalog/#pricing"],
-  ["Get a customized demo","/start/"],
-  ["My ACE","/my-ace/"],
-  ["Terms","/terms/"],
-  ["Refund policy","/refund/"],
-  ["Privacy","/privacy/"]
+// Grouped site menu (Jim, 17 Oct 2026): every part of the site, organized.
+const GROUPS=[
+  ["Explore",[
+    ["Home","/"],
+    ["Choose your demo","/#choose-demo"],
+    ["Product Theater","/theater/"],
+    ["Agentic Theater","/agentic/"]
+  ]],
+  ["Products & pricing",[
+    ["Product catalog","/catalog/"],
+    ["How pricing works","/catalog/#pricing"],
+    ["Marketing Operating System","/marketing/"],
+    ["Growth Operating System","/growth/"],
+    ["Growth Website","/growth-website/"],
+    ["ACE Mobile","/ace-mobile/"]
+  ]],
+  ["Get started",[
+    ["Pricing & checkout","/catalog/#plans"],
+    ["Get a customized demo","/start/"],
+    ["My ACE (sign in)","/my-ace/"]
+  ]],
+  ["Opportunities",[
+    ["ACE Academy","/academy/"],
+    ["White papers & research","/white-papers/"],
+    ["SaaS & white-label partners","/saas/"]
+  ]],
+  ["Company",[
+    ["Contact","mailto:AceGrowth.os@gmail.com"],
+    ["Terms","/terms/"],
+    ["Refund policy","/refund/"],
+    ["Privacy","/privacy/"]
+  ]]
 ];
+const LINKS=GROUPS.reduce((a,g)=>a.concat(g[1]),[]);
 const CHECKOUT_HREF="/catalog/#plans";
 
 const w=typeof window!=="undefined"?window:{};
@@ -37,7 +60,7 @@ let preview=false;
 try{preview=new URLSearchParams((w.location&&w.location.search)||"").get("preview")==="1";}catch(e){preview=false;}
 const show=released||preview;
 
-w.ACE_SITE_NAV=Object.freeze({state:NAV_RELEASE_STATE,released,preview,shown:show,links:LINKS.map(l=>l.slice()),checkoutHref:CHECKOUT_HREF});
+w.ACE_SITE_NAV=Object.freeze({state:NAV_RELEASE_STATE,released,preview,shown:show,links:LINKS.map(l=>l.slice()),groups:GROUPS.map(g=>[g[0],g[1].map(l=>l.slice())]),checkoutHref:CHECKOUT_HREF});
 if(!show||typeof document==="undefined")return;
 
 const CSS=`
@@ -48,7 +71,11 @@ const CSS=`
 .acenav-menu span::before{position:absolute;top:-6px}.acenav-menu span::after{position:absolute;top:6px}
 .acenav-panel{position:fixed;top:64px;left:12px;z-index:1001;min-width:220px;max-width:calc(100vw - 24px);padding:8px;
   background:#0b0b0b;border:1px solid rgba(192,192,192,.4);border-radius:12px;box-shadow:0 12px 32px rgba(0,0,0,.5)}
+.acenav-panel{max-height:calc(100vh - 80px);overflow:auto;width:min(560px,calc(100vw - 24px));display:grid;grid-template-columns:1fr 1fr;gap:2px 8px}
+@media (max-width:560px){.acenav-panel{grid-template-columns:1fr}}
 .acenav-panel[hidden]{display:none}
+.acenav-head{margin:8px 12px 2px;font:600 11px/1.2 "IBM Plex Mono",monospace;letter-spacing:.16em;text-transform:uppercase;color:#e10600}
+.acenav-panel a[aria-current=page]{background:#1a1a1a}
 .acenav-panel a{display:block;padding:10px 12px;border-radius:8px;color:#e6e6e6;text-decoration:none;font:500 15px/1.3 "IBM Plex Sans",system-ui,sans-serif}
 .acenav-panel a:hover{background:#1a1a1a}
 .acenav-checkout{position:fixed;top:12px;right:12px;z-index:1000;display:inline-flex;align-items:center;min-height:44px;padding:0 18px;
@@ -74,7 +101,8 @@ const add=()=>{
   btn.appendChild(document.createElement("span"));
   const panel=document.createElement("nav");
   panel.id="acenavPanel";panel.className="acenav-panel";panel.setAttribute("aria-label","Site");panel.hidden=true;
-  LINKS.forEach(([label,href])=>{const a=document.createElement("a");a.href=href;a.textContent=label;panel.appendChild(a);});
+  GROUPS.forEach(([head,links])=>{const g=document.createElement("div");g.className="acenav-group";const h=document.createElement("p");h.className="acenav-head";h.textContent=head;g.appendChild(h);
+    links.forEach(([label,href])=>{const a=document.createElement("a");a.href=href;a.textContent=label;if(w.location&&href===w.location.pathname)a.setAttribute("aria-current","page");g.appendChild(a);});panel.appendChild(g);});
   const bar=logo&&logo.parentNode;
   let flex=false;
   try{
@@ -107,7 +135,7 @@ const add=()=>{
   // A page that already has its own Checkout (the catalog) keeps its own.
   if(!document.querySelector(".cat-checkout")){
     const co=document.createElement("a");
-    co.className="acenav-checkout";co.href=CHECKOUT_HREF;co.textContent="Checkout";
+    co.className="acenav-checkout";co.href=CHECKOUT_HREF;co.textContent="Pricing & Checkout";
     if(flex){
       // Flex header bar (homepage): keep the bar's own right-hand links and
       // put Checkout at the far right of the same row.

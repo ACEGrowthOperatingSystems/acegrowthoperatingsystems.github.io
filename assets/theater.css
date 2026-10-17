@@ -1,0 +1,65 @@
+/* Product Theater, Agentic Theater and the opportunity pages.
+   Loaded after checkout-ace.css (brand tokens, buttons, base type). */
+.th-header{display:flex;align-items:center;justify-content:space-between;width:min(var(--max),calc(100% - 2rem));margin:auto;padding-top:1rem;text-align:left}
+.th-header .logo img{width:72px;height:72px}
+.th-header .button{min-height:42px;padding:.55rem 1rem}
+.th-hero{text-align:center;max-width:48rem;margin:1.4rem auto 2.2rem}
+.th-hero h1{font-size:clamp(2rem,6vw,3.3rem);line-height:1.02;font-weight:900;margin:.2rem 0 .8rem;text-wrap:balance}
+.th-hero p{font-size:1.06rem;color:var(--silver);margin:0 auto;max-width:38rem}
+.th-sec{margin:0 auto 3.2rem}
+.th-sec>h2{font-size:clamp(1.4rem,3.6vw,2rem);margin:0 0 .35rem;font-weight:800}
+.th-sec>.lede{margin:0 0 1.2rem;color:#A9AFB6;max-width:44rem}
+.th-grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fill,minmax(min(100%,16.5rem),1fr))}
+.th-grid.portrait{grid-template-columns:repeat(auto-fill,minmax(min(100%,11.5rem),1fr))}
+.th-card{position:relative;display:block;width:100%;padding:0;text-align:left;border:1px solid var(--edge);border-radius:14px;overflow:hidden;
+  background:var(--raise);color:inherit;cursor:pointer;font:inherit;transition:border-color .2s,transform .2s}
+.th-card:hover{border-color:var(--edge2);transform:translateY(-2px)}
+.th-card:focus-visible{outline:2px solid var(--red);outline-offset:3px}
+.th-card .pic{position:relative;display:block;aspect-ratio:16/9;background:#000 center/cover no-repeat}
+.th-grid.portrait .th-card .pic{aspect-ratio:9/16}
+.th-card .pic::after{content:"";position:absolute;inset:auto auto 12px 12px;width:46px;height:46px;border-radius:50%;
+  background:rgba(227,36,43,.92) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8 5v14l11-7z' fill='white'/%3E%3C/svg%3E") center/22px no-repeat;
+  box-shadow:0 6px 18px rgba(0,0,0,.5)}
+.th-card .txt{display:block;padding:.75rem .9rem .9rem}
+.th-card b{display:block;color:var(--white);font-family:'Archivo',sans-serif;font-weight:800;font-size:1.02rem;line-height:1.2}
+.th-card small{display:block;color:#A9AFB6;font-size:.86rem;margin-top:.25rem;line-height:1.35}
+.th-card .dur{position:absolute;top:10px;right:10px;font:500 .72rem 'IBM Plex Mono',monospace;background:rgba(0,0,0,.7);color:#fff;padding:2px 7px;border-radius:6px}
+.th-feature{display:grid;gap:1.6rem;align-items:center;grid-template-columns:minmax(0,22rem) 1fr}
+@media (max-width:760px){.th-feature{grid-template-columns:1fr}.th-feature .th-card{max-width:22rem;margin:auto}}
+.th-feature .th-card .pic{aspect-ratio:9/16}
+.th-points{list-style:none;margin:0;padding:0;display:grid;gap:.9rem}
+.th-points li{border-left:3px solid var(--red);padding:.15rem 0 .15rem .9rem}
+.th-points b{color:var(--white);display:block;font-family:'Archivo',sans-serif;font-weight:800}
+.th-points span{color:#A9AFB6;font-size:.94rem}
+.th-note{margin-top:1rem;font-size:.86rem;color:#A9AFB6}
+.th-cta{display:flex;flex-wrap:wrap;gap:.8rem;justify-content:center;margin:2.4rem 0 1rem}
+.th-cta .ghost{background:transparent;border-color:var(--edge2);color:var(--white)}
+.th-cta .ghost:hover{border-color:var(--silver)}
+.th-legion .th-card .pic{aspect-ratio:1100/620;background-position:center top}
+.th-legion .th-card{--cm:#c9cdd2}
+.th-legion .th-card:hover{border-color:var(--cm);box-shadow:0 0 0 1px var(--cm),0 10px 34px color-mix(in srgb,var(--cm) 30%,transparent)}
+.th-legion .th-card b{color:var(--cm)}
+.th-presenter{display:flex;gap:1rem;align-items:center;justify-content:center;margin:-1rem auto 2rem;color:#A9AFB6;font-size:.92rem}
+.th-presenter img{width:56px;height:56px;border-radius:50%;object-fit:cover;object-position:50% 18%;border:1px solid rgba(214,172,92,.6)}
+.th-presenter b{color:var(--white)}
+.th-soon{display:inline-block;font:500 .7rem 'IBM Plex Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#D6AC5C;
+  border:1px solid rgba(214,172,92,.5);border-radius:999px;padding:.2rem .7rem;margin-bottom:.6rem}
+.th-panel{border:1px solid var(--edge);border-radius:16px;background:linear-gradient(180deg,rgba(22,23,26,.95),rgba(13,13,15,.98));padding:1.4rem 1.4rem 1.2rem;margin:0 auto 1.2rem;max-width:46rem}
+.th-panel h2{margin:.1rem 0 .5rem;font-size:1.3rem}
+.th-panel ul{margin:.4rem 0 0;padding-left:1.1rem}
+.th-panel li{margin:.3rem 0}
+dialog.th-dialog{width:min(1100px,calc(100vw - 1.5rem));max-height:calc(100vh - 1.5rem);padding:0;border:1px solid var(--edge2);border-radius:14px;background:#000;color:#fff}
+dialog.th-dialog.portrait{width:min(430px,calc(100vw - 1.5rem))}
+dialog.th-dialog::backdrop{background:rgba(0,0,0,.85);backdrop-filter:blur(4px)}
+.th-dialog video{display:block;width:100%;max-height:calc(100vh - 6rem);background:#000}
+.th-dialog .bar{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.6rem .8rem}
+.th-dialog .bar b{font-family:'Archivo',sans-serif;font-size:.95rem}
+.th-dialog .bar button{min-height:40px;padding:.4rem .9rem}
+footer{border-top:1px solid var(--edge);margin-top:2rem;padding:1.4rem 0 2rem;color:var(--steel);font-size:.86rem;text-align:center}
+footer .legal a{margin:0 .5rem;color:var(--steel)}
+/* catalog page: Hannah's video for the open tab */
+.cat-video{max-width:54rem;margin:0 auto 1.2rem}
+.cat-vcard{display:grid;grid-template-columns:minmax(0,15rem) 1fr;align-items:center}
+.cat-vcard .pic{aspect-ratio:16/9}
+.cat-vcard small a{color:var(--white)}
+@media (max-width:560px){.cat-vcard{grid-template-columns:1fr}}
