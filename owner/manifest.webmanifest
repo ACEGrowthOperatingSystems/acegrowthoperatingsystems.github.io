@@ -1,6 +1,6 @@
 {
-  "name": "ACE Draft Center",
-  "short_name": "ACE Drafts",
+  "name": "ACE Command Center",
+  "short_name": "ACE Command",
   "start_url": "/owner/",
   "scope": "/owner/",
   "display": "standalone",
