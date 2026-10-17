@@ -196,7 +196,7 @@ test('player handles placeholders and vertical video; end panel offers both choi
   assert.match(pickerSrc, /video\.addEventListener\("ended"/);
   assert.ok(section.includes('See plans &amp; pricing'));
   assert.ok(section.includes('Ask a question'));
-  assert.ok(pickerSrc.includes('return `checkout/ace-mkt/?from=demo${keys.length?`&interests=${keys.join(",")}`:""}`;'));
+  assert.ok(pickerSrc.includes('return `catalog/?from=demo${keys.length?`&interests=${keys.join(",")}`:""}`;'));
   assert.ok(pickerSrc.includes('Got it. A representative will follow up within 24 hours.') ||
     section.includes('Got it. A representative will follow up within 24 hours.'));
 });

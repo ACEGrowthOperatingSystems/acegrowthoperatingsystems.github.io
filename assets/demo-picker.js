@@ -66,7 +66,7 @@ const played=new Set();
 
 const linkWithInterests=keys=>{
   // keys are normalized demo keys ([a-z] only), safe to place in the URL as-is.
-  return `checkout/ace-mkt/?from=demo${keys.length?`&interests=${keys.join(",")}`:""}`;
+  return `catalog/?from=demo${keys.length?`&interests=${keys.join(",")}`:""}`;
 };
 
 const renderChips=()=>{
