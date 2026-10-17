@@ -292,3 +292,22 @@ test('Customer Acquisition OS Starter does not claim proposals (proposals from P
     assert.match(c.get(k).description, /sends proposals/);
   }
 });
+
+test('How pricing works panel carries the 4 common questions and no off-list claims', async () => {
+  const fs = await import('node:fs');
+  const html = fs.readFileSync(new URL('../catalog/index.html', import.meta.url), 'utf8');
+  const faq = html.slice(html.indexOf('class="cat-faq"'), html.indexOf('</div>', html.indexOf('class="cat-faq"')));
+  const qs = [...faq.matchAll(/<summary>([^<]+)<\/summary>/g)].map((m) => m[1]);
+  assert.deepEqual(qs, ['What happens after I pay?', 'How long until the Lead Generator starts sending?', 'Can I cancel?', 'How do I approve the work?']);
+  assert.match(faq, /14 to 21 days/);
+  assert.match(faq, /1 to 3 days with the Fast Start add-on/);
+  assert.match(faq, /3-month minimum/);
+  assert.doesNotMatch(faq, /guarante|lifetime|!/i);
+});
+
+test('new-lead reply overdraft is charged to the card on file when used (Jim 16 Oct)', async () => {
+  const fs = await import('node:fs');
+  const html = fs.readFileSync(new URL('../catalog/index.html', import.meta.url), 'utf8');
+  assert.match(html, /charged to your card on file when used, at supplier cost plus 20%/);
+  assert.doesNotMatch(html, /on your next bill/);
+});

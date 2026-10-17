@@ -103,3 +103,10 @@ dialog#demoDialog form{text-align:center;margin-top:.6rem}
   *,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}
   html{scroll-behavior:auto}
 }
+
+/* How pricing works: common questions */
+.cat-faq{margin-top:1.5rem}
+.cat-faq h3{margin:0 0 .5rem}
+.cat-faq details{border-top:1px solid var(--edge2);padding:.6rem 0}
+.cat-faq summary{cursor:pointer;font-weight:600;min-height:44px;display:flex;align-items:center}
+.cat-faq details p{margin:.4rem 0 0}
