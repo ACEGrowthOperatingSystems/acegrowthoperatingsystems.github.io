@@ -20,8 +20,13 @@ const EXPECTED = { 1:[495,149],2:[0,49],3:[495,229],4:[0,99],5:[695,219],6:[0,99
 const STANDARD = { 1:[695,199],2:[0,49],3:[795,249],4:[0,99],5:[895,299],6:[0,99],7:[1195,449],8:[0,99],9:[499,697],10:[749,1397],11:[999,2497],12:[1249,3497],
   13:[1295,999],14:[1495,1599],15:[1995,2599],16:[2495,3699],17:[1195,429],18:[1795,699],19:[2750,1295],20:[1495,549],21:[2250,899],22:[3500,1495],23:[3500,1799],24:[4500,2699],25:[6500,4499] };
 
-const FLAG_LINE = 'const ADDONS_APPROVED=false;';
-const withAddons = (src = configSrc) => { assert.ok(src.includes(FLAG_LINE)); return src.replace(FLAG_LINE, 'const ADDONS_APPROVED=true;'); };
+const FLAG_LINE = 'const ADDONS_APPROVED=true;';
+const withAddons = (src = configSrc) => { assert.ok(src.includes(FLAG_LINE)); return src; };
+const withoutAddons = (src = configSrc) => { assert.ok(src.includes(FLAG_LINE)); return src.replace(FLAG_LINE, 'const ADDONS_APPROVED=false;'); };
+// Add-on lines 29-33 (ace_v2.current_approved_catalog, Jim 16 Oct 2026): [product, tier, setupF, setupS, monthlyF, monthlyS].
+const ADDONS = [['Website Lead Generator', null, 99, 149, 29, 49], ['Fast Start', '4 mailboxes', 49, 49, 30, 30], ['Fast Start', '10 mailboxes', 99, 99, 75, 75],
+  ['Fast Start', '20 mailboxes', 99, 99, 150, 150], ['Fast Start', '30 mailboxes', 99, 99, 225, 225]];
+const TOPUP_LINKS = ['https://buy.stripe.com/7sY14p3Ks8pA6hc0orak00q', 'https://buy.stripe.com/28E00l6WEgW69to0orak00s', 'https://buy.stripe.com/7sYdRbdl27lw7lg0orak00r'];
 const withPlaceholders = (src) => src.replace(/"link":"https:\/\/buy\.stripe\.com\/[A-Za-z0-9]+"/g, '"link":"REPLACE_WITH_LIVE_LINK"');
 const withLiveLinks = (src) => src.replaceAll('"link":"REPLACE_WITH_LIVE_LINK"', '"link":"https://buy.stripe.com/live123"');
 
@@ -61,53 +66,66 @@ function render({ config = configSrc, released = false } = {}) {
 const usd = (n) => '$' + Number(n).toLocaleString('en-US');
 
 // ---------------- config ----------------
-test('28 approved lines (25 buyable + 3 top-ups) plus 1 add-on line that is never buyable', () => {
+test('33 approved lines: 25 plans, 3 top-ups, 5 Lead Generator add-ons', () => {
   const c = load();
-  const approved = c.lines.filter((l) => l.family !== 'LEAD GENERATOR ADD-ON');
-  assert.equal(approved.length, 28);
-  assert.equal(approved.filter((l) => l.buyable).length, 25);
-  assert.deepEqual([...approved.filter((l) => !l.buyable).map((l) => l.monthlyFounding)], [20, 50, 100]);
+  const plans = c.lines.filter((l) => l.family !== 'LEAD GENERATOR ADD-ON');
+  assert.equal(plans.length, 28);
+  assert.equal(plans.filter((l) => l.buyable).length, 25);
+  assert.deepEqual([...plans.filter((l) => !l.buyable).map((l) => l.monthlyFounding)], [20, 50, 100]);
   const addons = c.lines.filter((l) => l.family === 'LEAD GENERATOR ADD-ON');
-  assert.equal(addons.length, 1);
-  for (const a of addons) { assert.equal(a.buyable, false, a.key); assert.equal(a.pending, true, a.key); }
-  assert.deepEqual(JSON.parse(JSON.stringify(addons.map((a) => [a.product, a.setupFounding, a.setupStandard, a.monthlyFounding, a.monthlyStandard]))),
-    [['Website Lead Generator', 99, 149, 29, 49]]);
+  assert.deepEqual([...addons.map((a) => a.line)], [29, 30, 31, 32, 33]);
+  for (const a of addons) { assert.equal(a.buyable, true, a.key); assert.equal(a.pending, false, a.key); }
+  assert.deepEqual(JSON.parse(JSON.stringify(addons.map((a) => [a.product, a.tier, a.setupFounding, a.setupStandard, a.monthlyFounding, a.monthlyStandard]))), ADDONS);
   assert.equal(c.lines.some((l) => /Extra Sending Mailbox/.test(l.product)), false, 'Extra Sending Mailbox not approved (5.09, 14 Oct)');
 });
 
-test('every buyable line matches the approved Founding and Standard amounts', () => {
+test('every buyable plan line matches the approved Founding and Standard amounts', () => {
   const c = load();
-  for (const l of c.lines.filter((x) => x.buyable)) {
+  for (const l of c.lines.filter((x) => x.buyable && x.family !== 'LEAD GENERATOR ADD-ON')) {
     assert.deepEqual([l.setupFounding, l.monthlyFounding], [...EXPECTED[l.line]], l.key);
     assert.deepEqual([l.setupStandard, l.monthlyStandard], [...STANDARD[l.line]], l.key);
   }
 });
 
-test('the 25 buyable lines carry live buy.stripe.com links; top-ups and add-ons never configured; test and foreign links refused', () => {
+test('25 plans + 5 add-ons carry unique live links; top-ups never buyable here; test and foreign links refused', () => {
   const c = load();
-  const buyable = c.lines.filter((l) => l.buyable && l.family !== 'LEAD GENERATOR ADD-ON');
-  assert.equal(buyable.length, 25);
+  const buyable = c.lines.filter((l) => l.buyable);
+  assert.equal(buyable.length, 30);
   for (const l of buyable) {
     assert.equal(c.isConfigured(l.key), true, l.key);
     assert.match(l.link, /^https:\/\/buy\.stripe\.com\/(?!test_)[A-Za-z0-9]+$/, l.key);
   }
-  assert.equal(new Set(buyable.map((l) => l.link)).size, 25);
-  for (const l of c.lines.filter((x) => !x.buyable || x.family === 'LEAD GENERATOR ADD-ON')) assert.equal(c.isConfigured(l.key), false, l.key);
+  assert.equal(new Set(buyable.map((l) => l.link)).size, 30);
+  const topups = c.lines.filter((x) => x.family === 'CREDIT PACK');
+  assert.deepEqual([...topups.map((l) => l.link)], TOPUP_LINKS);
+  for (const l of topups) assert.equal(c.isConfigured(l.key), false, l.key);
+  // Forcing a top-up buyable still never configures it on /catalog/.
+  const forced = load(configSrc.replace(/("family":"CREDIT PACK".*?)"buyable":false/g, '$1"buyable":true'));
+  for (const l of forced.lines.filter((x) => x.family === 'CREDIT PACK')) assert.equal(forced.isConfigured(l.key), false, l.key);
   const placeholders = load(withPlaceholders(configSrc));
   for (const l of placeholders.lines) assert.equal(placeholders.isConfigured(l.key), false, l.key);
   assert.equal(c.isLiveLink('https://buy.stripe.com/test_abc123'), false);
   assert.equal(c.isLiveLink('https://evil.example/abc'), false);
   assert.equal(c.isLiveLink('https://buy.stripe.com/abc123'), true);
-  const live = load(withAddons(withLiveLinks(configSrc)).replace(/("family":"LEAD GENERATOR ADD-ON".*?)"buyable":false/g, '$1"buyable":true'));
-  for (const l of live.lines.filter((x) => x.family === 'LEAD GENERATOR ADD-ON')) assert.equal(live.isConfigured(l.key), false, l.key);
-  assert.equal(live.isConfigured('L01-AUTOMATED-CONTENT-CREATION'), true);
+  // Flag off: add-ons are never configured.
+  const off = load(withoutAddons());
+  for (const l of off.lines.filter((x) => x.family === 'LEAD GENERATOR ADD-ON')) assert.equal(off.isConfigured(l.key), false, l.key);
+  // A pending add-on is never configured.
+  const pend = load(configSrc.replace('"buyable":true,"pending":false,"link":"https://buy.stripe.com/6oUcN71Ck8pA494fjlak00p"', '"buyable":true,"pending":true,"link":"https://buy.stripe.com/6oUcN71Ck8pA494fjlak00p"'));
+  assert.equal(pend.isConfigured('A01-LEAD-GENERATOR-WEBSITE-LEAD-GENERATOR'), false);
+  assert.equal(c.isConfigured('L01-AUTOMATED-CONTENT-CREATION'), true);
 });
 
-test('ADDONS_APPROVED ships false; Founding deadline is March 1, 2027', () => {
+test('My ACE top-up buttons use the same live links as catalog lines 26-28', () => {
+  const ctx = { window: {} }; vm.runInNewContext(read('assets/my-ace-config.js'), ctx);
+  assert.deepEqual(JSON.parse(JSON.stringify(ctx.window.ACE_MYACE_CONFIG.topUps.map((t) => [t.usd, t.url]))), [[20, TOPUP_LINKS[0]], [50, TOPUP_LINKS[1]], [100, TOPUP_LINKS[2]]]);
+});
+
+test('ADDONS_APPROVED ships true (Jim, 16 Oct 2026); Founding deadline is March 1, 2027', () => {
   assert.equal(load().FOUNDING_RATE_ENDS, '2027-03-01T00:00:00-05:00');
   assert.ok(configSrc.includes(FLAG_LINE));
-  assert.equal(load().ADDONS_APPROVED, false);
-  assert.equal(load(withAddons()).ADDONS_APPROVED, true);
+  assert.equal(load().ADDONS_APPROVED, true);
+  assert.equal(load(withoutAddons()).ADDONS_APPROVED, false);
 });
 
 // ---------------- page ----------------
@@ -130,7 +148,7 @@ test('page is held and noindex; family selector is an accessible tablist', () =>
 test('held page: every Add to cart is inert and never navigates', () => {
   const r = render({ released: false });
   const buys = r.nodes.filter((n) => n.dataset.buy);
-  assert.equal(buys.length, 25);
+  assert.equal(buys.length, 30);
   for (const b of buys) {
     assert.equal(b.getAttribute('aria-disabled'), 'true', b.dataset.buy);
     assert.equal(b.dataset.inertReason, 'RELEASE_HELD');
@@ -158,22 +176,34 @@ test('released page with placeholder links is still inert; both gates open navig
   assert.match(r2.assigned[0], /^https:\/\/buy\.stripe\.com\/(?!test_)/);
 });
 
-test('add-on block hidden while ADDONS_APPROVED=false; when true it is "Pending approval" and never buyable', () => {
-  const off = render();
+test('add-on block hidden when ADDONS_APPROVED=false; shown with buy buttons behind the same gates when true', () => {
+  const off = render({ config: withoutAddons() });
   assert.equal(off.nodes.filter((n) => n.dataset.addon || n.dataset.addons).length, 0);
   const allText = off.panels.map((p) => p.textContent).join(' ');
-  assert.doesNotMatch(allText, /Website Lead Generator|Extra Sending Mailbox|add-on/i);
+  assert.doesNotMatch(allText, /Website Lead Generator|Fast Start|Extra Sending Mailbox|add-on/i);
 
-  // Flag on, page released, live links, and lines forced buyable: still no buy button.
-  const hacked = withAddons(withLiveLinks(configSrc)).replace(/("family":"LEAD GENERATOR ADD-ON".*?)"buyable":false/g, '$1"buyable":true');
-  const on = render({ config: hacked, released: true });
-  const cards = on.nodes.filter((n) => n.dataset.addon);
-  assert.equal(cards.length, 1);
-  for (const c of cards) {
-    assert.equal(c.all().filter((n) => n.dataset.buy).length, 0, c.dataset.addon);
-    assert.match(c.textContent, /Pending approval/);
+  const held = render({ released: false });
+  const hcards = held.nodes.filter((n) => n.dataset.addon);
+  assert.equal(hcards.length, 5);
+  for (const c of hcards) {
+    const b = c.all().filter((n) => n.dataset.buy);
+    assert.equal(b.length, 1, c.dataset.addon);
+    assert.equal(b[0].getAttribute('aria-disabled'), 'true'); b[0].click();
+    assert.doesNotMatch(c.textContent, /Pending approval/);
   }
+  assert.deepEqual(held.assigned, []);
+
+  const on = render({ released: true });
+  const fs4 = on.nodes.find((n) => n.dataset.buy === 'A03-FAST-START-4');
+  assert.equal(fs4.getAttribute('aria-disabled'), 'false'); fs4.click();
+  assert.deepEqual(on.assigned, ['https://buy.stripe.com/dRm14p5SA49k9todbdak00t']);
   assert.ok(on.ids['panel-leadgen'].all().some((n) => n.dataset.addons === 'shown'));
+
+  // A line set back to pending shows "Pending approval" and no buy button.
+  const pend = render({ released: true, config: configSrc.replace('"pending":false,"link":"https://buy.stripe.com/6oUcN71Ck8pA494fjlak00p"', '"pending":true,"link":"https://buy.stripe.com/6oUcN71Ck8pA494fjlak00p"') });
+  const w = pend.nodes.find((n) => n.dataset.addon === 'A01-LEAD-GENERATOR-WEBSITE-LEAD-GENERATOR');
+  assert.equal(w.all().filter((n) => n.dataset.buy).length, 0);
+  assert.match(w.textContent, /Pending approval/);
 });
 
 test('every rendered price equals the config, and every line is rendered', () => {
