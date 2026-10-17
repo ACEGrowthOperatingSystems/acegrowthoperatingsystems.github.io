@@ -16,7 +16,7 @@
 //    the n8n "demo-question" route must be accepting first.
 //
 // 2. DEMOS[].file: each demo's vertical 9:16 MP4 (an https:// URL, or a site
-//    path ending in .mp4). Files live in assets/demos/ (H.264, no audio,
+//    path ending in .mp4). Files live in assets/demos/ (H.264, Grit and Gravel music bed 17 Oct 2026,
 //    faststart, 10 Oct 2026); paths are relative to the homepage root.
 //    Setting a file back to "REPLACE_WITH_VIDEO_URL" restores the card below.
 //    While a file is still the placeholder, the player shows a
