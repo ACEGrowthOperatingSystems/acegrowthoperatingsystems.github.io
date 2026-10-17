@@ -14,10 +14,10 @@ const css = read('assets/catalog.css');
 const load = (src = configSrc) => { const ctx = { window: {} }; vm.runInNewContext(src, ctx); return ctx.window.ACE_CATALOG; };
 
 // Founding setup/monthly from ace_v2.checkout_offers_launch_20261020 (cents / 100), approved 12 Oct 19:46Z.
-const EXPECTED = { 1:[495,149],2:[0,49],3:[495,229],4:[0,99],5:[695,219],6:[0,99],7:[795,399],8:[0,99],9:[499,497],10:[749,1097],11:[999,1997],12:[1249,2997],
+const EXPECTED = { 1:[495,149],2:[0,79],3:[495,229],4:[0,99],5:[695,219],6:[0,99],7:[795,399],8:[0,99],9:[499,497],10:[749,1097],11:[999,1997],12:[1249,2997],
   13:[895,799],14:[1095,1299],15:[1395,2099],16:[1795,2999],17:[795,349],18:[1295,599],19:[2250,1095],20:[995,449],21:[1495,699],22:[2495,1195],23:[2500,1499],24:[3500,2099],25:[5000,3499] };
 // Standard setup/monthly from the approved Claude Doc (fe43efe3), Founding / Standard columns.
-const STANDARD = { 1:[695,199],2:[0,49],3:[795,249],4:[0,99],5:[895,299],6:[0,99],7:[1195,449],8:[0,99],9:[499,697],10:[749,1397],11:[999,2497],12:[1249,3497],
+const STANDARD = { 1:[695,199],2:[0,79],3:[795,249],4:[0,99],5:[895,299],6:[0,99],7:[1195,449],8:[0,99],9:[499,697],10:[749,1397],11:[999,2497],12:[1249,3497],
   13:[1295,999],14:[1495,1599],15:[1995,2599],16:[2495,3699],17:[1195,429],18:[1795,699],19:[2750,1295],20:[1495,549],21:[2250,899],22:[3500,1495],23:[3500,1799],24:[4500,2699],25:[6500,4499] };
 
 const FLAG_LINE = 'const ADDONS_APPROVED=true;';
@@ -113,7 +113,7 @@ test('25 plans + 5 add-ons carry unique live links; top-ups never buyable here; 
   // A pending add-on is never configured.
   const pend = load(configSrc.replace('"buyable":true,"pending":false,"link":"https://buy.stripe.com/6oUcN71Ck8pA494fjlak00p"', '"buyable":true,"pending":true,"link":"https://buy.stripe.com/6oUcN71Ck8pA494fjlak00p"'));
   assert.equal(pend.isConfigured('A01-LEAD-GENERATOR-WEBSITE-LEAD-GENERATOR'), false);
-  assert.equal(c.isConfigured('L01-AUTOMATED-CONTENT-CREATION'), true);
+  assert.equal(c.isConfigured('L01-AUTOMATED-BRANDED-MEDIA-PACKAGE'), true);
 });
 
 test('My ACE top-up buttons use the same live links as catalog lines 26-28', () => {
@@ -245,8 +245,8 @@ test('DIY plans show $0 setup; a la carte toggle switches Done for you / DIY', (
   const diy = toggles.find((t) => t.dataset.plan === 'diy');
   diy.click();
   assert.equal(diy.getAttribute('aria-pressed'), 'true');
-  assert.equal(r.nodes.find((n) => n.dataset.offer === 'L02-AUTOMATED-CONTENT-CREATION-DIY').hidden, false);
-  assert.equal(r.nodes.find((n) => n.dataset.offer === 'L01-AUTOMATED-CONTENT-CREATION').hidden, true);
+  assert.equal(r.nodes.find((n) => n.dataset.offer === 'L02-AUTOMATED-BRANDED-MEDIA-PACKAGE-DIY').hidden, false);
+  assert.equal(r.nodes.find((n) => n.dataset.offer === 'L01-AUTOMATED-BRANDED-MEDIA-PACKAGE').hidden, true);
 });
 
 test('one "Recommended" (second) tier per tiered product; never "Most popular"', () => {
@@ -280,7 +280,7 @@ test('checklists use only approved claims and catalog plan terms', () => {
 
 test('tier facts are limited to approved prospects/posts counts', () => {
   const c = load();
-  for (const l of c.lines) for (const f of c.tierFacts(l.key)) assert.match(f, /^[\d,]+ (prospects|posts) a month$/, l.key);
+  for (const l of c.lines) for (const f of c.tierFacts(l.key)) assert.match(f, /^([\d,]+ (prospects|posts) a month|\d+ social accounts included)$/, l.key);
 });
 
 test('Customer Acquisition OS Starter does not claim proposals (proposals from Pro up, 5.09 decision 14 Oct)', () => {

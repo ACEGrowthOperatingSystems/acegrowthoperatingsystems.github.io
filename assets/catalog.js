@@ -38,7 +38,7 @@ const C={
   phone:"You approve from your phone"
 };
 const CAPS={
-  "Automated Content Creation":[],
+  "Automated Branded Media Package":[],
   "Automated Social Marketing":[C.social],
   "Automated Lead Generation":[C.answers,C.books],
   "Automated Prospecting Machine":[C.lists],

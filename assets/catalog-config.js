@@ -23,8 +23,8 @@ const PLACEHOLDER="REPLACE_WITH_LIVE_LINK";
 const FOUNDING_RATE_ENDS="2027-03-01T00:00:00-05:00";
 
 const LINES=[
-  {"line":1,"key":"L01-AUTOMATED-CONTENT-CREATION","family":"A LA CARTE","product":"Automated Content Creation","tier":null,"plan":"DFY","setupFounding":495,"setupStandard":695,"monthlyFounding":149,"monthlyStandard":199,"includedCredit":30,"demo":"content","description":"Your social posts prepared for you. You approve from your phone before anything goes out.","buyable":true,"link":"https://buy.stripe.com/28EdRbep6fS2axs5ILak00c"},
-  {"line":2,"key":"L02-AUTOMATED-CONTENT-CREATION-DIY","family":"A LA CARTE","product":"Automated Content Creation","tier":null,"plan":"DIY (10 posts)","setupFounding":0,"setupStandard":0,"monthlyFounding":49,"monthlyStandard":49,"includedCredit":null,"demo":"content","description":"Your social posts prepared for you. You approve from your phone before anything goes out.","buyable":true,"link":"https://buy.stripe.com/3cI7sNgxeeNY7lg9Z1ak00m"},
+  {"line":1,"key":"L01-AUTOMATED-BRANDED-MEDIA-PACKAGE","family":"A LA CARTE","product":"Automated Branded Media Package","tier":null,"plan":"DFY","setupFounding":495,"setupStandard":695,"monthlyFounding":149,"monthlyStandard":199,"includedCredit":30,"demo":"content","description":"Your social posts prepared for you. You approve from your phone before anything goes out.","buyable":true,"link":"https://buy.stripe.com/28EdRbep6fS2axs5ILak00c"},
+  {"line":2,"key":"L02-AUTOMATED-BRANDED-MEDIA-PACKAGE-DIY","family":"A LA CARTE","product":"Automated Branded Media Package","tier":null,"plan":"DIY (10 posts, 3 social accounts)","setupFounding":0,"setupStandard":0,"monthlyFounding":79,"monthlyStandard":79,"includedCredit":null,"demo":"content","description":"Your social posts prepared for you. You approve from your phone before anything goes out.","buyable":true,"link":"https://buy.stripe.com/00wdRb0yg9tEdJE9Z1ak00x"},
   {"line":3,"key":"L03-AUTOMATED-SOCIAL-MARKETING","family":"A LA CARTE","product":"Automated Social Marketing","tier":null,"plan":"DFY","setupFounding":495,"setupStandard":795,"monthlyFounding":229,"monthlyStandard":249,"includedCredit":54,"demo":"content","description":"Schedules your social posts. You approve from your phone first.","buyable":true,"link":"https://buy.stripe.com/3cIaEZ5SAcFQ20Wgnpak00k"},
   {"line":4,"key":"L04-AUTOMATED-SOCIAL-MARKETING-DIY","family":"A LA CARTE","product":"Automated Social Marketing","tier":null,"plan":"DIY","setupFounding":0,"setupStandard":0,"monthlyFounding":99,"monthlyStandard":99,"includedCredit":null,"demo":"content","description":"Schedules your social posts. You approve from your phone first.","buyable":true,"link":"https://buy.stripe.com/aFa3cxftadJUgVQ6MPak00o"},
   {"line":5,"key":"L05-AUTOMATED-LEAD-GENERATION","family":"A LA CARTE","product":"Automated Lead Generation","tier":null,"plan":"DFY","setupFounding":695,"setupStandard":895,"monthlyFounding":219,"monthlyStandard":299,"includedCredit":48,"demo":"followup","description":"Answers new leads within minutes, follows up and books calls.","buyable":true,"link":"https://buy.stripe.com/14A28tgxe0X8dJE0orak00a"},
@@ -73,8 +73,8 @@ const ADDONS_APPROVED=true;
 // (fe43efe3). Display text only; keyed by line key. Add nothing here that is
 // not in that doc.
 const TIER_FACTS={
-  "L01-AUTOMATED-CONTENT-CREATION":["20 posts a month"],
-  "L02-AUTOMATED-CONTENT-CREATION-DIY":["10 posts a month"],
+  "L01-AUTOMATED-BRANDED-MEDIA-PACKAGE":["20 posts a month"],
+  "L02-AUTOMATED-BRANDED-MEDIA-PACKAGE-DIY":["10 posts a month","3 social accounts included"],
   "L03-AUTOMATED-SOCIAL-MARKETING":["30 posts a month"],
   "L07-AUTOMATED-PROSPECTING-MACHINE":["500 prospects a month"],
   "L08-AUTOMATED-PROSPECTING-MACHINE-DIY":["250 prospects a month"],
