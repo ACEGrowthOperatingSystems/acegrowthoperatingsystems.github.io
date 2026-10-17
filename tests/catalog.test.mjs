@@ -113,7 +113,7 @@ test('25 plans + 5 add-ons carry unique live links; top-ups never buyable here; 
   // A pending add-on is never configured.
   const pend = load(configSrc.replace('"buyable":true,"pending":false,"link":"https://buy.stripe.com/6oUcN71Ck8pA494fjlak00p"', '"buyable":true,"pending":true,"link":"https://buy.stripe.com/6oUcN71Ck8pA494fjlak00p"'));
   assert.equal(pend.isConfigured('A01-LEAD-GENERATOR-WEBSITE-LEAD-GENERATOR'), false);
-  assert.equal(c.isConfigured('L01-AUTOMATED-CONTENT-CREATION'), true);
+  assert.equal(c.isConfigured('L01-AUTOMATED-BRANDED-MEDIA-PACKAGE'), true);
 });
 
 test('My ACE top-up buttons use the same live links as catalog lines 26-28', () => {
@@ -245,8 +245,8 @@ test('DIY plans show $0 setup; a la carte toggle switches Done for you / DIY', (
   const diy = toggles.find((t) => t.dataset.plan === 'diy');
   diy.click();
   assert.equal(diy.getAttribute('aria-pressed'), 'true');
-  assert.equal(r.nodes.find((n) => n.dataset.offer === 'L02-AUTOMATED-CONTENT-CREATION-DIY').hidden, false);
-  assert.equal(r.nodes.find((n) => n.dataset.offer === 'L01-AUTOMATED-CONTENT-CREATION').hidden, true);
+  assert.equal(r.nodes.find((n) => n.dataset.offer === 'L02-AUTOMATED-BRANDED-MEDIA-PACKAGE-DIY').hidden, false);
+  assert.equal(r.nodes.find((n) => n.dataset.offer === 'L01-AUTOMATED-BRANDED-MEDIA-PACKAGE').hidden, true);
 });
 
 test('one "Recommended" (second) tier per tiered product; never "Most popular"', () => {
