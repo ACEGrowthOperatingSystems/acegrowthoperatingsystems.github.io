@@ -63,6 +63,9 @@ function render(r){
 }
 
 async function rpc(name,args){const {data,error}=await client.rpc(name,args||{});if(error)throw error;return data}
+// Shares the signed-in session with the Command Center tabs (assets/command-center.js).
+let announced=false;
+function ready(){if(announced)return;announced=true;window.ACE_OWNER={rpc,preview,reloadDrafts:()=>refresh()};window.dispatchEvent(new CustomEvent("ace-owner-ready"))}
 
 async function refresh(){
   if(preview){render(data);return}
@@ -72,6 +75,7 @@ async function refresh(){
   if(!r||!r.ok){show("#signin",false);show("#dash",false);show("#notowner",true);$("#no-email").textContent=sess.session.user.email;return}
   show("#signin",false);show("#notowner",false);show("#dash",true);
   render(r);setupPush();
+  ready();
 }
 
 function wire(){
@@ -107,7 +111,7 @@ async function setupPush(){
   const reg=await navigator.serviceWorker.register("/owner/sw.js",{scope:"/owner/"}).catch(()=>null);
   if(!reg){pc.hidden=true;return}
   if(!("PushManager" in window)){
-    if(isIOS&&!standalone){pc.hidden=false;$("#push-text").textContent="To get phone alerts on iPhone: tap the Share button, then 'Add to Home Screen', then open ACE Drafts from your home screen.";$("#push-btn").hidden=true}
+    if(isIOS&&!standalone){pc.hidden=false;$("#push-text").textContent="To get phone alerts on iPhone: tap the Share button, then 'Add to Home Screen', then open ACE Command from your home screen.";$("#push-btn").hidden=true}
     else pc.hidden=true;
     return;
   }
@@ -157,7 +161,7 @@ async function startLive(){
 
 function init(){
   preview=new URLSearchParams(location.search).get("preview")==="1";
-  if(preview){wire();show("#dash",true);render(data);return}
+  if(preview){wire();show("#dash",true);render(data);ready();return}
   startLive().catch(()=>{$("#signin-status").textContent="Sign-in is unavailable right now.";show("#signin",true)});
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();

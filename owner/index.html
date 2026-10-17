@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<title>ACE Draft Center</title>
-<meta name="description" content="Owner-only approval queue for ACE drafts.">
+<title>ACE Command Center</title>
+<meta name="description" content="Owner-only command center: alerts, tasks, approvals and project updates.">
 <meta name="theme-color" content="#000000">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="ACE Drafts">
+<meta name="apple-mobile-web-app-title" content="ACE Command">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <link rel="manifest" href="/owner/manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="64x64" href="/assets/favicon.png">
@@ -58,6 +58,29 @@
   .done.APPROVED{color:var(--green)} .done.CHANGE_REQUESTED{color:var(--amber)} .done.REJECTED{color:#ff6b70}
   .empty{color:var(--steel)}
   .push{border-left:3px solid var(--red)}
+  .proj{display:flex;gap:.4rem;margin:.2rem 0 1rem;overflow-x:auto;padding-bottom:.3rem;scrollbar-width:thin}
+  .proj button{position:relative;background:var(--raise);color:var(--silver);border:1px solid var(--edge2);border-radius:10px;padding:.55rem .8rem;font:inherit;font-size:.9rem;font-weight:600;white-space:nowrap;cursor:pointer;min-height:2.75rem}
+  .proj button[aria-current=true]{background:var(--red);color:#fff;border-color:var(--red)}
+  .proj button[data-p=alerts]{border-color:#5a2326}
+  .proj .b{display:inline-block;min-width:1.4em;margin-left:.35rem;padding:0 .35rem;border-radius:999px;background:#fff;color:#000;font-size:.75rem;font-weight:700;text-align:center}
+  .proj .b:empty{display:none}
+  .proj button[data-p=alerts] .b{background:var(--red);color:#fff}
+  .cmd-h{display:flex;align-items:baseline;justify-content:space-between;gap:.6rem;margin:0 0 .7rem}
+  .cmd-h h2{font-size:1.15rem}
+  .item{border-left:3px solid var(--edge2)}
+  .item.P0{border-left-color:var(--red)} .item.P1{border-left-color:var(--amber)} .item.task{border-left-color:var(--green)}
+  .item.closed{opacity:.6}
+  .item .row .btn{min-height:2.6rem;font-size:.8rem}
+  .sec{font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--steel);margin:1.1rem 0 .5rem}
+  .ck{display:grid;grid-template-columns:3.2rem 1fr auto;gap:.2rem .6rem;align-items:start;padding:.55rem 0;border-top:1px solid var(--edge)}
+  .ck:first-child{border-top:0}
+  .ck b{font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--steel);font-weight:500}
+  .ck .s{font-family:'IBM Plex Mono',monospace;font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+  .ck .s.VERIFIED,.ck .s.DONE_NO_VERIFY_NEEDED{color:var(--green)} .ck .s.AWAITING_VERIFY{color:var(--amber)} .ck .s.OPEN{color:var(--silver)} .ck .s.BLOCKED{color:#ff6b70}
+  .ck small{grid-column:2/4;color:var(--steel);font-size:.82rem}
+  .item a{color:#fff}
+  .item [data-st]:empty{min-height:0;margin:0}
+  @media (min-width:700px){.proj{flex-wrap:wrap;overflow:visible}}
   footer{padding:1.5rem 0 calc(2rem + env(safe-area-inset-bottom));text-align:center;font-size:.8rem;color:var(--steel)}
 </style>
 </head>
@@ -67,7 +90,7 @@
 <body data-page-key="owner" data-release-state="OWNER_ONLY">
 <header class="wrap">
   <img src="/assets/ace-logo.jpg" alt="" width="44" height="44">
-  <div><h1>Draft Center</h1><span class="tag">Owner only</span></div>
+  <div><h1>Command Center</h1><span class="tag">Owner only</span></div>
 </header>
 <main class="wrap" id="main">
   <section class="card" id="signin" hidden>
@@ -87,7 +110,7 @@
 
   <section class="card" id="notowner" hidden>
     <h2 style="font-size:1.1rem">Not an owner account</h2>
-    <p><b id="no-email"></b> cannot open the Draft Center. Customers use <a href="/my-ace/">My ACE</a>.</p>
+    <p><b id="no-email"></b> cannot open the Command Center. Customers use <a href="/my-ace/">My ACE</a>.</p>
     <div class="row"><button class="btn btn-ghost" type="button" data-signout>Sign out</button></div>
   </section>
 
@@ -97,6 +120,12 @@
       <div class="row"><button class="btn btn-primary" type="button" id="push-btn">Turn on phone alerts</button></div>
       <p class="status" id="push-status" role="status"></p>
     </section>
+    <nav class="proj" id="proj" aria-label="Projects"></nav>
+    <section id="panel-cmd" hidden aria-live="polite">
+      <div class="cmd-h"><h2 id="cmd-title">Alerts</h2><button class="btn btn-ghost" type="button" id="cmd-showall" style="flex:0 0 auto;min-height:2.4rem;font-size:.75rem">Show done</button></div>
+      <div id="cmd-list"></div>
+    </section>
+    <section id="panel-approvals">
 
     <div class="tabs" role="group" aria-label="Filter drafts">
       <button type="button" data-tab="PENDING" aria-pressed="true">Waiting <span id="n-pending">0</span></button>
@@ -105,14 +134,16 @@
       <button type="button" data-tab="REJECTED" aria-pressed="false">Rejected <span id="n-rejected">0</span></button>
     </div>
     <div id="list"></div>
+    </section>
     <div class="row" style="justify-content:center"><button class="btn btn-ghost" type="button" data-signout style="flex:0 1 12rem">Sign out</button></div>
   </div>
-  <noscript><p>Turn on JavaScript to use the Draft Center.</p></noscript>
+  <noscript><p>Turn on JavaScript to use the Command Center.</p></noscript>
 </main>
 <footer class="wrap">ACE Growth Operating Systems · Signed-in decisions are recorded under your account</footer>
 <script src="../assets/my-ace-config.js" defer></script>
 <script src="../assets/owner-config.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" defer></script>
 <script src="../assets/owner.js" defer></script>
+<script src="../assets/command-center.js" defer></script>
 </body>
 </html>
