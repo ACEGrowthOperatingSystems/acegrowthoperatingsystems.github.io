@@ -11,7 +11,7 @@ const D=window.ACE_DISCLOSURE={
     "Your monthly plan starts on first delivery.",
     "Every plan has a 3-month minimum, then month to month.",
     "Usage credit top-ups are $20, $50 or $100.",
-    "You get an alert at 80% of your credit. At 100%, work pauses except replies to new leads, which continue on an overdraft of up to 10% of your monthly credit, billed on your next bill.",
+    "You get an alert at 80% of your credit. At 100%, work pauses except replies to new leads, which continue on an overdraft of up to 10% of your monthly credit, charged to your card on file when used.",
     "Onboarding starts when you submit the onboarding questionnaire. No refunds after onboarding starts."
   ],
   leadGenerator:"Lead Generator: new sending mailboxes need 14 to 21 days to warm up. Your monthly plan starts at first send.",
