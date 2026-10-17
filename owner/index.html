@@ -81,6 +81,18 @@
   .item a{color:#fff}
   .item [data-st]:empty{min-height:0;margin:0}
   @media (min-width:700px){.proj{flex-wrap:wrap;overflow:visible}}
+  .vault-bar{display:flex;gap:.5rem;align-items:center;margin:0 0 .4rem}
+  .vault-bar select{flex:1;min-width:0;background:var(--raise2);border:1px solid var(--edge2);color:#fff;border-radius:10px;padding:.7rem .8rem;font:inherit;font-size:16px}
+  .v-up{flex:0 0 auto;min-height:2.9rem}
+  .vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.7rem}
+  .vtile{margin:0;background:var(--raise);border:1px solid var(--edge);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+  .vtile img,.vtile video{width:100%;aspect-ratio:1/1;object-fit:cover;background:#0a0a0a;display:block}
+  .vpdf{aspect-ratio:1/1;display:grid;place-items:center;color:var(--steel);font-family:'IBM Plex Mono',monospace}
+  .vtile figcaption{padding:.55rem .6rem .65rem;display:flex;flex-direction:column;gap:.2rem;font-size:.82rem}
+  .vtile figcaption b{color:#fff;font-weight:600;font-size:.88rem;overflow-wrap:anywhere}
+  .vtile figcaption span{color:var(--steel)}
+  .vacts{display:flex;flex-wrap:wrap;gap:.35rem .7rem;margin-top:.2rem}
+  .vacts a,.vacts button{color:var(--silver);background:none;border:0;padding:0;font:inherit;font-size:.8rem;text-decoration:underline;cursor:pointer}
   footer{padding:1.5rem 0 calc(2rem + env(safe-area-inset-bottom));text-align:center;font-size:.8rem;color:var(--steel)}
 </style>
 </head>
@@ -144,6 +156,7 @@
 <script src="../assets/owner-config.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" defer></script>
 <script src="../assets/owner.js" defer></script>
+<script src="../assets/marketing-vault.js" defer></script>
 <script src="../assets/command-center.js" defer></script>
 </body>
 </html>

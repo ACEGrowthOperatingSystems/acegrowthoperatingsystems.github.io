@@ -65,7 +65,7 @@ function render(r){
 async function rpc(name,args){const {data,error}=await client.rpc(name,args||{});if(error)throw error;return data}
 // Shares the signed-in session with the Command Center tabs (assets/command-center.js).
 let announced=false;
-function ready(){if(announced)return;announced=true;window.ACE_OWNER={rpc,preview,reloadDrafts:()=>refresh()};window.dispatchEvent(new CustomEvent("ace-owner-ready"))}
+function ready(){if(announced)return;announced=true;window.ACE_OWNER={rpc,preview,client,reloadDrafts:()=>refresh()};window.dispatchEvent(new CustomEvent("ace-owner-ready"))}
 
 async function refresh(){
   if(preview){render(data);return}

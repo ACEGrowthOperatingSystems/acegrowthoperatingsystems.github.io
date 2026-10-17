@@ -9,7 +9,7 @@ const esc=v=>String(v==null?"":v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;"
 const fmt=t=>{if(!t)return"";const d=new Date(t);return d.toLocaleString([], {month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})};
 
 const PROJECTS=[
-  ["alerts","🚨 Alerts"],["approvals","Approvals"],["launch","Launch checklist"],
+  ["alerts","🚨 Alerts"],["approvals","Approvals"],["vault","Marketing Vault"],["launch","Launch checklist"],
   ["demo_videos","Demo videos"],["hannah_videos","Hannah videos"],["ace_outreach","ACE outreach"],
   ["withyou_outreach","WithYou outreach"],["website","Website"],["my_ace","My ACE"],
   ["agentic","Agentic engineering"],["withyou_app","WithYou App"],["ace_app","ACE App"]
@@ -72,6 +72,8 @@ async function load(){
   if(current==="approvals"){$("#panel-cmd").hidden=true;$("#panel-approvals").hidden=false;return}
   $("#panel-approvals").hidden=true;$("#panel-cmd").hidden=false;
   $("#cmd-title").textContent=LABEL[current]||"Alerts";
+  $("#cmd-showall").hidden=current==="vault";
+  if(current==="vault"){if(window.ACE_VAULT)await window.ACE_VAULT.show(api);return}
   let items=(r.items||[]).filter(i=>current==="alerts"?i.item_type==="alert":i.project===current);
   const openItems=items.filter(i=>i.status==="open");
   const shown=showDone?items:openItems;
